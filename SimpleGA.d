@@ -5,8 +5,10 @@ import std.stdio;
 import std.random;
 import std.range;
 import std.algorithm;
+import std.math;
+import std.conv;
 
-struct SimpleGA(T, int PopSize) {
+struct SimpleGA(T, uint PopSize) {
     alias mutateFunc = void function(ref T);
     alias fitnessFunc = double function(ref const T);
     alias selectorFunc = void function(ref T[], fitnessFunc);
@@ -25,6 +27,10 @@ struct SimpleGA(T, int PopSize) {
         generator=_generator;
     }
 
+    void setMutationRate(float rate) {
+        mutationRate = rate;
+    }
+
     void evolve(uint generations){
         
         //Add initial population
@@ -34,20 +40,20 @@ struct SimpleGA(T, int PopSize) {
 
         //Perform evolution
         foreach(uint generation; 0..generations) {
-            foreach(uint i; 0..PopSize) {
-                mutate(population[i]);
-            }
-
+            
             while(population.length < PopSize) {
                 population ~= crossover(population[uniform(0, population.length)],
                                         population[uniform(0, population.length)]);
             }
 
+            foreach(uint i; 0..to!uint(PopSize*mutationRate)) {
+                mutate(population[uniform(0, PopSize)]);
+            }
+
             selector(population, fitness);
             
-            foreach(member; zip(population, map!(a=>fitness(a))(population))) {
-                writeln(member);
-            }
+            writeln("Top Score: " ~ to!string(fitness(population[0])) ~
+                    ", Individual: " ~ to!string(population[0]));
         }
     }
 
@@ -56,6 +62,8 @@ struct SimpleGA(T, int PopSize) {
     immutable selectorFunc selector;
     immutable crossoverFunc crossover;
     immutable generatorFunc generator;
+
+    float mutationRate = 0.1f;
 
     T population[];
 }

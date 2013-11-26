@@ -8,7 +8,7 @@ individual SinglePoint(individual)(ref const individual ind1,
     individual newInd;
     auto val = uniform(0, ind1.length);
 
-    for(auto index=0; index < min(ind1.length, ind2.length); index++) {
+    foreach(uint index; 0..min(ind1.length, ind2.length)) {
         if (index < val) {
             newInd ~= ind1[index];
         }

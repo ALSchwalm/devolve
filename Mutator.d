@@ -1,8 +1,10 @@
 
 module Mutator;
 import std.random;
+import std.algorithm;
 
 void swap(individual)(ref individual ind) {
-    auto val = uniform(0, ind.length);
-    ind[val]=uniform(0, 20);
+    auto one = uniform(0, ind.length);
+    auto two = uniform(0, ind.length);
+    std.algorithm.swap(ind[one], ind[two]);
 };
