@@ -1,6 +1,5 @@
 
-module Generator;
-
+module devolve.generator;
 import std.random;
 
 allele[] randRange(allele : allele[], uint num, allele low, allele high)() {

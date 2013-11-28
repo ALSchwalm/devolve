@@ -1,9 +1,8 @@
-
-module Crossover;
+module devolve.crossover;
 import std.random;
 import std.algorithm;
 
-individual SinglePoint(individual)(ref const individual ind1,
+individual singlePoint(individual)(ref const individual ind1,
                                    ref const individual ind2) {
     individual newInd;
     auto val = uniform(0, ind1.length);

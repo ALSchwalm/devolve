@@ -1,6 +1,4 @@
-
-module SimpleGA;
-
+module devolve.simpleGA;
 import std.stdio;
 import std.random;
 import std.range;
