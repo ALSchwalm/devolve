@@ -9,7 +9,7 @@ void topPool(individual, int num)(ref individual[] population,
     individual[][] populationPools;
 
     foreach(uint i; 0..num) {
-        populationPools ~= population[ ($/num)*i..($/num)*i+num ];
+        populationPools ~= population[ ($/num)*i..($/num)*i+$/num ];
     }
 
     foreach(i, ref individual[] pool; parallel(populationPools)) {
@@ -20,6 +20,7 @@ void topPool(individual, int num)(ref individual[] population,
     foreach(i, individual ind; result) {
         population[i] = ind;
     }
+
     population.length = num;
 }
 

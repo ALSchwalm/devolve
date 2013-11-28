@@ -1,12 +1,7 @@
 
-import devolve.simpleGA;
-import devolve.crossover;
-import devolve.selector;
-import devolve.mutator;
-import devolve.generator;
+import devolve;
 import std.algorithm;
 import std.array;
-
 
 alias individual = int[];
 
