@@ -6,7 +6,7 @@ import std.algorithm;
 import std.math;
 import std.conv;
 
-struct SimpleGA(T, uint PopSize) {
+struct SimpleGA(T, uint PopSize) if (PopSize > 0) {
     alias mutateFunc = void function(ref T);
     alias fitnessFunc = double function(ref const T);
     alias selectorFunc = void function(ref T[], fitnessFunc);

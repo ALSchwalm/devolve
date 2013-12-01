@@ -10,9 +10,10 @@ import std.functional;
  * The direction of the sort may be set with comp, default is
  * highest fitness first.
  */
-void topPool(individual, int num, alias comp = "a > b")
+void topPool(individual, uint num, alias comp = "a > b")
     (ref individual[] population,
-     double function(ref const individual) fitness) {
+     double function(ref const individual) fitness)
+    if (num > 0) {
 
     alias binaryFun!(comp) compFun;
     individual[num] result;
@@ -39,9 +40,10 @@ void topPool(individual, int num, alias comp = "a > b")
  * most fit members are selected. The direction of the sort may
  * be set with comp, default is highest fitness first.
  */
-void top(individual, int num, alias comp = "a > b")
+void top(individual, uint num, alias comp = "a > b")
     (ref individual[] population,
-     double function(ref const individual) fitness) {
+     double function(ref const individual) fitness)
+    if (num > 0) {
     
     alias binaryFun!(comp) compFun;
     sort!((a, b) => compFun(fitness(a), fitness(b)))(population);
