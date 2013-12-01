@@ -7,7 +7,7 @@ import std.algorithm;
  * from one individual after a randomly chosen point and
  * appending them to all of the values before that point
  * from another individual. The resulting individual
- * will have a length no longer than the longest of the
+ * will have a length no longer than the shortest of the
  * parent individuals.
  * 
  * ind1 =   1111111111111
@@ -19,16 +19,12 @@ import std.algorithm;
 individual singlePoint(individual)(ref const individual ind1,
                                    ref const individual ind2) {
     individual newInd;
-    auto val = uniform(0, ind1.length);
+    auto val = uniform(0, min(ind1.length, ind2.length));
 
-    foreach(uint index; 0..min(ind1.length, ind2.length)) {
-        if (index < val) {
-            newInd ~= ind1[index];
-        }
-        else {
-            newInd ~= ind2[index];
-        }
-    }
+    newInd.length = min(ind1.length, ind2.length);
+    newInd[0..val] = ind1[0..val];
+    newInd[val..$] = ind2[val..$];
+
     return newInd;
 };
 
@@ -45,14 +41,10 @@ individual singlePointVariable(individual)(ref const individual ind1,
     auto val1 = uniform(0, ind1.length);
     auto val2 = uniform(0, ind2.length);
     
-    foreach(uint index; 0..val1) {
-        newInd ~= ind1[index];
-    }
+    newInd.length = val1 + (ind2.length - val2);
+    newInd[0..val1] = ind1[0..val1];
+    newInd[val1..$] = ind2[val2..$];
 
-    foreach(uint index; val2..ind2.length) {
-        newInd ~= ind2[index];
-    }
-    
     return newInd;
 };
 
@@ -63,7 +55,7 @@ individual singlePointVariable(individual)(ref const individual ind1,
  * before a different randomly chosen point and
  * appending them to the alleles from the other individual
  * which are within that range. The resulting individual
- * will have a length no longer than the longest of the
+ * will have a length no longer than the shortest of the
  * parent individuals.
  *
  * ind1 =    1111111111111
@@ -77,17 +69,14 @@ individual twoPoint(individual)(ref const individual ind1,
                                 ref const individual ind2) {
 
     individual newInd;
-    auto start = uniform(0, ind1.length);
-    auto end = uniform(0, ind1.length);
+    auto start = uniform(0, min(ind1.length, ind2.length));
+    auto end = uniform(start, min(ind1.length, ind2.length));
 
-    foreach(uint index; 0..min(ind1.length, ind2.length)) {
-        if (index < start || index > end) {
-            newInd ~= ind1[index];
-        }
-        else {
-            newInd ~= ind2[index];
-        }
-    }
+    newInd.length = min(ind1.length, ind2.length);
+    newInd[0..start] = ind1[0..start];
+    newInd[start..end] = ind2[start..end];
+    newInd[end..$] = ind1[end..$];
+    
     return newInd;
 }
 

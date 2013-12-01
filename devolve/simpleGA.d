@@ -50,8 +50,8 @@ struct SimpleGA(T, uint PopSize) if (PopSize > 0) {
 
             selector(population, fitness);
             
-            writeln("Top Score: " ~ to!string(fitness(population[0])) ~
-                    ", Individual: " ~ to!string(population[0]));
+            writeln("Top Score: ", fitness(population[0]),
+                    ", Individual: ", population[0]);
         }
     }
 

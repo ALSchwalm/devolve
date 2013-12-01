@@ -14,8 +14,7 @@ static this() {
         ['a', 'd']: 35u,
         ['b', 'c']: 30u,
         ['b', 'd']: 34u,
-        ['c', 'd']: 12u
-        ];
+        ['c', 'd']: 12u];
 }
 
 double fitness(ref const individual ind) {
