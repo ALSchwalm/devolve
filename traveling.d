@@ -2,7 +2,7 @@
 import devolve;
 import std.algorithm;
 import std.array;
-import std.stdio;
+
 alias individual = char[];
 
 const uint[const char[]] distances;
