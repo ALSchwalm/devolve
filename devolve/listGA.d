@@ -1,9 +1,7 @@
-module devolve.simpleGA;
+module devolve.listGA;
 import std.stdio;
 import std.random;
-import std.range;
 import std.algorithm;
-import std.math;
 import std.conv;
 
 struct SimpleGA(T, uint PopSize) if (PopSize > 0) {
@@ -29,6 +27,10 @@ struct SimpleGA(T, uint PopSize) if (PopSize > 0) {
         mutationRate = rate;
     }
 
+    void setStatFrequency(uint freq) {
+        statFrequency = freq;
+    }
+
     void evolve(uint generations){
         
         //Add initial population
@@ -49,10 +51,18 @@ struct SimpleGA(T, uint PopSize) if (PopSize > 0) {
             }
 
             selector(population, fitness);
-            
-            writeln("Top Score: ", fitness(population[0]),
-                    ", Individual: ", population[0]);
+
+            if (statFrequency && generation % statFrequency == 0) {
+                writeln("(gen ", generation, ") ",
+                        "Top Score: ", fitness(population[0]),
+                        ", Individual: ", population[0]);
+            }
+            best = population[0];
         }
+
+        writeln("(Historical best) Score: ", fitness(population[0]),
+                ", Individual: ", population[0]);
+        
     }
 
     immutable mutateFunc mutate;
@@ -62,6 +72,8 @@ struct SimpleGA(T, uint PopSize) if (PopSize > 0) {
     immutable generatorFunc generator;
 
     float mutationRate = 0.1f;
+    uint statFrequency = 0;
 
     T population[];
+    T best;
 }

@@ -34,7 +34,6 @@ individual singlePoint(individual)(ref const individual ind1,
  * WARNING: individuals sizes may grow rapidly with
  * this crossover method.
  */
-
 individual singlePointVariable(individual)(ref const individual ind1,
                                            ref const individual ind2) {
     individual newInd;

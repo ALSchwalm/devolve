@@ -1,11 +1,10 @@
 
 import devolve;
 import std.algorithm;
-import std.array;
 
 alias individual = char[];
 
-const uint[const char[]] distances;
+immutable uint[const char[]] distances;
 
 static this() {
     distances = [
@@ -14,7 +13,8 @@ static this() {
         ['a', 'd']: 35u,
         ['b', 'c']: 30u,
         ['b', 'd']: 34u,
-        ['c', 'd']: 12u];
+        ['c', 'd']: 12u
+        ];
 }
 
 double fitness(ref const individual ind) {
@@ -32,7 +32,7 @@ void main() {
     auto selector = &topPool!(individual, 2, "a < b");
     auto crossover = &randomCopy!individual;
     auto mutator = &randomSwap!individual;
-    auto generator = &preset!(individual, ['a', 'b', 'c', 'd']);
+    auto generator = &preset!(individual, ['c', 'b', 'a', 'd']);
 
     auto ga = SimpleGA!(individual, 10)(&fitness,
                                         mutator,
@@ -40,5 +40,6 @@ void main() {
                                         crossover,
                                         generator);
     ga.setMutationRate(0.1f);
-    ga.evolve(10);
+    ga.setStatFrequency(5);
+    ga.evolve(30);
 }
