@@ -1,6 +1,7 @@
 module devolve.crossover;
 import std.random;
 import std.algorithm;
+import std.traits;
 
 /*
  * Create a new individual by taking all of the elements
@@ -17,13 +18,20 @@ import std.algorithm;
  * result = 1111111222222
  */
 individual singlePoint(individual)(ref const individual ind1,
-                                   ref const individual ind2) {
+                                   ref const individual ind2)
+    if (isArray!individual) {
+        
     individual newInd;
-    auto val = uniform(0, min(ind1.length, ind2.length));
 
-    newInd.length = min(ind1.length, ind2.length);
+    static if (isStaticArray!individual) {
+        auto val = uniform(0, individual.length);
+    }
+    else {
+        newInd.length = min(ind1.length, ind2.length);
+        auto val = uniform(0, newInd.length);
+    }
     newInd[0..val] = ind1[0..val];
-    newInd[val..$] = ind2[val..$];
+    newInd[val..$] = ind2[val..newInd.length];
 
     return newInd;
 };
@@ -35,7 +43,9 @@ individual singlePoint(individual)(ref const individual ind1,
  * this crossover method.
  */
 individual singlePointVariable(individual)(ref const individual ind1,
-                                           ref const individual ind2) {
+                                           ref const individual ind2)
+    if (isDynamicArray!individual) {
+        
     individual newInd;
     auto val1 = uniform(0, ind1.length);
     auto val2 = uniform(0, ind2.length);
@@ -65,8 +75,9 @@ individual singlePointVariable(individual)(ref const individual ind1,
  * result =  1122222111111
  */
 individual twoPoint(individual)(ref const individual ind1,
-                                ref const individual ind2) {
-
+                                ref const individual ind2)
+    if (isArray!individual) {
+        
     individual newInd;
     auto start = uniform(0, min(ind1.length, ind2.length));
     auto end = uniform(start, min(ind1.length, ind2.length));
@@ -85,17 +96,22 @@ individual twoPoint(individual)(ref const individual ind1,
  * selected at random.
  */
 individual randomCopy(individual)(ref const individual ind1,
-                                  ref const individual ind2) {
+                                  ref const individual ind2)
+    if (isArray!individual) {
+        
     individual newInd;
 
     if (uniform(0, 2)) {
-        newInd.length = ind1.length;
+        static if (isDynamicArray!individual) {
+            newInd.length = ind1.length;
+        }
         newInd[] = ind1[];
     }
     else {
-        newInd.length = ind2.length;
+        static if (isDynamicArray!individual) {
+            newInd.length = ind2.length;
+        }
         newInd[] = ind2[];
     }
-    
     return newInd;
 }

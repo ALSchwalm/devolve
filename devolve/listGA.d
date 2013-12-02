@@ -3,8 +3,10 @@ import std.stdio;
 import std.random;
 import std.algorithm;
 import std.conv;
+import std.traits;
+import std.functional;
 
-struct SimpleGA(T, uint PopSize) if (PopSize > 0) {
+struct ListGA(T, uint PopSize) if (PopSize > 0 && isArray!T) {
     alias mutateFunc = void function(ref T);
     alias fitnessFunc = double function(ref const T);
     alias selectorFunc = void function(ref T[], fitnessFunc);
@@ -21,6 +23,7 @@ struct SimpleGA(T, uint PopSize) if (PopSize > 0) {
         selector=_selector;
         crossover=_crossover;
         generator=_generator;
+        compFun = function(double a, double b) {return a > b;};
     }
 
     void setMutationRate(float rate) {
@@ -29,6 +32,11 @@ struct SimpleGA(T, uint PopSize) if (PopSize > 0) {
 
     void setStatFrequency(uint freq) {
         statFrequency = freq;
+    }
+
+    void setStatCompare(alias comp = "a > b")() {
+        alias binaryFun!(comp) _compFun;
+        compFun = &_compFun!(double, double);
     }
 
     void evolve(uint generations){
@@ -43,7 +51,7 @@ struct SimpleGA(T, uint PopSize) if (PopSize > 0) {
             
             while(population.length < PopSize) {
                 population ~= crossover(population[uniform(0, population.length)],
-                                        population[uniform(0, population.length)]);
+                population[uniform(0, population.length)]);
             }
 
             foreach(uint i; 0..to!uint(PopSize*mutationRate)) {
@@ -57,12 +65,16 @@ struct SimpleGA(T, uint PopSize) if (PopSize > 0) {
                         "Top Score: ", fitness(population[0]),
                         ", Individual: ", population[0]);
             }
-            best = population[0];
+            if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
+                static if (isDynamicArray!T) {
+                    best.length = population[0].length;
+                }
+                best[] = population[0][];
+            }
         }
 
-        writeln("(Historical best) Score: ", fitness(population[0]),
-                ", Individual: ", population[0]);
-        
+        writeln("(Historical best) Score: ", fitness(best),
+                ", Individual: ", best);
     }
 
     immutable mutateFunc mutate;
@@ -70,6 +82,7 @@ struct SimpleGA(T, uint PopSize) if (PopSize > 0) {
     immutable selectorFunc selector;
     immutable crossoverFunc crossover;
     immutable generatorFunc generator;
+    bool function(double, double) compFun;
 
     float mutationRate = 0.1f;
     uint statFrequency = 0;
