@@ -2,17 +2,17 @@
 import devolve;
 import std.algorithm;
 
-immutable uint[const char[]] distances;
+immutable uint[char[2]] distances;
 
 static this() {
     //Distances between every city
     distances = [
-        ['a', 'b']: 20u,
-        ['a', 'c']: 42u,
-        ['a', 'd']: 35u,
-        ['b', 'c']: 30u,
-        ['b', 'd']: 34u,
-        ['c', 'd']: 12u
+        "ab": 20u,
+        "ac": 42u,
+        "ad": 35u,
+        "bc": 30u,
+        "bd": 34u,
+        "cd": 12u
         ];
 }
 
@@ -36,13 +36,14 @@ double fitness(ref const individual ind) {
 
 void main() {
 
-    //Select the top 2 individuals, order with lowest value first
+    //Select the top 2 individuals each generation
+    //order with lowest value first (shortest distance)
     auto selector = &top!(individual, 2, "a < b");
 
     //Just copy one of the parents.
     auto crossover = &randomCopy!individual;
 
-    //Swap the alleles as the mutation
+    //Swap the alleles (cities) as the mutation
     auto mutator = &randomSwap!individual;
 
     //The initial population will be copies of 'cbad'

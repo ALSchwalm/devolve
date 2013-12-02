@@ -12,8 +12,7 @@ import std.functional;
  */
 void topPool(individual, uint num, alias comp = "a > b")
     (ref individual[] population,
-     double function(ref const individual) fitness)
-    if (num > 0) {
+     double function(ref const individual) fitness) if (num > 0) {
 
     alias binaryFun!(comp) compFun;
     individual[num] result;
@@ -23,15 +22,18 @@ void topPool(individual, uint num, alias comp = "a > b")
         populationPools ~= population[ ($/num)*i..($/num)*i+$/num ];
     }
 
+    //Sort the pools in parallel
     foreach(i, ref individual[] pool; parallel(populationPools)) {
         sort!((a, b) => compFun(fitness(a),  fitness(b)))(pool);
         result[i] = pool[0];
     }
 
+    //Sort the resulting answers
+    sort!((a, b) => compFun(fitness(a),  fitness(b)))(result);
+    
     foreach(i, individual ind; result) {
         population[i] = ind;
     }
-
     population.length = num;
 }
 
@@ -42,8 +44,7 @@ void topPool(individual, uint num, alias comp = "a > b")
  */
 void top(individual, uint num, alias comp = "a > b")
     (ref individual[] population,
-     double function(ref const individual) fitness)
-    if (num > 0) {
+     double function(ref const individual) fitness) if (num > 0) {
     
     alias binaryFun!(comp) compFun;
     sort!((a, b) => compFun(fitness(a), fitness(b)))(population);
