@@ -2,6 +2,30 @@ module devolve.treeGA;
 import std.traits;
 import std.typetuple;
 
+struct Node(T) {
+    this(T t, string _name) {
+        val = t;
+        name = _name;
+    }
+    
+    T eval() {
+        return val;
+    }
+
+    T val;
+    uint children[ParameterTypeTuple!T.length];
+    string name;
+}
+
+struct Tree(T) {
+    this(Node!T _root){
+        root = _root;
+    }
+    T eval(){root.eval();}
+    
+    Node!T root;
+}
+
 struct TreeGA(T, uint PopSize) if (PopSize > 0) {
     alias mutateFunc = void function(ref T);
     alias fitnessFunc = double function(ref const T);
@@ -23,7 +47,7 @@ struct TreeGA(T, uint PopSize) if (PopSize > 0) {
 
     void addNode(A)(A node)
         if (is(ReturnType!A == T) &&
-            EraseAll!(T, ParameterTypeTuple!A).length == 0)
+            EraseAll!(T, staticMap!(Unqual, ParameterTypeTuple!A)).length == 0)
     {
         
     }
@@ -33,5 +57,7 @@ struct TreeGA(T, uint PopSize) if (PopSize > 0) {
     immutable selectorFunc selector;
     immutable crossoverFunc crossover;
     immutable generatorFunc generator;
+
+    Tree!T functionTree;
 }
 
