@@ -2,6 +2,18 @@ module devolve.treeGA;
 import std.traits;
 import std.typetuple;
 
+ReturnType!A unpackCall(A, B...)(A func,
+                                 BaseNode!(ReturnType!A)[ParameterTypeTuple!A.length] nodes,
+                                 B args) {
+
+    static if (args.length == nodes.length) {
+        return func(args);
+    }
+    else {
+        return unpackCall(func, nodes, args, nodes[args.length-1].eval());
+    }
+}
+
 class BaseNode(T) {
     this(string _name) {
         name = _name;
@@ -19,11 +31,11 @@ class Node(T) : BaseNode!(ReturnType!T) {
     }
     
     override ReturnType!T eval() {
-        return val();
+        return unpackCall!(typeof(val))(val, children);
     }
 
     T val; 
-    BaseNode children[ParameterTypeTuple!T.length];
+    BaseNode!(ReturnType!T) children[ParameterTypeTuple!T.length];
 }
 
 struct Tree(T) {
