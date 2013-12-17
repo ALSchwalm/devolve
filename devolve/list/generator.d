@@ -1,5 +1,5 @@
 
-module devolve.generator;
+module devolve.list.generator;
 import std.random;
 
 /*

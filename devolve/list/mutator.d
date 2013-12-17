@@ -1,4 +1,4 @@
-module devolve.mutator;
+module devolve.list.mutator;
 import std.random;
 import std.algorithm;
 

@@ -1,5 +1,10 @@
 
-import devolve;
+import devolve.listGA;
+import devolve.selector;
+import devolve.list.mutator;
+import devolve.list.generator;
+import devolve.list.crossover;
+
 import std.algorithm;
 
 immutable uint[char[2]] distances;
@@ -16,7 +21,7 @@ static this() {
         ];
 }
 
-//An individual is an array of these 'cities'
+//An individual is an ordering of these 'cities'
 alias individual = char[4];
 
 /* 
