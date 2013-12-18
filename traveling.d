@@ -41,25 +41,26 @@ double fitness(ref const individual ind) {
 
 void main() {
 
-    //Select the top 2 individuals each generation
-    //order with lowest value first (shortest distance)
-    auto selector = &top!(individual, 2, "a < b");
+    ListGA!(individual,
 
-    //Just copy one of the parents.
-    auto crossover = &randomCopy!individual;
+            //Mutation: Swap the alleles (cities)
+            randomSwap!individual,
 
-    //Swap the alleles (cities) as the mutation
-    auto mutator = &randomSwap!individual;
+            //Fitness: The above fitness function
+            fitness,
 
-    //The initial population will be copies of 'cbad'
-    auto generator = &preset!(individual, ['c', 'b', 'a', 'd']);
+            //Selector: Select the top 2 individuals each generation
+            //order with lowest value first (shortest distance)
+            top!(individual, 2, "a < b", fitness),
 
-    //Population of 10 individuals
-    auto ga = ListGA!(individual, 10)(&fitness,
-                                      mutator,
-                                      selector,
-                                      crossover,
-                                      generator);
+            //Crossover: Just copy one of the parents
+            randomCopy!individual,
+
+            //Generator: The initial population will be copies of 'cbad'
+            preset!(individual, ['c', 'b', 'a', 'd']),
+
+            //Population of 10 individuals
+            100000) ga;
 
     //Set a 10% mutation rate
     ga.setMutationRate(0.1f);

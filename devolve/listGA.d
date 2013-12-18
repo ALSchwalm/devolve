@@ -5,26 +5,30 @@ import std.algorithm;
 import std.conv;
 import std.traits;
 import std.functional;
+import std.typetuple;
 
-struct ListGA(T, uint PopSize) if (PopSize > 0 && isArray!T) {
-    alias mutateFunc = void function(ref T);
-    alias fitnessFunc = double function(ref const T);
-    alias selectorFunc = void function(ref T[], fitnessFunc);
-    alias crossoverFunc = T function(ref const T, ref const T);
-    alias generatorFunc = T function();
-
-    this(fitnessFunc _fitness,
-         mutateFunc _mutate,
-         selectorFunc _selector,
-         crossoverFunc _crossover,
-         generatorFunc _generator) {
-        mutate=_mutate;
-        fitness=_fitness;
-        selector=_selector;
-        crossover=_crossover;
-        generator=_generator;
-        compFun = function(double a, double b) {return a > b;};
-    }
+struct ListGA(T,
+              alias mutate,
+              alias fitness,
+              alias selector,
+              alias crossover,
+              alias generator,
+              uint PopSize)
+    if (PopSize > 0 && isArray!T &&
+        is(ReturnType!mutate == void) &&
+        is(ParameterTypeTuple!mutate == TypeTuple!(T))
+        &&
+        is(ReturnType!fitness == double) &&
+        is(ParameterTypeTuple!fitness == TypeTuple!(const T))
+        &&
+        is(ReturnType!selector == void) &&
+        is(ParameterTypeTuple!selector == TypeTuple!(T[]))
+        &&
+        is(ReturnType!crossover == T) &&
+        is(ParameterTypeTuple!crossover == TypeTuple!(const T, const T))
+        &&
+        is(ReturnType!generator == T))
+    {
 
     void setMutationRate(float rate) {
         mutationRate = rate;
@@ -58,7 +62,7 @@ struct ListGA(T, uint PopSize) if (PopSize > 0 && isArray!T) {
                 mutate(population[uniform(0, PopSize)]);
             }
 
-            selector(population, fitness);
+            selector(population);
 
             if (statFrequency && generation % statFrequency == 0) {
                 writeln("(gen ", generation, ") ",
@@ -74,14 +78,9 @@ struct ListGA(T, uint PopSize) if (PopSize > 0 && isArray!T) {
         }
 
         writeln("(Historical best) Score: ", fitness(best),
-                ", Individual: ", best);
+          ", Individual: ", best);
     }
 
-    immutable mutateFunc mutate;
-    immutable fitnessFunc fitness;
-    immutable selectorFunc selector;
-    immutable crossoverFunc crossover;
-    immutable generatorFunc generator;
     bool function(double, double) compFun;
 
     float mutationRate = 0.1f;

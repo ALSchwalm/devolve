@@ -2,6 +2,7 @@ module devolve.selector;
 import std.algorithm;
 import std.parallelism;
 import std.functional;
+import std.range;
 
 /*
  * Select 'num' individuals from the population by dividing it into
@@ -10,30 +11,13 @@ import std.functional;
  * The direction of the sort may be set with comp, default is
  * highest fitness first.
  */
-void topPool(individual, uint num, alias comp = "a > b")
-    (ref individual[] population,
-     double function(ref const individual) fitness) if (num > 0) {
+void topPar(individual, uint num, alias comp = "a > b", alias fitness)
+    (ref individual[] population) if (num > 0) {
 
     alias binaryFun!(comp) compFun;
-    individual[num] result;
-    individual[][] populationPools;
 
-    foreach(uint i; 0..num) {
-        populationPools ~= population[ ($/num)*i..($/num)*i+$/num ];
-    }
-
-    //Sort the pools in parallel
-    foreach(i, ref individual[] pool; parallel(populationPools)) {
-        sort!((a, b) => compFun(fitness(a),  fitness(b)))(pool);
-        result[i] = pool[0];
-    }
-
-    //Sort the resulting answers
-    sort!((a, b) => compFun(fitness(a),  fitness(b)))(result);
-    
-    foreach(i, individual ind; result) {
-        population[i] = ind;
-    }
+    auto fitnessVals = taskPool.amap!fitness(population);
+    sort!((a, b) => compFun(a[0], b[0]))(zip(fitnessVals, population));
     population.length = num;
 }
 
@@ -42,9 +26,8 @@ void topPool(individual, uint num, alias comp = "a > b")
  * most fit members are selected. The direction of the sort may
  * be set with comp, default is highest fitness first.
  */
-void top(individual, uint num, alias comp = "a > b")
-    (ref individual[] population,
-     double function(ref const individual) fitness) if (num > 0) {
+void top(individual, uint num, alias comp = "a > b", alias fitness)
+    (ref individual[] population) if (num > 0) {
     
     alias binaryFun!(comp) compFun;
     sort!((a, b) => compFun(fitness(a), fitness(b)))(population);
