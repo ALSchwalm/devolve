@@ -11,7 +11,7 @@ import std.range;
  * The direction of the sort may be set with comp, default is
  * highest fitness first.
  */
-void topPar(individual, uint num, alias comp = "a > b", alias fitness)
+void topPar(individual, uint num, alias fitness, alias comp = "a > b")
     (ref individual[] population) if (num > 0) {
 
     alias binaryFun!(comp) compFun;

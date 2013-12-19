@@ -87,7 +87,7 @@ struct ListGA(T,
             }
         }
 
-        writeln("(Historical best) Score: ", fitness(best),
+        writeln("\n(Historical best) Score: ", fitness(best),
           ", Individual: ", best);
     }
 

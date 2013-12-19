@@ -23,5 +23,5 @@ void randomBranch(T)(ref BaseNode!T ind, ref TreeGenerator!T gen) {
     if (!current.getNumChildren()) {return;}
     
     uint choice = uniform(0, current.getNumChildren());
-    current.setChild(gen.getRandomTree(current.getHeight()), choice);
+    current.setChild(gen.getRandomTree(current.getHeight()-1), choice);
 }

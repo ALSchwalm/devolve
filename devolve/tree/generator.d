@@ -3,6 +3,7 @@ module devolve.tree.generator;
 import std.traits;
 import std.typetuple;
 import std.random;
+import std.conv;
 
 ReturnType!A unpackCall(A, B...)(A func,
                                  BaseNode!(ReturnType!A)[ParameterTypeTuple!A.length] nodes,
@@ -28,7 +29,7 @@ class BaseNode(T) {
     abstract void setChild(BaseNode!T, uint);
     abstract void setChildren(BaseNode!T[]);
     abstract uint getHeight() const;
-    abstract BaseNode!T clone() const;
+    abstract BaseNode!T clone(bool = false) const;
     string name;
 }
 
@@ -70,9 +71,13 @@ class Node(T) : BaseNode!(ReturnType!T) {
         children[] = nodes[];
     }
 
-    override BaseType clone() const {
+    override BaseType clone(bool newCopy) const {
         auto newNode = new Node!T(val, name);
-        newNode.children[] = cast(BaseType[])children[];
+        if (!newCopy) {
+            foreach(uint i; 0..children.length) {
+                newNode.children[i] = children[i].clone();
+            }
+        }
         return newNode;
     }
 
@@ -122,8 +127,13 @@ struct TreeGenerator(T) {
         }
     }
 
+    void registerRandomConstant(A)(A lower, A upper) {
+        T randConst() {return uniform(lower, upper);};
+        randomConstants ~= &randConst;
+    }
+
     BaseNode!T getRandomTree(uint depth) {
-        if (depth == 0) {
+        if (depth == 1) {
             return getRandomTerminator();
         }
 
@@ -140,13 +150,22 @@ struct TreeGenerator(T) {
     }
 
     BaseNode!T getRandomNode() {
-        return nodes[uniform(0, nodes.length)].clone();
+        return nodes[uniform(0, nodes.length)].clone(true);
     }
 
     BaseNode!T getRandomTerminator() {
-        return terminators[uniform(0, terminators.length)].clone(); 
+        if (randomConstants.length > 0 && uniform(0.0, 1.0) > 0.5) {
+            auto func = randomConstants[uniform(0, randomConstants.length)];
+            auto val = func();
+            T wrapp() {return val;};
+            return new Node!(typeof(&wrapp))(&wrapp, to!string(val));
+        }
+        else {
+            return terminators[uniform(0, terminators.length)].clone();
+        }
     }
 
     const(BaseNode!T)[] nodes;
+    const(T delegate())[] randomConstants;
     const(BaseNode!T)[] terminators;
 }
