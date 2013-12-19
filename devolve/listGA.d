@@ -1,4 +1,8 @@
 module devolve.listGA;
+import devolve.list.crossover;
+import devolve.list.mutator;
+import devolve.selector;
+
 import std.stdio;
 import std.random;
 import std.algorithm;
@@ -8,15 +12,16 @@ import std.functional;
 import std.typetuple;
 
 struct ListGA(T,
-              alias mutate,
+              uint PopSize,
               alias fitness,
-              alias selector,
-              alias crossover,
               alias generator,
-              uint PopSize)
+              alias selector = top!(T, 2, fitness),
+              alias crossover = singlePoint!T,
+              alias mutator = randomSwap!T,
+              alias comp = "a > b")
     if (PopSize > 0 && isArray!T &&
-        is(ReturnType!mutate == void) &&
-        is(ParameterTypeTuple!mutate == TypeTuple!(T))
+        is(ReturnType!mutator == void) &&
+        is(ParameterTypeTuple!mutator == TypeTuple!(T))
         &&
         is(ReturnType!fitness == double) &&
         is(ParameterTypeTuple!fitness == TypeTuple!(const T))
@@ -30,6 +35,11 @@ struct ListGA(T,
         is(ReturnType!generator == T))
     {
 
+    this(float mutRate, uint statFreq) {
+        mutationRate = mutRate;
+        statFrequency = statFreq;
+    }
+
     void setMutationRate(float rate) {
         mutationRate = rate;
     }
@@ -38,9 +48,9 @@ struct ListGA(T,
         statFrequency = freq;
     }
 
-    void setStatCompare(alias comp = "a > b")() {
-        alias binaryFun!(comp) _compFun;
-        compFun = &_compFun!(double, double);
+    void setStatCompare(alias comp)() {
+        alias binaryFun!(comp) _newComp;
+        compFun = &_newComp!(double, double);
     }
 
     void evolve(uint generations){
@@ -81,7 +91,8 @@ struct ListGA(T,
           ", Individual: ", best);
     }
 
-    bool function(double, double) compFun;
+    alias binaryFun!(comp) _compFun;
+    bool function(double, double) compFun = &_compFun!(double, double);
 
     float mutationRate = 0.1f;
     uint statFrequency = 0;

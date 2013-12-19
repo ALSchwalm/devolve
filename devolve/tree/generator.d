@@ -22,12 +22,13 @@ class BaseNode(T) {
     }
 
     abstract T eval();
-    abstract uint getNumChildren();
+    abstract uint getNumChildren() const;
     abstract ref BaseNode!T getChild(uint);
+    abstract ref const(BaseNode!T) getChild(uint) const;
     abstract void setChild(BaseNode!T, uint);
     abstract void setChildren(BaseNode!T[]);
-    abstract uint getHeight();
-    abstract BaseNode!T clone();
+    abstract uint getHeight() const;
+    abstract BaseNode!T clone() const;
     string name;
 }
 
@@ -49,7 +50,7 @@ class Node(T) : BaseNode!(ReturnType!T) {
         }
     }
 
-    override uint getNumChildren() {
+    override uint getNumChildren() const {
         return ParameterTypeTuple!T.length;
     }
 
@@ -61,26 +62,23 @@ class Node(T) : BaseNode!(ReturnType!T) {
         return children[index];
     }
 
+    override ref const(BaseType) getChild(uint index) const {
+        return children[index];
+    }
+
     override void setChildren(BaseType[] nodes) {
         children[] = nodes[];
     }
 
-    override BaseType clone() {
-        static if (ParameterTypeTuple!T.length > 0) {
-            auto newNode = new Node!T(val, name);
-            for(uint i=0; i < children.length; ++i) {
-                newNode.children[i] = children[i];
-            }
-            return newNode;
-        }
-        else {
-            return this;
-        }
+    override BaseType clone() const {
+        auto newNode = new Node!T(val, name);
+        newNode.children[] = cast(BaseType[])children[];
+        return newNode;
     }
 
-    override uint getHeight() {
+    override uint getHeight() const {
         uint max = 0;
-        foreach(ref BaseType node; children) {
+        foreach(const ref BaseType node; children) {
             if (node.getHeight() > max) {
                 max = node.getHeight();
             }
@@ -107,16 +105,20 @@ class Node(T) : BaseNode!(ReturnType!T) {
 }
 
 struct TreeGenerator(T) {
+
+    BaseNode!T opCall(uint height) {
+        return getRandomTree(height);
+    }
     
-    void register(A)(A node, string name)
+    void register(A)(A func, string name)
         if (is(ReturnType!A == T) &&
             EraseAll!(T, staticMap!(Unqual, ParameterTypeTuple!A)).length == 0)
     {
         static if (ParameterTypeTuple!A.length > 0) {
-            nodes ~= new Node!A(node, name);
+            nodes ~= new Node!A(func, name);
         }
         else {
-            terminators ~= new Node!A(node, name);
+            terminators ~= new Node!A(func, name);
         }
     }
 
@@ -145,6 +147,6 @@ struct TreeGenerator(T) {
         return terminators[uniform(0, terminators.length)].clone(); 
     }
 
-    BaseNode!T[] nodes;
-    BaseNode!T[] terminators;
+    const(BaseNode!T)[] nodes;
+    const(BaseNode!T)[] terminators;
 }

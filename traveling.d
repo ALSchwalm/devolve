@@ -41,35 +41,33 @@ double fitness(ref const individual ind) {
 
 void main() {
 
-    ListGA!(individual,
-
-            //Mutation: Swap the alleles (cities)
-            randomSwap!individual,
-
+    ListGA!(//Population of 10 individuals
+            individual, 10,
+            
             //Fitness: The above fitness function
             fitness,
-
+            
+            //Generator: The initial population will be copies of 'cbad'
+            preset!(individual, ['c', 'b', 'a', 'd']),
+            
             //Selector: Select the top 2 individuals each generation
             //order with lowest value first (shortest distance)
-            top!(individual, 2, "a < b", fitness),
+            top!(individual, 2, fitness, "a < b"),
 
             //Crossover: Just copy one of the parents
             randomCopy!individual,
 
-            //Generator: The initial population will be copies of 'cbad'
-            preset!(individual, ['c', 'b', 'a', 'd']),
+            //Mutation: Swap the alleles (cities)
+            randomSwap!individual,
 
-            //Population of 10 individuals
-            100000) ga;
+            //Statistics must also know to record the historically lowest value
+            "a < b") ga;
 
     //Set a 10% mutation rate
     ga.setMutationRate(0.1f);
 
     //Print statistics every 5 generations
     ga.setStatFrequency(5);
-
-    //Statistics must also know to record the historically lowest value
-    ga.setStatCompare!("a < b");
 
     // Run for 30 generations. Converges rapidly on abcd or dcba
     ga.evolve(30);

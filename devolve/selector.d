@@ -26,7 +26,7 @@ void topPar(individual, uint num, alias comp = "a > b", alias fitness)
  * most fit members are selected. The direction of the sort may
  * be set with comp, default is highest fitness first.
  */
-void top(individual, uint num, alias comp = "a > b", alias fitness)
+void top(individual, uint num, alias fitness, alias comp = "a > b")
     (ref individual[] population) if (num > 0) {
     
     alias binaryFun!(comp) compFun;
