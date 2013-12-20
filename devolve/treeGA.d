@@ -58,11 +58,10 @@ struct TreeGA(T,
                 if (statFrequency && generation % statFrequency == 0) {
                     writeln("(gen ", generation, ") ",
                             "Top Score: ", fitness(population[0]),
-                            ", Individual: ", population[0],
-                            ", Height: ", population[0].getHeight());
+                            ", Individual: ", population[0]);
                 }
                 if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
-                    best = population[0];
+                    best = population[0].clone();
                 }
             }
 
