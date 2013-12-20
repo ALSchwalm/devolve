@@ -27,15 +27,31 @@ struct TreeGA(T,
             generator = g;
         }
         
-        void setMutationRate(float rate) {
-            mutationRate = rate;
+        @property float mutationRate(float rate) {
+            return m_mutationRate = rate;
         }
 
-        void setStatFrequency(uint freq) {
-            statFrequency = freq;
+        @property float mutationRate() {
+            return m_mutationRate;
         }
 
-        void evolve(uint generations) {
+        @property uint statFrequency(uint freq) {
+            return m_statFrequency = freq;
+        }
+
+        @property uint statFrequency() {
+            return m_statFrequency;
+        }
+
+        @property double terminationValue(double termination) {
+            return m_termination = termination;
+        }
+
+        @property double terminationValue() {
+            return m_termination;
+        }
+        
+        BaseNode!T evolve(uint generations) {
             
             foreach(uint i; 0..PopSize) {
                 population ~= generator(depth);
@@ -62,20 +78,28 @@ struct TreeGA(T,
                 }
                 if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
                     best = population[0].clone();
+
+                    if (m_termination != double.nan && compFun(fitness(best), m_termination)) {
+                        writeln("\n(Termination criteria met) Score: ", fitness(best),
+                                ", Individual: ", best);
+                        return best;
+                    }
                 }
             }
 
             writeln("\n(Historical best) Score: ", fitness(best),
                     ", Individual: ", best);
+            return best;
 
         }
 
 
         alias binaryFun!(comp) _compFun;
         bool function(double, double) compFun = &_compFun!(double, double);
+        double m_termination = double.nan;
 
-        float mutationRate = 0.1f;
-        uint statFrequency = 0;
+        float m_mutationRate = 0.1f;
+        uint m_statFrequency = 0;
 
         TreeGenerator!T generator;
         BaseNode!T population[];

@@ -27,7 +27,7 @@ void main() {
     TreeGenerator!int gen;
 
     //Register simple functions
-    gen.register(function(){return 2;} , "2");
+    gen.register(function(int i) {return -i;}, "negative");
     gen.register(function(int i) {return i*i;}, "square");
     gen.register(function(int i, int j) {return i+j;}, "sum");
     gen.register(function(int i, int j) {if (i < j) return i; else return j;}, "min");
@@ -66,10 +66,16 @@ void main() {
                           //Mutator: Replace a random node with a new random subtree
                           randomBranch!int)(gen);
 
-    ga.setMutationRate(0.2);
+    //Set a 15% mutation rate
+    ga.mutationRate = 0.15;
     
-    //Print statistics every 50 generations
-    ga.setStatFrequency(500);
-    
+    //Print statistics every 500 generations
+    ga.statFrequency = 500;
+
+    /*
+     * Grow for 40000 generations. Takes approximately 10 seconds on quad core 
+     * laptop to generate function with 80% fitness. That is, a funtion which
+     * will match 8 of the 10 first primes given consecutive integer input.
+     */
     ga.evolve(40000);
 }
