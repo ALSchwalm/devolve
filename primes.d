@@ -10,13 +10,16 @@ immutable auto primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
 
 int x;
 
-//Fitness: For how many numbers 0..primes.length is individual(num) = primes[num]
-double fitness(ref BaseNode!int individual) {
+//Fitness: How many consecutive primes are generated for consecutive integer input
+double fitness(ref BaseNode!int algorithm) {
     uint total = 0;
     foreach(uint i, uint prime; primes) {
-        x = i;
-        if (individual.eval() == prime) {
+        x = i+1;
+        if (algorithm.eval() == prime) {
             total += 1;
+        }
+        else {
+            break;
         }
     }
     return total;
@@ -50,7 +53,7 @@ void main() {
                           10,
 
                           //Maximum depth of tree
-                          5,
+                          6,
 
                           //Fitness: the above fitness function
                           fitness,
@@ -70,16 +73,16 @@ void main() {
                           //Mutator: Replace a random node with a new random subtree
                           randomBranch!int)(gen);
 
-    //Set a 15% mutation rate
-    ga.mutationRate = 0.15;
+    //Set a 20% mutation rate
+    ga.mutationRate = 0.20;
     
     //Print statistics every 500 generations
     ga.statFrequency = 500;
 
     /*
-     * Grow for 40000 generations. Takes approximately 10 seconds on quad core 
-     * laptop to generate function with 80% fitness. That is, a funtion which
-     * will match 8 of the 10 first primes given consecutive integer input.
+     * Grow for 80000 generations. Takes approximately 45 seconds on quad core 
+     * laptop to generate function with 60% fitness. That is, a funtion which
+     * will yeild the first 6 primes on consecutive integer input
      */
-    ga.evolve(40000);
+    ga.evolve(80000);
 }
