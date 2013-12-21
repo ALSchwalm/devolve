@@ -1,3 +1,4 @@
+#!/usr/bin/env rdmd
 
 import devolve.treeGA;
 import devolve.selector;
@@ -35,10 +36,13 @@ void main() {
     gen.register(function(int i, int j, int k, int l) {if (i > j) return k; else return j;}, "if >");
     gen.register(function(int i, int j) {return i-j;}, "difference");
     gen.register(function(int i, int j){return i*j;} , "product");
-    gen.register(function(){return x;}, "x");
+
+    //Register an input value. This is effectivly a shorthand for
+    //  'gen.register(function(){return x;}, "x");'
+    gen.registerInput!x;
 
     //Register a range of random constants which may appear in the generated algorithm
-    gen.registerRandomConstant(0, 10);
+    gen.registerConstantRange(0, 10);
 
     auto ga = new TreeGA!(int,
 
