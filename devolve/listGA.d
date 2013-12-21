@@ -69,7 +69,7 @@ struct ListGA(T,
             }
 
             foreach(uint i; 0..to!uint(PopSize*mutationRate)) {
-                mutate(population[uniform(0, PopSize)]);
+                mutator(population[uniform(0, PopSize)]);
             }
 
             selector(population);
@@ -88,7 +88,7 @@ struct ListGA(T,
         }
 
         writeln("\n(Historical best) Score: ", fitness(best),
-          ", Individual: ", best);
+                ", Individual: ", best);
     }
 
     alias binaryFun!(comp) _compFun;

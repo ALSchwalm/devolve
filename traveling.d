@@ -1,3 +1,4 @@
+#!/usr/bin/env rdmd
 
 import devolve.listGA;
 import devolve.selector;
