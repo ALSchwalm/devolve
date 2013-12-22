@@ -9,6 +9,7 @@ import std.traits;
 import std.conv;
 import std.functional;
 import std.stdio;
+import std.file;
 
 struct TreeGA(T,
               uint PopSize,
@@ -22,9 +23,19 @@ struct TreeGA(T,
         is(ReturnType!mutator == void) &&
         is(ParameterTypeTuple!mutator == TypeTuple!(BaseNode!T, TreeGenerator!T)))
     {
-    
+
+        @disable this();
+        
         this(TreeGenerator!T g) {
             generator = g;
+        }
+
+        @property bool autoGenerateGraph(bool generate) {
+            return m_generateGraph = generate;
+        }
+
+        @property bool autoGenerateGraph() {
+            return m_generateGraph;
         }
         
         @property float mutationRate(float rate) {
@@ -50,6 +61,30 @@ struct TreeGA(T,
         @property double terminationValue() {
             return m_termination;
         }
+
+        void generateGraph(BaseNode!T node, string name="output.dot", string description="") {
+
+            string file = "digraph G{ graph [ordering=\"out\"];\n";
+            file ~= "node0 [ label = \"" ~ node.name ~ "\"];\n";
+            uint currentNodeNumber = 0;
+            file ~= graphSubTree(node, currentNodeNumber);
+            
+            file ~= "labelloc=\"t\"; label=\"" ~ description ~ "\"};";
+            std.file.write(name, file);
+        }
+
+        private string graphSubTree(BaseNode!T node, ref uint num) {
+            string output = "";
+            uint parent = num;
+            foreach(uint i; 0..node.getNumChildren()) {
+                num += 1;
+                auto childNode = node.getChild(i);
+                output ~= "node" ~ to!string(num) ~ " [ label = \"" ~ childNode.name ~ "\"];\n";
+                output ~= "node" ~ to!string(parent) ~ " -> node" ~ to!string(num) ~ ";\n";
+                output ~= graphSubTree(childNode, num);
+            }
+            return output;
+        }
         
         BaseNode!T evolve(uint generations) {
             
@@ -59,10 +94,10 @@ struct TreeGA(T,
             
             //Perform evolution
             foreach(uint generation; 0..generations) {
-            
+                auto selectedSize = population.length;
                 while(population.length < PopSize) {
-                    population ~= crossover(population[uniform(0, population.length)],
-                                            population[uniform(0, population.length)]);
+                    population ~= crossover(population[uniform(0, selectedSize)],
+                                            population[uniform(0, selectedSize)]);
                 }
 
                 foreach(uint i; 0..to!uint(PopSize*mutationRate)) {
@@ -89,6 +124,13 @@ struct TreeGA(T,
 
             writeln("\n(Historical best) Score: ", fitness(best),
                     ", Individual: ", best);
+
+            if (m_generateGraph) {
+                string description = "Fitness = " ~ to!string(fitness(best)) ~
+                    " / Over " ~ to!string(generations) ~ " generations";
+                generateGraph(best, "best.dot", description);
+            }
+            
             return best;
 
         }
@@ -100,6 +142,7 @@ struct TreeGA(T,
 
         float m_mutationRate = 0.1f;
         uint m_statFrequency = 0;
+        bool m_generateGraph = false;
 
         TreeGenerator!T generator;
         BaseNode!T population[];

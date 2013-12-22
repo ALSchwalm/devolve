@@ -50,10 +50,10 @@ void main() {
     auto ga = new TreeGA!(int,
 
                           //Population size
-                          10,
+                          50,
 
                           //Maximum depth of tree
-                          6,
+                          5,
 
                           //Fitness: the above fitness function
                           fitness,
@@ -62,7 +62,7 @@ void main() {
                            * Selector: Select the top 2 members by evalutating each
                            * member in parallel.
                            */
-                          topPar!(BaseNode!int, 2, fitness),
+                          topPar!(BaseNode!int, 10, fitness),
 
                           /*
                            * Crossover: Copy one of the parents, and replace a random 
@@ -79,10 +79,13 @@ void main() {
     //Print statistics every 500 generations
     ga.statFrequency = 500;
 
+    //Automatically output a graphviz 'dot' file to 'best.dot' upon termination
+    ga.autoGenerateGraph = true;
+    
     /*
-     * Grow for 80000 generations. Takes approximately 45 seconds on quad core 
+     * Grow for 20000 generations. Takes approximately 45 seconds on quad core 
      * laptop to generate function with 60% fitness. That is, a funtion which
      * will yeild the first 6 primes on consecutive integer input
      */
-    ga.evolve(80000);
+    ga.evolve(20000);
 }
