@@ -15,17 +15,17 @@ void randomBranch(T)(ref BaseNode!T ind, ref TreeGenerator!T gen) {
         if (!current.getNumChildren()) {
             break;
         }
-        
+
         uint choice = uniform(0, current.getNumChildren());
         current = &current.getChild(choice);
     }
-    
+
     if (!current.getNumChildren()) {
         auto newTerm = gen.getRandomTerminator();
         current = &newTerm;
         return;
     }
-    
+
     uint choice = uniform(0, current.getNumChildren());
     current.setChild(gen.getRandomTree(current.getHeight()-1), choice);
 }

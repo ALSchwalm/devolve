@@ -170,7 +170,11 @@ struct TreeGenerator(T) {
     }
 
     BaseNode!T getRandomTerminator() {
-        if (randomConstants.length > 0 && uniform(0.0, 1.0) > 0.5) {
+        assert(randomConstants.length > 0 || terminators.length > 0,
+               "Generator has no registered terminators");
+        
+        if ((randomConstants.length > 0 && uniform(0.0, 1.0) > 0.5) ||
+            terminators.length == 0) {
             auto func = randomConstants[uniform(0, randomConstants.length)];
             auto val = func();
             T wrapp() {return val;};
