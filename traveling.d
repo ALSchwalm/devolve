@@ -42,7 +42,9 @@ double fitness(ref const individual ind) {
 
 void main() {
 
-    ListGA!(//Population of 10 individuals
+    auto ga = new ListGA!(
+        
+            //Population of 10 individuals
             individual, 10,
             
             //Fitness: The above fitness function
@@ -62,13 +64,13 @@ void main() {
             randomSwap!individual,
 
             //Statistics must also know to record the historically lowest value
-            "a < b") ga;
+            "a < b");
 
     //Set a 10% mutation rate
-    ga.setMutationRate(0.1f);
+    ga.mutationRate = 0.1f;
 
     //Print statistics every 5 generations
-    ga.setStatFrequency(5);
+    ga.statFrequency = 5;
 
     // Run for 30 generations. Converges rapidly on abcd or dcba
     ga.evolve(30);

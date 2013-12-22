@@ -1,4 +1,5 @@
 module devolve.treeGA;
+import devolve.baseGA;
 import devolve.tree.generator;
 import devolve.tree.crossover;
 import devolve.tree.mutator;
@@ -7,25 +8,22 @@ import std.random;
 import std.typetuple;
 import std.traits;
 import std.conv;
-import std.functional;
 import std.stdio;
 import std.file;
 
-struct TreeGA(T,
-              uint PopSize,
-              uint depth,
-              alias fitness,
-              alias selector = top!(BaseNode!T, 2, fitness),
-              alias crossover = singlePoint!T,
-              alias mutator = randomBranch!T,
-              alias comp = "a > b")
+class TreeGA(T,
+             uint PopSize,
+             uint depth,
+             alias fitness,
+             alias selector = top!(BaseNode!T, 2, fitness),
+             alias crossover = singlePoint!T,
+             alias mutator = randomBranch!T,
+             alias comp = "a > b") : BaseGA!(BaseNode!T, PopSize, comp)
     if (PopSize > 0 &&
         is(ReturnType!mutator == void) &&
         is(ParameterTypeTuple!mutator == TypeTuple!(BaseNode!T, TreeGenerator!T)))
     {
 
-        @disable this();
-        
         this(TreeGenerator!T g) {
             generator = g;
         }
@@ -36,30 +34,6 @@ struct TreeGA(T,
 
         @property bool autoGenerateGraph() {
             return m_generateGraph;
-        }
-        
-        @property float mutationRate(float rate) {
-            return m_mutationRate = rate;
-        }
-
-        @property float mutationRate() {
-            return m_mutationRate;
-        }
-
-        @property uint statFrequency(uint freq) {
-            return m_statFrequency = freq;
-        }
-
-        @property uint statFrequency() {
-            return m_statFrequency;
-        }
-
-        @property double terminationValue(double termination) {
-            return m_termination = termination;
-        }
-
-        @property double terminationValue() {
-            return m_termination;
         }
 
         void generateGraph(BaseNode!T node, string name="output.dot", string description="") {
@@ -135,16 +109,7 @@ struct TreeGA(T,
 
         }
 
-
-        alias binaryFun!(comp) _compFun;
-        bool function(double, double) compFun = &_compFun!(double, double);
-        double m_termination = double.nan;
-
-        float m_mutationRate = 0.1f;
-        uint m_statFrequency = 0;
         bool m_generateGraph = false;
 
         TreeGenerator!T generator;
-        BaseNode!T population[];
-        BaseNode!T best;
 }
