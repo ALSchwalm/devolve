@@ -3,6 +3,10 @@ import std.algorithm;
 import std.parallelism;
 import std.functional;
 import std.range;
+import std.random;
+import std.traits;
+import std.math;
+import std.stdio;
 
 /*
  * Select 'num' individuals from the population by dividing it into
@@ -32,4 +36,48 @@ void top(individual, uint num, alias fitness, alias comp = "a > b")
     alias binaryFun!(comp) compFun;
     sort!((a, b) => compFun(fitness(a), fitness(b)))(population);
     population.length = num;
+}
+
+void tournament(individual, uint numberOfTournaments, uint tournamentSize, double probability, alias fitness, alias comp = "a > b")
+    (ref individual[] population) if (numberOfTournaments > 0 &&
+                                      tournamentSize > 0 &&
+                                      probability > 0 &&
+                                      probability <= 1.0) {
+
+    alias binaryFun!(comp) compFun;
+    individual winners[numberOfTournaments];
+
+    foreach(uint i; parallel(iota(numberOfTournaments))) {
+        
+        individual tournamentPool[tournamentSize];
+        foreach(uint j; 0..tournamentSize) {
+            static if (hasMember!(individual, "clone")) {
+                tournamentPool[j] = population[uniform(0, population.length)].clone();
+            }
+            else {
+                tournamentPool[j] = population[uniform(0, population.length)];
+            }
+        }
+
+        auto choice = uniform(0.0f, 1.0f);
+        bool found = false;
+        sort!((a, b) => compFun(fitness(a), fitness(b)))(tournamentPool[]);
+
+        foreach(uint j; 0..tournamentSize) {
+            if (choice < probability * pow(1-probability, j)) {
+                winners[i] = tournamentPool[j];
+                found = true;
+                break;
+            }
+            choice -= probability * pow(1-probability, j);
+        }
+
+        //In the unlikely event that the choice was not in the range of any
+        //individual, select the most fit
+        if (!found) {
+            winners[i] = tournamentPool[0];
+        }
+    }
+    population.length = numberOfTournaments;
+    population[] = winners[];
 }
