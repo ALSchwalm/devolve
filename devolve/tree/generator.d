@@ -5,6 +5,7 @@ import std.typetuple;
 import std.random;
 import std.conv;
 import std.string;
+import std.stdio; //TODO remove this
 
 ReturnType!A unpackCall(A, B...)(A func,
                                  BaseNode!(ReturnType!A)[ParameterTypeTuple!A.length] nodes,
@@ -42,7 +43,7 @@ class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
         super(_name);
         val = t;
     }
-
+    
     override ReturnType!T eval() {
         static if (ParameterTypeTuple!T.length > 0) {
             return unpackCall!(typeof(val))(val, children);
@@ -134,7 +135,7 @@ struct TreeGenerator(T) {
     }
 
     void registerConstantRange(A)(A lower, A upper) {
-        T randConst() {return uniform(lower, upper);};
+        T randConst() {return uniform(lower, upper);}
         randomConstants ~= &randConst;
     }
 
@@ -142,8 +143,8 @@ struct TreeGenerator(T) {
         typeof(input) inputValue() {
             return input;
         }
-        auto fullName = fullyQualifiedName!input;
-        auto name = fullName[lastIndexOf(fullName, '.')+1..$];
+
+        auto name = input.stringof;
         terminators ~= new Node!(typeof(&inputValue), true)
             (&inputValue, name);
     }
@@ -177,7 +178,7 @@ struct TreeGenerator(T) {
             terminators.length == 0) {
             auto func = randomConstants[uniform(0, randomConstants.length)];
             auto val = func();
-            T wrapp() {return val;};
+            T wrapp() {return val;}
             return new Node!(typeof(&wrapp), true)(&wrapp, to!string(val));
         }
         else {

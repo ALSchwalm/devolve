@@ -60,7 +60,7 @@ class TreeGA(T,
             return output;
         }
         
-        BaseNode!T evolve(uint generations) {
+        override BaseNode!T evolve(uint generations) {
             
             foreach(uint i; 0..PopSize) {
                 population ~= generator(depth);
@@ -109,6 +109,7 @@ class TreeGA(T,
 
         }
 
+    private:
         bool m_generateGraph = false;
 
         TreeGenerator!T generator;

@@ -4,6 +4,7 @@ import std.functional;
 
 class BaseGA(T, uint PopSize, alias comp) {
 
+    abstract T evolve(uint);
                 
     @property float mutationRate(float rate) {
         return m_mutationRate = rate;
@@ -29,13 +30,15 @@ class BaseGA(T, uint PopSize, alias comp) {
         return m_termination;
     }
 
-    
+    T population[];
+    T best;
+
+protected:
     alias binaryFun!(comp) _compFun;
     bool function(double, double) compFun = &_compFun!(double, double);
     double m_termination = double.nan;
 
     float m_mutationRate = 0.1f;
     uint m_statFrequency = 0;
-    T population[];
-    T best;
+    
 }

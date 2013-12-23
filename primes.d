@@ -50,7 +50,7 @@ void main() {
     auto ga = new TreeGA!(int,
 
                           //Population size
-                          50,
+                          70,
 
                           //Maximum depth of tree
                           5,
@@ -59,7 +59,7 @@ void main() {
                           fitness,
 
                           /*
-                           * Selector: Select the top 2 members by evalutating each
+                           * Selector: Select the top 10 members by evalutating each
                            * member in parallel.
                            */
                           topPar!(BaseNode!int, 10, fitness),

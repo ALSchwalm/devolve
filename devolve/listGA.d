@@ -41,7 +41,7 @@ class ListGA(T,
             m_statFrequency = statFreq;
         }
 
-        T evolve(uint generations){
+        override T evolve(uint generations){
 
             //Add initial population
             foreach(uint i; 0..PopSize) {
