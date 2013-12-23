@@ -11,6 +11,8 @@ import std.conv;
 import std.stdio;
 import std.file;
 
+alias Tree = BaseNode;
+
 class TreeGA(T,
              uint PopSize,
              uint depth,

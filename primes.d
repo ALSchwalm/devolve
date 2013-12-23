@@ -11,7 +11,7 @@ immutable auto primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
 int x;
 
 //Fitness: How many consecutive primes are generated for consecutive integer input
-double fitness(ref BaseNode!int algorithm) {
+double fitness(ref Tree!int algorithm) {
     uint total = 0;
     foreach(uint i, uint prime; primes) {
         x = i+1;
@@ -31,14 +31,22 @@ void main() {
     TreeGenerator!int gen;
 
     //Register simple functions
-    gen.register(function(int i) {return -i;}, "negative");
-    gen.register(function(int i) {return i*i;}, "square");
-    gen.register(function(int i, int j) {return i+j;}, "sum");
+    gen.register!("-a", "negative");
+    gen.register!("a*a", "square");
+    gen.register!("a+b", "sum");
+    gen.register!("a-b", "difference");
+    gen.register!("a*b", "product");
+
+    //Use overload for registering lambdas
     gen.register(function(int i, int j) {if (i < j) return i; else return j;}, "min");
     gen.register(function(int i, int j) {if (i > j) return i; else return j;}, "max");
-    gen.register(function(int i, int j, int k, int l) {if (i > j) return k; else return j;}, "if >");
-    gen.register(function(int i, int j) {return i-j;}, "difference");
-    gen.register(function(int i, int j){return i*j;} , "product");
+
+    //Same thing for delegates
+    int ifGreater (int i, int j, int k, int l) {
+        if (i > j) return k;
+        else return j;
+    }
+    gen.register(&ifGreater, "if >");
 
     //Register an input value. This is effectivly a shorthand for
     //  'gen.register(function(){return x;}, "x");'
@@ -62,7 +70,7 @@ void main() {
                            * Selector: Select the top 10 members by evalutating each
                            * member in parallel.
                            */
-                          topPar!(BaseNode!int, 10, fitness),
+                          topPar!(Tree!int, 10, fitness),
 
                           /*
                            * Crossover: Copy one of the parents, and replace a random 

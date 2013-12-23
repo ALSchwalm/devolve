@@ -5,7 +5,7 @@ import std.typetuple;
 import std.random;
 import std.conv;
 import std.string;
-import std.stdio; //TODO remove this
+import std.functional;
 
 ReturnType!A unpackCall(A, B...)(A func,
                                  BaseNode!(ReturnType!A)[ParameterTypeTuple!A.length] nodes,
@@ -133,6 +133,21 @@ struct TreeGenerator(T) {
             terminators ~= new Node!A(func, name);
         }
     }
+
+    void register(alias funcString, string name)() {
+        static if (indexOf(funcString, 'a') != -1 &&
+                   indexOf(funcString, 'b') != -1) {
+            alias temp = binaryFun!funcString;
+            auto func = &temp!(T, T);
+            nodes ~= new Node!(typeof(func))(func, name);
+        }
+        else {
+            alias temp = unaryFun!funcString;
+            auto func = &temp!T;
+            nodes ~= new Node!(typeof(func))(func, name);
+        }
+    }
+    
 
     void registerConstantRange(A)(A lower, A upper) {
         T randConst() {return uniform(lower, upper);}
