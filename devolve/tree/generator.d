@@ -116,38 +116,62 @@ class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
     BaseType children[ParameterTypeTuple!T.length];
 }
 
+
 struct TreeGenerator(T) {
 
     BaseNode!T opCall(uint height) {
         return getRandomTree(height);
     }
-    
-    void register(A)(A func, string name)
-        if (is(ReturnType!A == T) &&
-            EraseAll!(T, staticMap!(Unqual, ParameterTypeTuple!A)).length == 0)
-    {
+
+    private void addNode(A, bool removeParens = false)(A func, string name) {
         static if (ParameterTypeTuple!A.length > 0) {
             nodes ~= new Node!A(func, name);
         }
         else {
-            terminators ~= new Node!A(func, name);
-        }
-    }
-
-    void register(alias funcString, string name)() {
-        static if (indexOf(funcString, 'a') != -1 &&
-                   indexOf(funcString, 'b') != -1) {
-            alias temp = binaryFun!funcString;
-            auto func = &temp!(T, T);
-            nodes ~= new Node!(typeof(func))(func, name);
-        }
-        else {
-            alias temp = unaryFun!funcString;
-            auto func = &temp!T;
-            nodes ~= new Node!(typeof(func))(func, name);
+            terminators ~= new Node!(A, removeParens)(func, name);
         }
     }
     
+    void register(A)(A func, string name)
+        if (is(ReturnType!A == T) &&
+            EraseAll!(T, staticMap!(Unqual, ParameterTypeTuple!A)).length == 0) {
+            
+            addNode!A(func, name);
+    }
+
+    void register(alias funcString, string name)()
+        if (!isCallable!(binaryFun!(funcString))) {
+            
+            static if (indexOf(to!string(funcString), 'b') != -1 ){
+                alias temp = binaryFun!funcString;
+                auto func = &temp!(T, T);
+                
+                addNode!(typeof(func))(func, name);
+            }
+            else static if (indexOf(to!string(funcString), 'a') != -1 ){
+                alias temp = unaryFun!funcString;
+                auto func = &temp!T;
+                
+                addNode!(typeof(func))(func, name);
+            }
+            else {
+                auto func = function(){
+                    return to!T(funcString);
+                };
+                addNode!(typeof(func), true)(func, name);
+            }            
+        }
+
+    void register(alias funcString, string name)()
+        if (isCallable!(binaryFun!(funcString))) {
+
+            alias func = binaryFun!(funcString);
+            addNode!(typeof(func))(func, name);
+        }
+
+    void registerConstant(T constant)() {
+        register!(constant, to!string(constant));
+    }
 
     void registerConstantRange(A)(A lower, A upper) {
         T randConst() {return uniform(lower, upper);}
@@ -155,13 +179,12 @@ struct TreeGenerator(T) {
     }
 
     void registerInput(alias input)() {
-        typeof(input) inputValue() {
+        auto inputValue() {
             return input;
         }
 
-        auto name = input.stringof;
         terminators ~= new Node!(typeof(&inputValue), true)
-            (&inputValue, name);
+            (&inputValue, input.stringof);
     }
 
     BaseNode!T getRandomTree(uint depth) {
@@ -189,8 +212,8 @@ struct TreeGenerator(T) {
         assert(randomConstants.length > 0 || terminators.length > 0,
                "Generator has no registered terminators");
         
-        if ((randomConstants.length > 0 && uniform(0.0, 1.0) > 0.5) ||
-            terminators.length == 0) {
+        if ((randomConstants.length > 0 && uniform(0, terminators.length+randomConstants.length)
+             < randomConstants.length) || terminators.length == 0) {
             auto func = randomConstants[uniform(0, randomConstants.length)];
             auto val = func();
             T wrapp() {return val;}
