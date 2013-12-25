@@ -5,31 +5,38 @@ import std.functional;
 class BaseGA(T, uint PopSize, alias comp) {
 
     abstract T evolve(uint);
-                
-    @property float mutationRate(float rate) {
-        return m_mutationRate = rate;
+
+    @property {
+        float mutationRate(float rate) {
+            return m_mutationRate = rate;
+        }
+
+        float mutationRate() {
+            return m_mutationRate;
+        }
+
+        uint statFrequency(uint freq) {
+            return m_statFrequency = freq;
+        }
+
+        uint statFrequency() {
+            return m_statFrequency;
+        }
+
+        double terminationValue(double termination) {
+            return m_termination = termination;
+        }
+
+        double terminationValue() {
+            return m_termination;
+        }
     }
 
-    @property float mutationRate() {
-        return m_mutationRate;
+    void setCompFun(alias _comp)() {
+        alias binaryFun!(_comp) _compFun;
+        compFun = &_compFun!(double, double);
     }
-
-    @property uint statFrequency(uint freq) {
-        return m_statFrequency = freq;
-    }
-
-    @property uint statFrequency() {
-        return m_statFrequency;
-    }
-
-    @property double terminationValue(double termination) {
-        return m_termination = termination;
-    }
-
-    @property double terminationValue() {
-        return m_termination;
-    }
-
+    
     T population[];
     T best;
 

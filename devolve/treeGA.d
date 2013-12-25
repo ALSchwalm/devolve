@@ -21,10 +21,7 @@ class TreeGA(T,
              alias crossover = singlePoint!T,
              alias mutator = randomBranch!T,
              alias comp = "a > b") : BaseGA!(BaseNode!T, PopSize, comp)
-    if (PopSize > 0 &&
-        is(ReturnType!mutator == void) &&
-        is(ParameterTypeTuple!mutator == TypeTuple!(BaseNode!T, TreeGenerator!T)))
-    {
+        if (PopSize > 0 && depth > 0) {
 
         this(TreeGenerator!T g) {
             generator = g;
@@ -90,10 +87,9 @@ class TreeGA(T,
                 if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
                     best = population[0].clone();
 
-                    if (m_termination != double.nan && compFun(fitness(best), m_termination)) {
-                        writeln("\n(Termination criteria met) Score: ", fitness(best),
-                                ", Individual: ", best);
-                        return best;
+                    if (m_termination != double.nan && (m_termination == fitness(best) ||
+                                                        compFun(fitness(best), m_termination))) {
+                        break;
                     }
                 }
             }

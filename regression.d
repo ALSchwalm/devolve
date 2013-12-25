@@ -6,30 +6,39 @@ import devolve.tree.mutator;
 import devolve.tree.generator;
 import devolve.tree.crossover;
 
-immutable auto primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+import std.math;
+import std.typecons;
+import std.stdio;
+import std.conv;
+import std.range;
+import std.algorithm;
+import std.array;
+  
+//Points taken from the equation `x^2 + 2x + sin(x)^2 - 23`
+double f(double x) {return x*x + 2*x+sin(x)*sin(x)-23;}
 
-//Input for the grown function
-int x;
+immutable Tuple!(double, double)[] points;
+static this() {
+    points = cast(typeof(points))array(zip(iota(-10, 10, 0.5),
+                                           map!f(iota(-10, 10, 0.5))));
+}
 
-//Fitness: How many consecutive primes are generated for consecutive integer input
-double fitness(ref Tree!int algorithm) {
-    uint total = 0;
-    foreach(uint i, uint prime; primes) {
-        x = i+1;
-        if (algorithm.eval() == prime) {
-            total += 1;
-        }
-        else {
-            break;
-        }
+double x;
+
+double fitness(ref Tree!double algorithm) {
+    double fit = 0;
+
+    foreach(ref immutable(Tuple!(double, double)) pair; points) {
+        x = pair[0];
+        fit += abs(algorithm.eval() - pair[1]);
     }
-    return total;
+    return fit;
 }
 
 void main() {
 
     //Generator: Class used to generate trees from the registered functions
-    TreeGenerator!int gen;
+    TreeGenerator!double gen;
 
     //Register simple functions, only parameter names of 'a' and 'b' are supported
     gen.register!("-a", "negative");
@@ -39,30 +48,30 @@ void main() {
     gen.register!("a*b", "product");
 
     //Lambdas can also be used and support any number of arguments
-    gen.register!(function(int a, int b) {if (a < b) return a; else return b;}, "min");
-    gen.register!(function(int a, int b) {if (a > b) return a; else return b;}, "max");
+    gen.register!(function(double a) {return to!double(sin(a));}, "sin");
+    gen.register!(function(double a) {return to!double(cos(a));}, "cos");
 
-    //Use overload for delegates
-    int ifGreater (int i, int j, int k, int l) {
-        if (i > j) return k;
-        else return j;
-    }
-    gen.register(&ifGreater, "if >");
+    double div(double a, double b) {
+        if (b == 0) {
+            return 0;
+        }
+        else {
+            return a/b;
+        }
+    }    
+    gen.register(&div, "div");
 
     //Register an input value. This is effectivly a shorthand for
     //  'gen.register(function(){return x;}, "x");'
     gen.registerInput!x;
 
     //Register a range of random constants which may appear in the generated algorithm
-    gen.registerConstantRange(0, 10);
-
-    //Or an individual value
-    gen.registerConstant!2;
-
-    auto ga = new TreeGA!(int,
+    gen.registerConstantRange(-10.0f, 10.0f);
+    
+    auto ga = new TreeGA!(double,
 
                           //Population size
-                          1000,
+                          1500,
 
                           //Maximum depth of tree
                           5,
@@ -74,26 +83,20 @@ void main() {
                            * Selector: Select the top 100 members by evalutating each
                            * member in parallel.
                            */
-                          topPar!(Tree!int, 100, fitness),
-
-                          /*
-                           * Crossover: Copy one of the parents, and replace a random 
-                           * node with a subtree from the other parent
-                           */
-                          singlePoint!int,
-
-                          //Mutator: Replace a random node with a new random subtree
-                          randomBranch!int)(gen);
+                          topPar!(Tree!double, 50, fitness, "a < b"))(gen);
 
     //Set a mutation rate
-    ga.mutationRate = 0.25;
+    ga.mutationRate = 0.07;
     
     //Print statistics every 20 generations
     ga.statFrequency = 20;
 
     //Stop if any individual has the termination value
-    ga.terminationValue = primes.length;
+    ga.terminationValue = 0;
 
+    //Terminate if any fitness is less than the termination value
+    ga.setCompFun!("a < b");
+    
     //Automatically output a graphviz 'dot' file to 'best.dot' upon termination
     ga.autoGenerateGraph = true;
     
@@ -103,4 +106,5 @@ void main() {
      * will yeild the first 6 primes on consecutive integer input
      */
     ga.evolve(600);
+
 }

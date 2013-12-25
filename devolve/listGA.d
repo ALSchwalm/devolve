@@ -76,7 +76,7 @@ class ListGA(T,
                     if (m_termination != double.nan && compFun(fitness(best), m_termination)) {
                         writeln("\n(Termination criteria met) Score: ", fitness(best),
                                 ", Individual: ", best);
-                        return best;
+                        break;
                     }
                 }
             }
