@@ -25,6 +25,11 @@ static this() {
 
 double x;
 
+/*
+ * Evaluate function `g`. Fitness is the cumulative difference between g(x)
+ * and a given point (x, y).
+ */
+
 double fitness(ref Tree!double algorithm) {
     double fit = 0;
 
@@ -94,16 +99,15 @@ void main() {
     //Stop if any individual has the termination value
     ga.terminationValue = 0;
 
-    //Terminate if any fitness is less than the termination value
+    //Terminate if any fitness is less than or equal to the termination value
     ga.setCompFun!("a < b");
     
     //Automatically output a graphviz 'dot' file to 'best.dot' upon termination
     ga.autoGenerateGraph = true;
     
     /*
-     * Grow for 600 generations. Takes approximately 45 seconds on quad core 
-     * laptop to generate function with 60% fitness. That is, a funtion which
-     * will yeild the first 6 primes on consecutive integer input
+     * Preform symbolic regression, grow for 600 generations. Takes approximately 
+     * 60 seconds on quad core laptop to generate a function with a fitness of ~10.
      */
     ga.evolve(600);
 
