@@ -81,3 +81,45 @@ void tournament(individual, uint numberOfTournaments, uint tournamentSize, doubl
     population.length = numberOfTournaments;
     population[] = winners[];
 }
+
+void roulette(individual, uint num, alias fitness, alias comp = "a > b")
+    (ref individual[] population) if (num > 0) {
+
+    alias binaryFun!(comp) compFun;
+    individual winners[num];
+
+    auto fitnessVals = taskPool.amap!fitness(population);
+    auto popWithFitness = zip(fitnessVals, population);
+    sort!((a, b) => compFun(a[0], b[0]))(popWithFitness);
+
+    immutable auto total = reduce!"a+b"(fitnessVals);
+
+    foreach(uint i; 0..num) {
+        auto choice = uniform(0.0f, 1.0f);
+        bool found = false;
+
+        foreach(ulong j; 0..population.length) {
+            if (choice < popWithFitness[j][0] / total) {
+                found = true;
+                static if (hasMember!(individual, "clone")) {
+                    winners[i] = popWithFitness[j][1].clone();
+                }
+                else {
+                    winners[i] = popWithFitness[j][1];
+                }
+                break;
+            }
+            choice -= popWithFitness[j][0] / total;
+        }
+        if (!found) {
+            static if (hasMember!(individual, "clone")) {
+                winners[i] = popWithFitness[0][1].clone();
+            }
+            else {
+                winners[i] = popWithFitness[0][1];
+            }
+        }
+    }
+    population.length = num;
+    population[] = winners[];
+}
