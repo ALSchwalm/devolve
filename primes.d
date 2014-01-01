@@ -14,7 +14,7 @@ int x;
 //Fitness: How many consecutive primes are generated for consecutive integer input
 double fitness(ref Tree!int algorithm) {
     uint total = 0;
-    foreach(uint i, uint prime; primes) {
+    foreach(uint i, prime; primes) {
         x = i+1;
         if (algorithm.eval() == prime) {
             total += 1;

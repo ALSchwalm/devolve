@@ -44,19 +44,19 @@ class ListGA(T,
         override T evolve(uint generations){
 
             //Add initial population
-            foreach(uint i; 0..PopSize) {
+            foreach(i; 0..PopSize) {
                 population ~= generator();
             }
 
             //Perform evolution
-            foreach(uint generation; 0..generations) {
+            foreach(generation; 0..generations) {
             
                 while(population.length < PopSize) {
                     population ~= crossover(population[uniform(0, population.length)],
                                             population[uniform(0, population.length)]);
                 }
 
-                foreach(uint i; 0..to!uint(PopSize*m_mutationRate)) {
+                foreach(i; 0..to!uint(PopSize*m_mutationRate)) {
                     mutator(population[uniform(0, PopSize)]);
                 }
 

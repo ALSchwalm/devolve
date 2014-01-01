@@ -49,7 +49,7 @@ class TreeGA(T,
         private string graphSubTree(BaseNode!T node, ref uint num) {
             string output = "";
             uint parent = num;
-            foreach(uint i; 0..node.getNumChildren()) {
+            foreach(i; 0..node.getNumChildren()) {
                 num += 1;
                 auto childNode = node.getChild(i);
                 output ~= "node" ~ to!string(num) ~ " [ label = \"" ~ childNode.name ~ "\"];\n";
@@ -61,19 +61,19 @@ class TreeGA(T,
         
         override BaseNode!T evolve(uint generations) {
             
-            foreach(uint i; 0..PopSize) {
+            foreach(i; 0..PopSize) {
                 population ~= generator(depth);
             }
             
             //Perform evolution
-            foreach(uint generation; 0..generations) {
+            foreach(generation; 0..generations) {
                 auto selectedSize = population.length;
                 while(population.length < PopSize) {
                     population ~= crossover(population[uniform(0, selectedSize)],
                                             population[uniform(0, selectedSize)]);
                 }
 
-                foreach(uint i; 0..to!uint(PopSize*mutationRate)) {
+                foreach(i; 0..to!uint(PopSize*mutationRate)) {
                     mutator(population[uniform(0, PopSize)], generator);
                 }
 
