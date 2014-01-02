@@ -38,14 +38,14 @@ void main() {
     gen.register!("a-b", "difference");
     gen.register!("a*b", "product");
 
-    //Lambdas can also be used and support any number of arguments
-    gen.register!(function(int a, int b) {if (a < b) return a; else return b;}, "min");
-    gen.register!(function(int a, int b) {if (a > b) return a; else return b;}, "max");
-
+    //Lambdas can also be used with any number of arguements and complex expressions
+    gen.register!((int i, int j, int k, int l) {return ((i < j) ? k : j);}, "if <");
+    gen.register!((int a, int b) {return ((a < b) ? a : b);}, "min");
+    gen.register!((int a, int b) {return ((a > b) ? a : b);}, "max");
+    
     //Use overload for delegates
     int ifGreater (int i, int j, int k, int l) {
-        if (i > j) return k;
-        else return j;
+        return ((i > j) ? k : j);
     }
     gen.register(&ifGreater, "if >");
 

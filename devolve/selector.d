@@ -5,7 +5,6 @@ import std.functional;
 import std.range;
 import std.random;
 import std.traits;
-import std.math;
 import std.stdio;
 
 /*
@@ -64,12 +63,12 @@ void tournament(individual, uint numberOfTournaments, uint tournamentSize, doubl
         sort!((a, b) => compFun(fitness(a), fitness(b)))(tournamentPool[]);
 
         foreach(uint j; 0..tournamentSize) {
-            if (choice < probability * pow(1-probability, j)) {
+            if (choice < probability * (1-probability)^^j) {
                 winners[i] = tournamentPool[j];
                 found = true;
                 break;
             }
-            choice -= probability * pow(1-probability, j);
+            choice -= probability * (1-probability)^^j;
         }
 
         //In the unlikely event that the choice was not in the range of any
