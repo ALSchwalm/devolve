@@ -11,7 +11,7 @@ void randomBranch(T)(ref BaseNode!T ind, ref TreeGenerator!T gen) {
     uint depth = uniform(0, ind.getHeight());
 
     BaseNode!T* current = &ind;
-    foreach(uint i; 0..depth) {
+    foreach(i; 0..depth) {
         if (!current.getNumChildren()) {
             break;
         }

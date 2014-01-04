@@ -11,8 +11,6 @@ import std.conv;
 import std.stdio;
 import std.file;
 
-alias Tree = BaseNode;
-
 class TreeGA(T,
              uint PopSize,
              uint depth,
@@ -46,19 +44,6 @@ class TreeGA(T,
             std.file.write(name, file);
         }
 
-        private string graphSubTree(BaseNode!T node, ref uint num) {
-            string output = "";
-            uint parent = num;
-            foreach(i; 0..node.getNumChildren()) {
-                num += 1;
-                auto childNode = node.getChild(i);
-                output ~= "node" ~ to!string(num) ~ " [ label = \"" ~ childNode.name ~ "\"];\n";
-                output ~= "node" ~ to!string(parent) ~ " -> node" ~ to!string(num) ~ ";\n";
-                output ~= graphSubTree(childNode, num);
-            }
-            return output;
-        }
-        
         override BaseNode!T evolve(uint generations) {
             
             foreach(i; 0..PopSize) {
@@ -109,6 +94,20 @@ class TreeGA(T,
 
     private:
         bool m_generateGraph = false;
-
         TreeGenerator!T generator;
+
+        string graphSubTree(BaseNode!T node, ref uint num) {
+            string output = "";
+            uint parent = num;
+            foreach(i; 0..node.getNumChildren()) {
+                num += 1;
+                auto childNode = node.getChild(i);
+                output ~= "node" ~ to!string(num) ~ " [ label = \"" ~ childNode.name ~ "\"];\n";
+                output ~= "node" ~ to!string(parent) ~ " -> node" ~ to!string(num) ~ ";\n";
+                output ~= graphSubTree(childNode, num);
+            }
+            return output;
+        }
+        
+        
 }

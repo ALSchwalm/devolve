@@ -11,7 +11,7 @@ BaseNode!T singlePoint(T)(ref const BaseNode!T ind1,
     BaseNode!T* currentNew = &newNode;
     const(BaseNode!T)* currentRight = &ind2;
     
-    foreach(uint i; 0..ind2.getHeight()) {
+    foreach(i; 0..ind2.getHeight()) {
         if (currentRight.getHeight() == currentNew.getHeight() && i != 0 ||
             !currentNew.getNumChildren() ||
             !currentRight.getNumChildren()) {

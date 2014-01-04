@@ -7,17 +7,19 @@ import std.conv;
 import std.string;
 import std.functional;
 
-ReturnType!A unpackCall(A, B...)(A func,
-                                 BaseNode!(ReturnType!A)[ParameterTypeTuple!A.length] nodes,
-                                 B args) {
+private ReturnType!A unpackCall(A, B...)
+    (A func, BaseNode!(ReturnType!A)[ParameterTypeTuple!A.length] nodes, B args) {
 
     static if (args.length == nodes.length) {
         return func(args);
     }
     else {
-        return unpackCall!(typeof(func))(func, nodes, args, nodes[args.length].eval());
+        return unpackCall!(typeof(func))
+            (func, nodes, args, nodes[args.length].eval());
     }
 }
+
+alias Tree = BaseNode;
 
 class BaseNode(T) {
     this(string _name) {
@@ -36,7 +38,7 @@ class BaseNode(T) {
 }
 
 
-class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
+private class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
     alias BaseNode!(ReturnType!T) BaseType;
     
     this(T t, string _name) {
@@ -76,7 +78,7 @@ class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
     override BaseType clone(bool newCopy) const {
         auto newNode = new Node!(T, constant)(val, name);
         if (!newCopy) {
-            foreach(uint i; 0..children.length) {
+            foreach(i; 0..children.length) {
                 newNode.children[i] = children[i].clone();
             }
         }
@@ -85,7 +87,7 @@ class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
 
     override uint getHeight() const {
         uint max = 0;
-        foreach(const ref BaseType node; children) {
+        foreach(const ref node; children) {
             if (node.getHeight() > max) {
                 max = node.getHeight();
             }
@@ -121,15 +123,6 @@ struct TreeGenerator(T) {
 
     BaseNode!T opCall(uint height) {
         return getRandomTree(height);
-    }
-
-    private void addNode(A, bool removeParens = false)(A func, string name) {
-        static if (ParameterTypeTuple!A.length > 0) {
-            nodes ~= new Node!A(func, name);
-        }
-        else {
-            terminators ~= new Node!(A, removeParens)(func, name);
-        }
     }
     
     void register(A)(A func, string name)
@@ -187,6 +180,7 @@ struct TreeGenerator(T) {
             (&inputValue, input.stringof);
     }
 
+        
     BaseNode!T getRandomTree(uint depth) {
         if (depth == 1) {
             return getRandomTerminator();
@@ -204,11 +198,11 @@ struct TreeGenerator(T) {
         return root;
     }
 
-    BaseNode!T getRandomNode() {
+    auto getRandomNode() {
         return nodes[uniform(0, nodes.length)].clone(true);
     }
 
-    BaseNode!T getRandomTerminator() {
+    auto getRandomTerminator() {
         assert(randomConstants.length > 0 || terminators.length > 0,
                "Generator has no registered terminators");
         
@@ -223,6 +217,18 @@ struct TreeGenerator(T) {
             return terminators[uniform(0, terminators.length)].clone();
         }
     }
+
+private :
+
+    void addNode(A, bool removeParens = false)(A func, string name) {
+        static if (ParameterTypeTuple!A.length > 0) {
+            nodes ~= new Node!A(func, name);
+        }
+        else {
+            terminators ~= new Node!(A, removeParens)(func, name);
+        }
+    }
+
 
     const(BaseNode!T)[] nodes;
     const(T delegate())[] randomConstants;

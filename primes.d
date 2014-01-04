@@ -8,12 +8,19 @@ import devolve.tree.crossover;
 
 immutable auto primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
 
+/*
+ * All inputs and function argument and return types
+ * must be of the same type. Here we create an alias
+ * to facilitate this.
+ */
+alias geneType = uint;
+
 //Input for the grown function
-int x;
+geneType x;
 
 //Fitness: How many consecutive primes are generated for consecutive integer input
-double fitness(ref Tree!int algorithm) {
-    uint total = 0;
+auto fitness(ref Tree!geneType algorithm) {
+    double total = 0;
     foreach(uint i, prime; primes) {
         x = i+1;
         if (algorithm.eval() == prime) {
@@ -29,37 +36,39 @@ double fitness(ref Tree!int algorithm) {
 void main() {
 
     //Generator: Class used to generate trees from the registered functions
-    TreeGenerator!int gen;
+    TreeGenerator!geneType gen;
 
-    //Register simple functions, only parameter names of 'a' and 'b' are supported
-    gen.register!("-a", "negative");
-    gen.register!("a*a", "square");
-    gen.register!("a+b", "sum");
-    gen.register!("a-b", "difference");
-    gen.register!("a*b", "product");
+    with(gen) {
+        //Register simple functions, only parameter names of 'a' and 'b' are supported
+        register!("-a", "negative");
+        register!("a*a", "square");
+        register!("a+b", "sum");
+        register!("a-b", "difference");
+        register!("a*b", "product");
 
-    //Lambdas can also be used with any number of arguements and complex expressions
-    gen.register!((int i, int j, int k, int l) {return ((i < j) ? k : j);}, "if <");
-    gen.register!((int a, int b) {return ((a < b) ? a : b);}, "min");
-    gen.register!((int a, int b) {return ((a > b) ? a : b);}, "max");
+        //Lambdas can also be used with any number of arguements and complex expressions
+        register!((geneType i, geneType j, geneType k, geneType l) {return ((i < j) ? k : j);}, "if <");
+        register!((geneType a, geneType b) {return ((a < b) ? a : b);}, "min");
+        register!((geneType a, geneType b) {return ((a > b) ? a : b);}, "max");
     
-    //Use overload for delegates
-    int ifGreater (int i, int j, int k, int l) {
-        return ((i > j) ? k : j);
+        //Use overload for delegates
+        geneType ifGreater (geneType i, geneType j, geneType k, geneType l) {
+            return ((i > j) ? k : j);
+        }
+        register(&ifGreater, "if >");
+
+        //Register an input value. This is effectivly a shorthand for
+        // 'gen.register(delegate(){return x;}, "x");'
+        registerInput!x;
+
+        //Register a range of random constants which may appear in the generated algorithm
+        registerConstantRange(0, 10);
+
+        //Or an individual value
+        registerConstant!2;
     }
-    gen.register(&ifGreater, "if >");
-
-    //Register an input value. This is effectivly a shorthand for
-    //  'gen.register(function(){return x;}, "x");'
-    gen.registerInput!x;
-
-    //Register a range of random constants which may appear in the generated algorithm
-    gen.registerConstantRange(0, 10);
-
-    //Or an individual value
-    gen.registerConstant!2;
-
-    auto ga = new TreeGA!(int,
+    
+    auto ga = new TreeGA!(geneType,
 
                           //Population size
                           1000,
@@ -74,16 +83,16 @@ void main() {
                            * Selector: Select the top 100 members by evalutating each
                            * member in parallel.
                            */
-                          topPar!(Tree!int, 100, fitness),
+                          topPar!(Tree!geneType, 100, fitness),
 
                           /*
                            * Crossover: Copy one of the parents, and replace a random 
                            * node with a subtree from the other parent
                            */
-                          singlePoint!int,
+                          singlePoint!geneType,
 
                           //Mutator: Replace a random node with a new random subtree
-                          randomBranch!int)(gen);
+                          randomBranch!geneType)(gen);
 
     //Set a mutation rate
     ga.mutationRate = 0.25;

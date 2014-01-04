@@ -46,10 +46,10 @@ void tournament(individual, uint numberOfTournaments, uint tournamentSize, doubl
     alias binaryFun!(comp) compFun;
     individual winners[numberOfTournaments];
 
-    foreach(uint i; parallel(iota(numberOfTournaments))) {
+    foreach(i; parallel(iota(numberOfTournaments))) {
         
         individual tournamentPool[tournamentSize];
-        foreach(uint j; 0..tournamentSize) {
+        foreach(j; 0..tournamentSize) {
             static if (hasMember!(individual, "clone")) {
                 tournamentPool[j] = population[uniform(0, population.length)].clone();
             }
@@ -62,7 +62,7 @@ void tournament(individual, uint numberOfTournaments, uint tournamentSize, doubl
         bool found = false;
         sort!((a, b) => compFun(fitness(a), fitness(b)))(tournamentPool[]);
 
-        foreach(uint j; 0..tournamentSize) {
+        foreach(j; 0..tournamentSize) {
             if (choice < probability * (1-probability)^^j) {
                 winners[i] = tournamentPool[j];
                 found = true;
@@ -93,11 +93,11 @@ void roulette(individual, uint num, alias fitness, alias comp = "a > b")
 
     immutable auto total = reduce!"a+b"(fitnessVals);
 
-    foreach(uint i; 0..num) {
+    foreach(i; 0..num) {
         auto choice = uniform(0.0f, 1.0f);
         bool found = false;
 
-        foreach(ulong j; 0..population.length) {
+        foreach(j; 0..population.length) {
             if (choice < popWithFitness[j][0] / total) {
                 found = true;
                 static if (hasMember!(individual, "clone")) {
