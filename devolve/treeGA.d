@@ -15,7 +15,7 @@ class TreeGA(T,
              uint PopSize,
              uint depth,
              alias fitness,
-             alias selector = top!(BaseNode!T, 2, fitness),
+             alias selector = top!(2, fitness),
              alias crossover = singlePoint!T,
              alias mutator = randomBranch!T,
              alias comp = "a > b") : BaseGA!(BaseNode!T, PopSize, comp)

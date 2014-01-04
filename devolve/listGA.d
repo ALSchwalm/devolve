@@ -15,24 +15,10 @@ class ListGA(T,
              uint PopSize,
              alias fitness,
              alias generator,
-             alias selector = top!(T, 2, fitness),
+             alias selector = top!(2, fitness),
              alias crossover = singlePoint!T,
              alias mutator = randomSwap!T,
              alias comp = "a > b") : BaseGA!(T, PopSize, comp)
-    if (PopSize > 0 && isArray!T &&
-        is(ReturnType!mutator == void) &&
-        is(ParameterTypeTuple!mutator == TypeTuple!(T))
-        &&
-        is(ReturnType!fitness == double) &&
-        is(ParameterTypeTuple!fitness == TypeTuple!(const T))
-        &&
-        is(ReturnType!selector == void) &&
-        is(ParameterTypeTuple!selector == TypeTuple!(T[]))
-        &&
-        is(ReturnType!crossover == T) &&
-        is(ParameterTypeTuple!crossover == TypeTuple!(const T, const T))
-        &&
-        is(ReturnType!generator == T))
     {
         this(){}
         

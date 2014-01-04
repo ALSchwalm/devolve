@@ -33,7 +33,7 @@ double x;
 double fitness(ref Tree!double algorithm) {
     double fit = 0;
 
-    foreach(ref immutable(Tuple!(double, double)) pair; points) {
+    foreach(ref pair; points) {
         x = pair[0];
         fit += abs(algorithm.eval() - pair[1]);
     }
@@ -45,33 +45,35 @@ void main() {
     //Generator: Class used to generate trees from the registered functions
     TreeGenerator!double gen;
 
-    //Register simple functions, only parameter names of 'a' and 'b' are supported
-    gen.register!("-a", "negative");
-    gen.register!("a*a", "square");
-    gen.register!("a+b", "sum");
-    gen.register!("a-b", "difference");
-    gen.register!("a*b", "product");
+    with(gen) {
+        //Register simple functions, only parameter names of 'a' and 'b' are supported
+        register!("-a", "negative");
+        register!("a*a", "square");
+        register!("a+b", "sum");
+        register!("a-b", "difference");
+        register!("a*b", "product");
 
-    //Lambdas can also be used and support any number of arguments
-    gen.register!(function(double a) {return to!double(sin(a));}, "sin");
-    gen.register!(function(double a) {return to!double(cos(a));}, "cos");
+        //Lambdas can also be used and support any number of arguments
+        register!(function(double a) {return to!double(sin(a));}, "sin");
+        register!(function(double a) {return to!double(cos(a));}, "cos");
 
-    double div(double a, double b) {
-        if (b == 0) {
-            return 0;
-        }
-        else {
-            return a/b;
-        }
-    }    
-    gen.register(&div, "div");
+        double div(double a, double b) {
+            if (b == 0) {
+                return 0;
+            }
+            else {
+                return a/b;
+            }
+        }    
+        register(&div, "div");
 
-    //Register an input value. This is effectivly a shorthand for
-    //  'gen.register(function(){return x;}, "x");'
-    gen.registerInput!x;
+        //Register an input value. This is effectivly a shorthand for
+        //  'gen.register(function(){return x;}, "x");'
+        registerInput!x;
 
-    //Register a range of random constants which may appear in the generated algorithm
-    gen.registerConstantRange(-10.0f, 10.0f);
+        //Register a range of random constants which may appear in the generated algorithm
+        registerConstantRange(-10.0f, 10.0f);
+    }
     
     auto ga = new TreeGA!(double,
 
@@ -88,7 +90,7 @@ void main() {
                            * Selector: Select the top 100 members by evalutating each
                            * member in parallel.
                            */
-                          topPar!(Tree!double, 50, fitness, "a < b"))(gen);
+                          topPar!(50, fitness, "a < b"))(gen);
 
     //Set a mutation rate
     ga.mutationRate = 0.07;

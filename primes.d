@@ -83,16 +83,16 @@ void main() {
                            * Selector: Select the top 100 members by evalutating each
                            * member in parallel.
                            */
-                          topPar!(Tree!geneType, 100, fitness),
+                          topPar!(100, fitness),
 
                           /*
                            * Crossover: Copy one of the parents, and replace a random 
                            * node with a subtree from the other parent
                            */
-                          singlePoint!geneType,
+                          singlePoint,
 
                           //Mutator: Replace a random node with a new random subtree
-                          randomBranch!geneType)(gen);
+                          randomBranch)(gen);
 
     //Set a mutation rate
     ga.mutationRate = 0.25;

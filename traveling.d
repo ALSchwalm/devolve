@@ -55,13 +55,13 @@ void main() {
             
             //Selector: Select the top 2 individuals each generation
             //order with lowest value first (shortest distance)
-            top!(individual, 2, fitness, "a < b"),
+            topPar!(2, fitness, "a < b"),
 
             //Crossover: Just copy one of the parents
-            randomCopy!individual,
+            randomCopy,
 
             //Mutation: Swap the alleles (cities)
-            randomSwap!individual,
+            randomSwap,
 
             //Statistics must also know to record the historically lowest value
             "a < b");

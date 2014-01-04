@@ -114,7 +114,7 @@ private class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
         }
     }
     
-    T val; 
+    const T val; 
     BaseType children[ParameterTypeTuple!T.length];
 }
 
