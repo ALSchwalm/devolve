@@ -21,7 +21,7 @@ class ListGA(T,
              alias comp = "a > b") : BaseGA!(T, PopSize, comp)
     {
         this(){}
-        
+
         this(float mutRate, uint statFreq) {
             m_mutationRate = mutRate;
             m_statFrequency = statFreq;
@@ -36,7 +36,7 @@ class ListGA(T,
 
             //Perform evolution
             foreach(generation; 0..generations) {
-            
+
                 while(population.length < PopSize) {
                     population ~= crossover(population[uniform(0, population.length)],
                                             population[uniform(0, population.length)]);
@@ -58,7 +58,7 @@ class ListGA(T,
                         best.length = population[0].length;
                     }
                     best[] = population[0][];
-                    
+
                     if (m_termination != double.nan && compFun(fitness(best), m_termination)) {
                         writeln("\n(Termination criteria met) Score: ", fitness(best),
                                 ", Individual: ", best);

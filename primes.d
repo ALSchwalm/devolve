@@ -37,36 +37,34 @@ void main() {
 
     //Generator: Class used to generate trees from the registered functions
     TreeGenerator!geneType gen;
-
-    with(gen) {
-        //Register simple functions, only parameter names of 'a' and 'b' are supported
-        register!("-a", "negative");
-        register!("a*a", "square");
-        register!("a+b", "sum");
-        register!("a-b", "difference");
-        register!("a*b", "product");
-
-        //Lambdas can also be used with any number of arguements and complex expressions
-        register!((geneType i, geneType j, geneType k, geneType l) {return ((i < j) ? k : j);}, "if <");
-        register!((geneType a, geneType b) {return ((a < b) ? a : b);}, "min");
-        register!((geneType a, geneType b) {return ((a > b) ? a : b);}, "max");
     
-        //Use overload for delegates
-        geneType ifGreater (geneType i, geneType j, geneType k, geneType l) {
-            return ((i > j) ? k : j);
-        }
-        register(&ifGreater, "if >");
-
-        //Register an input value. This is effectivly a shorthand for
-        // 'gen.register(delegate(){return x;}, "x");'
-        registerInput!x;
-
-        //Register a range of random constants which may appear in the generated algorithm
-        registerConstantRange(0, 10);
-
-        //Or an individual value
-        registerConstant!2;
+    //Register simple functions, only parameter names of 'a' and 'b' are supported
+    gen.register!"-a"("negative");
+    gen.register!"a*a"("square");
+    gen.register!"a+b"("sum");
+    gen.register!"a-b"("difference");
+    gen.register!"a*b"("product");
+    
+    //Lambdas can also be used with any number of arguements and complex expressions
+    gen.register!((geneType i, geneType j, geneType k, geneType l) {return (i < j) ? k : j;})("if <");
+    gen.register!((geneType a, geneType b) {return (a < b) ? a : b;})("min");
+    gen.register!((geneType a, geneType b) {return (a > b) ? a : b;})("max");
+    
+    //Use overload for delegates
+    geneType ifGreater (geneType i, geneType j, geneType k, geneType l) {
+        return (i > j) ? k : j;
     }
+    gen.register(&ifGreater, "if >");
+
+    //Register an input value. This is effectivly a shorthand for
+    // 'gen.register(delegate(){return x;}, "x");'
+    gen.registerInput!x;
+
+    //Register a range of random constants which may appear in the generated algorithm
+    gen.registerConstantRange(0, 10);
+
+    //Or an individual value
+    gen.registerConstant!2;
     
     auto ga = new TreeGA!(geneType,
 

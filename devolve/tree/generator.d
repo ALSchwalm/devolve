@@ -131,8 +131,8 @@ struct TreeGenerator(T) {
             
             addNode!A(func, name);
     }
-
-    void register(alias funcString, string name)()
+    
+    void register(alias funcString)(string name) 
         if (!isCallable!(binaryFun!(funcString))) {
             
             static if (indexOf(to!string(funcString), 'b') != -1 ){
@@ -155,7 +155,7 @@ struct TreeGenerator(T) {
             }            
         }
 
-    void register(alias funcString, string name)()
+    void register(alias funcString)(string name)
         if (isCallable!(binaryFun!(funcString))) {
 
             alias func = binaryFun!(funcString);
@@ -163,7 +163,7 @@ struct TreeGenerator(T) {
         }
 
     void registerConstant(T constant)() {
-        register!(constant, to!string(constant));
+        register!constant(to!string(constant));
     }
 
     void registerConstantRange(A)(A lower, A upper) {

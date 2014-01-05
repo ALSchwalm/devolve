@@ -54,16 +54,11 @@ void main() {
         register!("a*b", "product");
 
         //Lambdas can also be used and support any number of arguments
-        register!(function(double a) {return to!double(sin(a));}, "sin");
-        register!(function(double a) {return to!double(cos(a));}, "cos");
+        register!((double a) {return to!double(sin(a));}, "sin");
+        register!((double a) {return to!double(cos(a));}, "cos");
 
         double div(double a, double b) {
-            if (b == 0) {
-                return 0;
-            }
-            else {
-                return a/b;
-            }
+            return (b == 0) ? 0 : a/b;
         }    
         register(&div, "div");
 
