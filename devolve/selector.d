@@ -8,11 +8,9 @@ import std.traits;
 import std.stdio;
 
 /*
- * Select 'num' individuals from the population by dividing it into
- * 'num' pools and sorting those pools by the fitness function
- * concurrently. The most fit individuals in each pool are selected.
- * The direction of the sort may be set with comp, default is
- * highest fitness first.
+ * Select the 'num' most fit individuals from the population
+ * by evaluating their fitnesses in parallel. The direction
+ * of the sorting may be set with 'comp'.
  */
 template topPar(uint num, alias fitness, alias comp = "a > b") if (num > 0) {
     void topPar(individual) (ref individual[] population) {
@@ -39,7 +37,19 @@ template top(uint num, alias fitness, alias comp = "a > b") if (num > 0) {
     }
 }
 
-template tournament(uint numberOfTournaments, uint tournamentSize, double probability, alias fitness, alias comp = "a > b")
+
+/*
+ * Select 'numberOfTournaments' individuals from the population by
+ * dividing it into 'numberOfTournament' pools of size 'tournamentSize'.
+ * The pools are then sorted by their fitness. The top-most member
+ * is selected with probability 'probability', the next with
+ * probability 'probability * (1 - probability)' the next with
+ * probability 'probability * (1 - probability)^2', etc. This process
+ * is preformed on each pool in parallel. If the individual has a
+ * 'clone' method it will be invoked when copying.
+ */
+template tournament(uint numberOfTournaments, uint tournamentSize, double probability,
+                    alias fitness, alias comp = "a > b")
     if (numberOfTournaments > 0 &&
         tournamentSize > 0 &&
         probability > 0 &&
@@ -85,6 +95,14 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
     }
 }
 
+
+/*
+ * Select 'num' individuals from the population by sorting by fitness
+ * and randomly choosing individuals with probability weighted by the
+ * individual's fitness. The evaluation of fitness is done in
+ * parallel. If 'individual' has a 'clone' method it will be invoked
+ * when copying.
+ */
 
 template roulette(uint num, alias fitness, alias comp = "a > b") if (num > 0) {
     void roulette(individual)(ref individual[] population) {
