@@ -3,7 +3,7 @@ import std.random;
 import std.algorithm;
 import std.traits;
 
-/*
+/**
  * Create a new individual by taking all of the elements
  * from one individual after a randomly chosen point and
  * appending them to all of the values before that point
@@ -37,7 +37,7 @@ individual singlePoint(individual)(ref const individual ind1,
 };
 
 
-/*
+/**
  * Same as singlePoint but without size guarantees. 
  * WARNING: individuals sizes may grow rapidly with
  * this crossover method.
@@ -58,7 +58,7 @@ individual singlePointVariable(individual)(ref const individual ind1,
 };
 
 
-/*
+/**
  * Create a new individual by taking all of the alleles
  * from one individual after a randomly chosen point and
  * before a different randomly chosen point and
@@ -91,7 +91,7 @@ individual twoPoint(individual)(ref const individual ind1,
 }
 
 
-/*
+/**
  * The new individual is a copy of one of the parents
  * selected at random.
  */

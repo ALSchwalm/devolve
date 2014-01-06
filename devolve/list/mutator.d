@@ -3,7 +3,7 @@ import std.random;
 import std.algorithm;
 
 
-/*
+/**
  * Mutate an individual by randomly swapping alleles
  */
 void randomSwap(individual)(ref individual ind) {
@@ -12,7 +12,7 @@ void randomSwap(individual)(ref individual ind) {
     std.algorithm.swap(ind[one], ind[two]);
 };
 
-/*
+/**
  * Mutate an individual by replaceing a random allele
  * with a random value in the range [low, high)
  */

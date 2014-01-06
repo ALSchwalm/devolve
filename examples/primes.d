@@ -5,17 +5,17 @@ import devolve.selector;
 
 immutable auto primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
 
-/**
+/*
  * All inputs and function argument and return types
  * must be of the same type. Here we create an alias
  * to facilitate this.
  */
 alias geneType = uint;
 
-///Input for the grown function
+//Input for the grown function
 geneType x;
 
-///Fitness: How many consecutive primes are generated for consecutive integer input
+//Fitness: How many consecutive primes are generated for consecutive integer input
 auto fitness(ref Tree!geneType algorithm) {
     double total = 0;
     foreach(uint i, prime; primes) {

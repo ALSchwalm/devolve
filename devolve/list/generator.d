@@ -2,7 +2,7 @@
 module devolve.list.generator;
 import std.random;
 
-/*
+/**
  * Create the initial population by creating 'num' random
  * allels in the range [low, high).
  */
@@ -14,7 +14,7 @@ auto randRange(allele : allele[], uint num, allele low, allele high)() {
     return ind;
 }
 
-/*
+/**
  * Create the initial population using some preset value.
  */
 auto preset(Alleles...)() {
