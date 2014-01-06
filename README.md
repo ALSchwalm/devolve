@@ -34,7 +34,7 @@ example, mutators for the `tree` representation live in `devolve.tree.mutators`.
 of the type chosen in step 1. (so for a `list`, a static or dynamically sized array).
 
 4. Construct a Genetic Algorithm using the parts chosen or written in the above steps.
-These follow the convention of 'nameGA', so for `list`, the class is named `listGA`.
+These follow the convention of 'NameGA', so for `list`, the class is named `ListGA`.
 
 5. Set additional information such as the mutation rate / population ordering (is a
 larger or smaller number more or less fit) or termination criteria.
