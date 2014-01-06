@@ -171,6 +171,7 @@ struct TreeGenerator(T) {
     }
 
     auto getRandomNode() {
+        assert(nodes.length==0, "Generator has no registered nodes");
         return nodes[uniform(0, nodes.length)].clone(true);
     }
 
