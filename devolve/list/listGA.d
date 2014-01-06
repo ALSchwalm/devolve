@@ -50,7 +50,7 @@ class ListGA(T,
                     selector(population); //if the user has defined their own selector
                 }
                 else {
-                    selector!fitness(population);
+                    selector!(fitness, comp)(population);
                 }
 
 

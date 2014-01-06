@@ -7,7 +7,7 @@ import std.algorithm;
  * Replace a random node with a new random subtree. The height of the tree
  * will not increase.
  */
-void randomBranch(T)(ref BaseNode!T ind, ref TreeGenerator!T gen) {
+void randomBranch(T)(ref BaseNode!T ind, in TreeGenerator!T gen) {
     uint depth = uniform(0, ind.getHeight());
 
     BaseNode!T* current = &ind;

@@ -7,15 +7,16 @@ import std.conv;
 import std.string;
 import std.functional;
 
-private ReturnType!A unpackCall(A, B...)
-    (A func, BaseNode!(ReturnType!A)[ParameterTypeTuple!A.length] nodes, B args) {
+private auto unpackCall(A, B...) 
+    (in A func,
+     in BaseNode!(ReturnType!A)[ParameterTypeTuple!A.length] nodes,
+     in B args) {
 
     static if (args.length == nodes.length) {
         return func(args);
     }
     else {
-        return unpackCall!(typeof(func))
-            (func, nodes, args, nodes[args.length].eval());
+        return unpackCall!A(func, nodes, args, nodes[args.length].eval());
     }
 }
 
@@ -24,7 +25,7 @@ class BaseNode(T) {
         name = _name;
     }
 
-    abstract T eval();
+    abstract T eval() const ;
     abstract uint getNumChildren() const;
     abstract ref BaseNode!T getChild(uint);
     abstract ref const(BaseNode!T) getChild(uint) const;
@@ -32,19 +33,19 @@ class BaseNode(T) {
     abstract void setChildren(BaseNode!T[]);
     abstract uint getHeight() const;
     abstract BaseNode!T clone(bool = false) const;
-    string name;
+    immutable string name;
 }
 
 
 private class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
     alias BaseNode!(ReturnType!T) BaseType;
     
-    this(T t, string _name) {
+    this(in T t, in string _name) {
         super(_name);
         val = t;
     }
     
-    override ReturnType!T eval() {
+    override ReturnType!T eval() const {
         static if (ParameterTypeTuple!T.length > 0) {
             return unpackCall!(typeof(val))(val, children);
         }
@@ -112,14 +113,14 @@ private class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
         }
     }
     
-    const T val; 
+    const(T) val; 
     BaseType children[ParameterTypeTuple!T.length];
 }
 
 
 struct TreeGenerator(T) {
 
-    auto opCall(uint height) {
+    auto opCall(uint height) const {
         return getRandomTree(height);
     }
 
@@ -153,7 +154,7 @@ struct TreeGenerator(T) {
     }
 
         
-    BaseNode!T getRandomTree(uint depth) {
+    BaseNode!T getRandomTree(uint depth) const {
         if (depth == 1) {
             return getRandomTerminator();
         }
@@ -170,12 +171,12 @@ struct TreeGenerator(T) {
         return root;
     }
 
-    auto getRandomNode() {
+    auto getRandomNode() const {
         assert(nodes.length > 0, "Generator has no registered nodes");
         return nodes[uniform(0, nodes.length)].clone(true);
     }
 
-    auto getRandomTerminator() {
+    auto getRandomTerminator() const {
         assert(randomConstants.length > 0 || terminators.length > 0,
                "Generator has no registered terminators");
         

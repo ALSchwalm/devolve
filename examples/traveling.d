@@ -26,7 +26,7 @@ alias individual = char[4];
  * Basic fitness function. Fitness is the total distance
  * traveled by following the input path.
  */
-double fitness(ref const individual ind) {
+double fitness(in individual ind) {
     double total = 0;
     
     for(uint i=0; i < ind.length-1; ++i) {

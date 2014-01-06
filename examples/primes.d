@@ -16,7 +16,7 @@ alias geneType = uint;
 geneType x;
 
 //Fitness: How many consecutive primes are generated for consecutive integer input
-auto fitness(ref Tree!geneType algorithm) {
+auto fitness(in Tree!geneType algorithm) {
     double total = 0;
     foreach(uint i, prime; primes) {
         x = i+1;

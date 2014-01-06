@@ -3,8 +3,8 @@ import devolve.tree.generator;
 import std.random;
 import std.stdio;
 
-BaseNode!T singlePoint(T)(ref const BaseNode!T ind1,
-                          ref const BaseNode!T ind2) {
+BaseNode!T singlePoint(T)(in BaseNode!T ind1,
+                          in BaseNode!T ind2) {
 
     BaseNode!T newNode = ind1.clone();
 

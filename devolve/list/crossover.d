@@ -17,8 +17,8 @@ import std.traits;
  *
  * result = 1111111222222
  */
-individual singlePoint(individual)(ref const individual ind1,
-                                   ref const individual ind2)
+individual singlePoint(individual)(in individual ind1,
+                                   in individual ind2)
     if (isArray!individual) {
         
     individual newInd;
@@ -42,8 +42,8 @@ individual singlePoint(individual)(ref const individual ind1,
  * WARNING: individuals sizes may grow rapidly with
  * this crossover method.
  */
-individual singlePointVariable(individual)(ref const individual ind1,
-                                           ref const individual ind2)
+individual singlePointVariable(individual)(in individual ind1,
+                                           in individual ind2)
     if (isDynamicArray!individual) {
         
     individual newInd;
@@ -74,8 +74,8 @@ individual singlePointVariable(individual)(ref const individual ind1,
  *
  * result =  1122222111111
  */
-individual twoPoint(individual)(ref const individual ind1,
-                                ref const individual ind2)
+individual twoPoint(individual)(in individual ind1,
+                                in individual ind2)
     if (isArray!individual) {
         
     individual newInd;
@@ -95,8 +95,8 @@ individual twoPoint(individual)(ref const individual ind1,
  * The new individual is a copy of one of the parents
  * selected at random.
  */
-individual randomCopy(individual)(ref const individual ind1,
-                                  ref const individual ind2)
+individual randomCopy(individual)(in individual ind1,
+                                  in individual ind2)
     if (isArray!individual) {
         
     individual newInd;
