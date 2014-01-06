@@ -16,8 +16,8 @@ double f(double x) {return x*x + 2*x+sin(x)*sin(x)-23;}
 
 immutable Tuple!(double, double)[] points;
 static this() {
-    points = cast(typeof(points))array(zip(iota(-10, 10, 0.5),
-                                           map!f(iota(-10, 10, 0.5))));
+    points = array(zip(iota(-10, 10, 0.5),
+                       map!f(iota(-10, 10, 0.5)))).idup;
 }
 
 double x;
@@ -28,7 +28,7 @@ double x;
  */
 
 double fitness(ref Tree!double algorithm) {
-    double fit = 0;
+    double fit = 1;
 
     foreach(ref pair; points) {
         x = pair[0];
@@ -42,7 +42,6 @@ void main() {
     //Generator: Class used to generate trees from the registered functions
     TreeGenerator!double gen;
 
-    
     //Register simple functions, only parameter names of 'a' and 'b' are supported
     gen.register!"-a"("negative");
     gen.register!"a*a"("square");
@@ -55,8 +54,13 @@ void main() {
     gen.register!((double a) {return to!double(cos(a));})("cos");
 
     double div(double a, double b) {
-        return (b == 0) ? 0 : a/b;
-    }    
+        if (!isInfinity(a/b) && b != 0) {
+            return a/b;
+        }
+        else {
+            return 0;
+        }
+    }
     gen.register(&div, "div");
 
     //Register an input value. This is effectivly a shorthand for
