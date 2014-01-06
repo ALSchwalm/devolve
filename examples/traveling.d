@@ -51,8 +51,7 @@ void main() {
             preset!('c', 'b', 'a', 'd'),
             
             //Selector: Select the top 2 individuals each generation
-            //order with lowest value first (shortest distance)
-            topPar!(2, fitness, "a < b"),
+            topPar!2,
 
             //Crossover: Just copy one of the parents
             randomCopy,
@@ -61,6 +60,7 @@ void main() {
             randomSwap,
 
             //Statistics must also know to record the historically lowest value
+            //and selector should order with lowest value first (shortest distance)
             "a < b");
 
     //Set a 10% mutation rate

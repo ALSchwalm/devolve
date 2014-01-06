@@ -32,11 +32,6 @@ class BaseGA(T, uint PopSize, alias comp) {
         }
     }
 
-    void setCompFun(alias _comp)() {
-        alias binaryFun!(_comp) _compFun;
-        compFun = &_compFun!(double, double);
-    }
-    
     T population[];
     T best;
 

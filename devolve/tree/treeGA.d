@@ -1,7 +1,10 @@
 module devolve.tree.treeGA;
 
-import devolve.tree;
 import devolve.baseGA;
+import devolve.tree.mutator;
+import devolve.tree.crossover;
+import devolve.tree.generator;
+import devolve.selector;
 
 import std.random;
 import std.typetuple;
@@ -63,7 +66,13 @@ class TreeGA(T,
                     mutator(population[uniform(0, PopSize)], generator);
                 }
 
-                selector(population);
+                //if the user has defined their own selector
+                static if (isCallable!selector) {
+                    selector(population); 
+                }
+                else {
+                    selector!(fitness, comp)(population);
+                }
 
                 if (statFrequency && generation % statFrequency == 0) {
                     writeln("(gen ", generation, ") ",
@@ -88,7 +97,7 @@ class TreeGA(T,
                     " / Over " ~ to!string(generations) ~ " generations";
                 generateGraph(best, "best.dot", description);
             }
-            
+
             return best;
 
         }

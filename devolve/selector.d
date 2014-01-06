@@ -12,9 +12,10 @@ import std.stdio;
  * by evaluating their fitnesses in parallel. The direction
  * of the sorting may be set with 'comp'.
  */
-template topPar(uint num, alias fitness, alias comp = "a > b") if (num > 0) {
-    void topPar(individual) (ref individual[] population) {
-
+template topPar(uint num) if (num > 0) {
+    void topPar(alias fitness, alias comp = "a > b", individual)
+        (ref individual[] population) {
+        
         alias binaryFun!(comp) compFun;
 
         auto fitnessVals = taskPool.amap!fitness(population);
@@ -28,8 +29,9 @@ template topPar(uint num, alias fitness, alias comp = "a > b") if (num > 0) {
  * most fit members are selected. The direction of the sort may
  * be set with comp, default is highest fitness first.
  */
-template top(uint num, alias fitness, alias comp = "a > b") if (num > 0) {
-    void top(individual)(ref individual[] population) {
+template top(uint num) if (num > 0) {
+    void top(alias fitness, alias comp = "a > b", individual)
+        (ref individual[] population) {
     
         alias binaryFun!(comp) compFun;
         sort!((a, b) => compFun(fitness(a), fitness(b)))(population);
@@ -48,13 +50,13 @@ template top(uint num, alias fitness, alias comp = "a > b") if (num > 0) {
  * is preformed on each pool in parallel. If the individual has a
  * 'clone' method it will be invoked when copying.
  */
-template tournament(uint numberOfTournaments, uint tournamentSize, double probability,
-                    alias fitness, alias comp = "a > b")
+template tournament(uint numberOfTournaments, uint tournamentSize, double probability)
     if (numberOfTournaments > 0 &&
         tournamentSize > 0 &&
         probability > 0 &&
         probability <= 1.0) {
-    void tournament(individual)(ref individual[] population) {
+    void tournament(alias fitness, alias comp = "a > b", individual)
+        (ref individual[] population) {
 
         alias binaryFun!(comp) compFun;
         individual winners[numberOfTournaments];
@@ -103,11 +105,10 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
  * parallel. If 'individual' has a 'clone' method it will be invoked
  * when copying.
  */
-
-template roulette(uint num, alias fitness, alias comp = "a > b") if (num > 0) {
-    void roulette(individual)(ref individual[] population) {
+template roulette(uint num) if (num > 0) {
+    void roulette(alias fitness, alias comp = "a > b", individual)
+        (ref individual[] population) {
     
-
         alias binaryFun!(comp) compFun;
         individual winners[num];
 

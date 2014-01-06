@@ -46,7 +46,13 @@ class ListGA(T,
                     mutator(population[uniform(0, PopSize)]);
                 }
 
-                selector(population);
+                static if (isCallable!selector) {
+                    selector(population); //if the user has defined their own selector
+                }
+                else {
+                    selector!fitness(population);
+                }
+
 
                 if (m_statFrequency && generation % m_statFrequency == 0) {
                     writeln("(gen ", generation, ") ",

@@ -85,7 +85,19 @@ void main() {
                            * Selector: Select the top 100 members by evalutating each
                            * member in parallel.
                            */
-                          topPar!(50, fitness, "a < b"))(gen);
+                          topPar!50,
+
+                          /*
+                           * Crossover: Copy one of the parents, and replace a random 
+                           * node with a subtree from the other parent
+                           */
+                          singlePoint,
+
+                          //Mutator: Replace a random node with a new random subtree
+                          randomBranch,
+
+                          //More fit values are smaller
+                          "a < b")(gen);
 
     //Set a mutation rate
     ga.mutationRate = 0.07;
@@ -93,12 +105,9 @@ void main() {
     //Print statistics every 20 generations
     ga.statFrequency = 20;
 
-    //Stop if any individual has the termination value
+    //Stop if any individual has the termination value (or lower due to the above comp function)
     ga.terminationValue = 0;
 
-    //Terminate if any fitness is less than or equal to the termination value
-    ga.setCompFun!("a < b");
-    
     //Automatically output a graphviz 'dot' file to 'best.dot' upon termination
     ga.autoGenerateGraph = true;
     

@@ -122,7 +122,7 @@ struct TreeGenerator(T) {
     auto opCall(uint height) {
         return getRandomTree(height);
     }
-    
+
     void register(A)(A func, string name)
         if (is(ReturnType!A == T) &&
             EraseAll!(T, staticMap!(Unqual, ParameterTypeTuple!A)).length == 0) {
@@ -171,7 +171,7 @@ struct TreeGenerator(T) {
     }
 
     auto getRandomNode() {
-        assert(nodes.length==0, "Generator has no registered nodes");
+        assert(nodes.length > 0, "Generator has no registered nodes");
         return nodes[uniform(0, nodes.length)].clone(true);
     }
 
