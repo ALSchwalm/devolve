@@ -1,0 +1,13 @@
+MODULES = 
+	$(MODULE baseGA)
+        $(MODULE selector)
+        
+        $(MODULE list.crossover)
+        $(MODULE list.generator)
+        $(MODULE list.mutator)
+        $(MODULE list.listGA)
+        
+        $(MODULE tree.crossover)
+        $(MODULE tree.generator)
+        $(MODULE tree.mutator)
+        $(MODULE tree.treeGA)
