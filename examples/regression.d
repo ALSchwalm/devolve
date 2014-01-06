@@ -1,10 +1,7 @@
 #!/usr/bin/env rdmd
 
-import devolve.treeGA;
+import devolve.tree;
 import devolve.selector;
-import devolve.tree.mutator;
-import devolve.tree.generator;
-import devolve.tree.crossover;
 
 import std.math;
 import std.typecons;
@@ -45,30 +42,29 @@ void main() {
     //Generator: Class used to generate trees from the registered functions
     TreeGenerator!double gen;
 
-    with(gen) {
-        //Register simple functions, only parameter names of 'a' and 'b' are supported
-        register!("-a", "negative");
-        register!("a*a", "square");
-        register!("a+b", "sum");
-        register!("a-b", "difference");
-        register!("a*b", "product");
+    
+    //Register simple functions, only parameter names of 'a' and 'b' are supported
+    gen.register!"-a"("negative");
+    gen.register!"a*a"("square");
+    gen.register!"a+b"("sum");
+    gen.register!"a-b"("difference");
+    gen.register!"a*b"("product");
 
-        //Lambdas can also be used and support any number of arguments
-        register!((double a) {return to!double(sin(a));}, "sin");
-        register!((double a) {return to!double(cos(a));}, "cos");
+    //Lambdas can also be used and support any number of arguments
+    gen.register!((double a) {return to!double(sin(a));})("sin");
+    gen.register!((double a) {return to!double(cos(a));})("cos");
 
-        double div(double a, double b) {
-            return (b == 0) ? 0 : a/b;
-        }    
-        register(&div, "div");
+    double div(double a, double b) {
+        return (b == 0) ? 0 : a/b;
+    }    
+    gen.register(&div, "div");
 
-        //Register an input value. This is effectivly a shorthand for
-        //  'gen.register(function(){return x;}, "x");'
-        registerInput!x;
+    //Register an input value. This is effectivly a shorthand for
+    //  'gen.register(function(){return x;}, "x");'
+    gen.registerInput!x;
 
-        //Register a range of random constants which may appear in the generated algorithm
-        registerConstantRange(-10.0f, 10.0f);
-    }
+    //Register a range of random constants which may appear in the generated algorithm
+    gen.registerConstantRange(-10.0f, 10.0f);
     
     auto ga = new TreeGA!(double,
 

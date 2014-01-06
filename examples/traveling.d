@@ -1,10 +1,7 @@
 #!/usr/bin/env rdmd
 
-import devolve.listGA;
+import devolve.list;
 import devolve.selector;
-import devolve.list.mutator;
-import devolve.list.generator;
-import devolve.list.crossover;
 
 import std.algorithm;
 
@@ -51,7 +48,7 @@ void main() {
             fitness,
             
             //Generator: The initial population will be copies of 'cbad'
-            preset!(individual, ['c', 'b', 'a', 'd']),
+            preset!('c', 'b', 'a', 'd'),
             
             //Selector: Select the top 2 individuals each generation
             //order with lowest value first (shortest distance)

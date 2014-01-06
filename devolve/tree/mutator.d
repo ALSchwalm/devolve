@@ -3,7 +3,7 @@ import devolve.tree.generator;
 import std.random;
 import std.algorithm;
 
-/*
+/**
  * Replace a random node with a new random subtree. The height of the tree
  * will not increase.
  */

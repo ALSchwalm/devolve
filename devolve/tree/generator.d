@@ -1,5 +1,5 @@
-
 module devolve.tree.generator;
+
 import std.traits;
 import std.typetuple;
 import std.random;
@@ -18,8 +18,6 @@ private ReturnType!A unpackCall(A, B...)
             (func, nodes, args, nodes[args.length].eval());
     }
 }
-
-alias Tree = BaseNode;
 
 class BaseNode(T) {
     this(string _name) {
@@ -121,7 +119,7 @@ private class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
 
 struct TreeGenerator(T) {
 
-    BaseNode!T opCall(uint height) {
+    auto opCall(uint height) {
         return getRandomTree(height);
     }
     
@@ -131,37 +129,11 @@ struct TreeGenerator(T) {
             
             addNode!A(func, name);
     }
-    
-    void register(alias funcString)(string name) 
-        if (!isCallable!(binaryFun!(funcString))) {
-            
-            static if (indexOf(to!string(funcString), 'b') != -1 ){
-                alias temp = binaryFun!funcString;
-                auto func = &temp!(T, T);
-                
-                addNode!(typeof(func))(func, name);
-            }
-            else static if (indexOf(to!string(funcString), 'a') != -1 ){
-                alias temp = unaryFun!funcString;
-                auto func = &temp!T;
-                
-                addNode!(typeof(func))(func, name);
-            }
-            else {
-                auto func = function(){
-                    return to!T(funcString);
-                };
-                addNode!(typeof(func), true)(func, name);
-            }            
-        }
 
-    void register(alias funcString)(string name)
-        if (isCallable!(binaryFun!(funcString))) {
-
-            alias func = binaryFun!(funcString);
-            addNode!(typeof(func))(func, name);
-        }
-
+    void register(alias func)(string name) {
+        registerH!(func)(name);
+    }
+        
     void registerConstant(T constant)() {
         register!constant(to!string(constant));
     }
@@ -219,6 +191,36 @@ struct TreeGenerator(T) {
     }
 
 private :
+
+    void registerH(alias funcString)(string name) 
+        if (!isCallable!(binaryFun!(funcString))) {
+            
+            static if (indexOf(to!string(funcString), 'b') != -1 ){
+                alias temp = binaryFun!funcString;
+                auto func = &temp!(T, T);
+                
+                addNode!(typeof(func))(func, name);
+            }
+            else static if (indexOf(to!string(funcString), 'a') != -1 ){
+                alias temp = unaryFun!funcString;
+                auto func = &temp!T;
+                
+                addNode!(typeof(func))(func, name);
+            }
+            else {
+                auto func = function(){
+                    return to!T(funcString);
+                };
+                addNode!(typeof(func), true)(func, name);
+            }            
+        }
+
+    void registerH(alias funcString)(string name)
+        if (isCallable!(binaryFun!(funcString))) {
+
+            alias func = binaryFun!(funcString);
+            addNode!(typeof(func))(func, name);
+        }
 
     void addNode(A, bool removeParens = false)(A func, string name) {
         static if (ParameterTypeTuple!A.length > 0) {

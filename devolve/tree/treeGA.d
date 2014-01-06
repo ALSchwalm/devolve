@@ -1,8 +1,7 @@
-module devolve.treeGA;
+module devolve.tree.treeGA;
+
+import devolve.tree;
 import devolve.baseGA;
-import devolve.tree.generator;
-import devolve.tree.crossover;
-import devolve.tree.mutator;
 
 import std.random;
 import std.typetuple;
@@ -10,6 +9,8 @@ import std.traits;
 import std.conv;
 import std.stdio;
 import std.file;
+
+alias Tree = BaseNode;
 
 class TreeGA(T,
              uint PopSize,

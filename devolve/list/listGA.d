@@ -1,4 +1,4 @@
-module devolve.listGA;
+module devolve.list.listGA;
 import devolve.baseGA;
 import devolve.list.crossover;
 import devolve.list.mutator;
