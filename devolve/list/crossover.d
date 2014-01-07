@@ -11,11 +11,11 @@ import std.traits;
  * will have a length no longer than the shortest of the
  * parent individuals.
  * 
- * ind1 =   1111111111111
- * ind2 =   2222222222222
- * point =        *
+ * ind1 =   1111111111111 $(BR)
+ * ind2 =   2222222222222 $(BR)
+ * point =  &nbsp;&nbsp;&nbsp;&nbsp;*
  *
- * result = 1111111222222
+ * child = 1111222222222
  */
 individual singlePoint(individual)(in individual ind1,
                                    in individual ind2)
@@ -67,12 +67,12 @@ individual singlePointVariable(individual)(in individual ind1,
  * will have a length no longer than the shortest of the
  * parent individuals.
  *
- * ind1 =    1111111111111
- * ind2 =    2222222222222
- * point1 =    *
- * point2 =         *
+ * ind1 =    1111111111111 $(BR)
+ * ind2 =    2222222222222 $(BR)
+ * point1 =  &nbsp;&nbsp;* $(BR)
+ * point2 =  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
  *
- * result =  1122222111111
+ * result =  1122221111111
  */
 individual twoPoint(individual)(in individual ind1,
                                 in individual ind2)

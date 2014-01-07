@@ -8,14 +8,13 @@ import std.traits;
 import std.stdio;
 
 /**
- * $(D auto topPar(alias fitness, alias comp = "a > b", individual)
- *     (individual[] population);)
- *
  * Select the 'num' most fit individuals from the population
  * by evaluating their fitnesses in parallel. The direction
  * of the sorting may be set with 'comp'.
  */
 template topPar(uint num) if (num > 0) {
+
+    ///
     individual[] topPar(alias fitness, alias comp = "a > b", individual)
         (individual[] population) {
         
@@ -28,14 +27,12 @@ template topPar(uint num) if (num > 0) {
 }
 
 /**
- * $(D auto top(alias fitness, alias comp = "a > b", individual)
- *     (individual[] population);)
- *
  * The population is sorted by the fitness function and the 'num'
  * most fit members are selected. The direction of the sort may
  * be set with comp, default is highest fitness first.
  */
 template top(uint num) if (num > 0) {
+    ///
     individual[] top(alias fitness, alias comp = "a > b", individual)
         (individual[] population) {
     
@@ -47,9 +44,6 @@ template top(uint num) if (num > 0) {
 
 
 /**
- * $(D auto tournament(alias fitness, alias comp = "a > b", individual)
- *     (individual[] population);)
- *
  * Select 'numberOfTournaments' individuals from the population by
  * dividing it into 'numberOfTournament' pools of size 'tournamentSize'.
  * The pools are then sorted by their fitness. The top-most member
@@ -64,6 +58,7 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
         tournamentSize > 0 &&
         probability > 0 &&
         probability <= 1.0) {
+    ///
     individual[] tournament(alias fitness, alias comp = "a > b", individual)
         (individual[] population) {
 
@@ -108,9 +103,6 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
 
 
 /**
- * * $(D auto roulette(alias fitness, alias comp = "a > b", individual)
- *     (individual[] population);)
- *
  * Select 'num' individuals from the population by sorting by fitness
  * and randomly choosing individuals with probability weighted by the
  * individual's fitness. The evaluation of fitness is done in
@@ -118,6 +110,7 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
  * when copying.
  */
 template roulette(uint num) if (num > 0) {
+    ///
     individual[] roulette(alias fitness, alias comp = "a > b", individual)
         (individual[] population) {
     
