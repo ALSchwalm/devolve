@@ -78,7 +78,7 @@ void main() {
                            * Selector: Select the top 100 members by evalutating each
                            * member in parallel.
                            */
-                          topPar!100,
+                          roulette!100,
 
                           /*
                            * Crossover: Copy one of the parents, and replace a random 

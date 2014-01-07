@@ -40,7 +40,7 @@ protected:
     bool function(double, double) compFun = &_compFun!(double, double);
     double m_termination = double.nan;
 
-    float m_mutationRate = 0.1f;
+    float m_mutationRate = 0.01f;
     uint m_statFrequency = 0;
     
 }

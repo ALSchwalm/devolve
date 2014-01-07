@@ -68,10 +68,10 @@ class TreeGA(T,
 
                 //if the user has defined their own selector
                 static if (isCallable!selector) {
-                    selector(population); 
+                    population = selector(population); 
                 }
                 else {
-                    selector!(fitness, comp)(population);
+                    population = selector!(fitness, comp)(population);
                 }
 
                 if (statFrequency && generation % statFrequency == 0) {

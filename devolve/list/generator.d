@@ -13,6 +13,7 @@ auto randRange(allele : allele[], uint num, allele low, allele high)() {
     return ind;
 }
 
+
 /**
  * Create the initial population using some preset value.
  */

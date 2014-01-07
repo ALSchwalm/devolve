@@ -3,13 +3,8 @@
 import devolve.tree;
 import devolve.selector;
 
-import std.math;
-import std.typecons;
-import std.stdio;
-import std.conv;
-import std.range;
-import std.algorithm;
-import std.array;
+import std.math, std.conv, std.range;
+import std.typecons, std.algorithm;
   
 //Points taken from the equation `x^2 + 2x + sin(x)^2 - 23`
 double f(double x) {return x*x + 2*x+sin(x)*sin(x)-23;}
