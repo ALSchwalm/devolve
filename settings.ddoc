@@ -1,5 +1,5 @@
 PROJECTNAME = devolve
-REFERENCETOP = list.crossover.html
+REFERENCETOP = index.html
 REPOSRCTREE = http://github.com/ALSchwalm/devolve/tree/master
 TITLEBARTEXT = <a href="https://github.com/ALSchwalm/devolve">Github Page</a>
 RESOURCEROOT = bootDoc/
