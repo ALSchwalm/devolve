@@ -11,3 +11,5 @@ MODULES =
         $(MODULE tree.generator)
         $(MODULE tree.mutator)
         $(MODULE tree.treeGA)
+
+        $(MODULE bstring.bstringGA)

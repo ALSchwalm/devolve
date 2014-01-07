@@ -230,3 +230,7 @@ void main() {
 
 }
 -----------
+Other examples may be found in the
+<a href="https://github.com/ALSchwalm/devolve/tree/master/examples">
+examples folder.</a>
+                                   

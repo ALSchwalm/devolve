@@ -70,6 +70,8 @@
         <li class="sidebar-list-entry tree-leaf"><a href="tree.generator.html" title="tree.generator"><i class="icon-th"></i>tree.generator</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="tree.mutator.html" title="tree.mutator"><i class="icon-th"></i>tree.mutator</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="tree.treeGA.html" title="tree.treeGA"><i class="icon-th"></i>tree.treeGA</a></li>
+
+        <li class="sidebar-list-entry tree-leaf"><a href="bstring.bstringGA.html" title="bstring.bstringGA"><i class="icon-th"></i>bstring.bstringGA</a></li>
 	</ul>
 	
 	<div class="navbar navbar-fixed-top">
@@ -116,6 +118,8 @@
         <li class="sidebar-list-entry tree-leaf"><a href="tree.generator.html" title="tree.generator"><i class="icon-th"></i>tree.generator</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="tree.mutator.html" title="tree.mutator"><i class="icon-th"></i>tree.mutator</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="tree.treeGA.html" title="tree.treeGA"><i class="icon-th"></i>tree.treeGA</a></li>
+
+        <li class="sidebar-list-entry tree-leaf"><a href="bstring.bstringGA.html" title="bstring.bstringGA"><i class="icon-th"></i>bstring.bstringGA</a></li>
 					</noscript>
 					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">devolve.list.crossover</li>
 				</ul>
@@ -146,12 +150,12 @@
  will have a length no longer than the shortest of the
  parent individuals.
 </p>
-<p>ind1 =   1111111111111
- ind2 =   2222222222222
- point =        *
+<p>ind1 =   1111111111111 <br>
+ ind2 =   2222222222222 <br>
+ point =  &nbsp;&nbsp;&nbsp;&nbsp;*
 <br><br>
 
- result = 1111111222222</p>
+ child = 1111222222222</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>individual <span class="symbol-target" id="singlePointVariable">&nbsp;</span><a class="symbol-link" href="#singlePointVariable">singlePointVariable</a>(individual)(in individual <i>ind1</i>, in individual <i>ind2</i>) if (isDynamicArray!individual);
@@ -173,13 +177,13 @@ individuals sizes may grow rapidly with
  will have a length no longer than the shortest of the
  parent individuals.
 </p>
-<p>ind1 =    1111111111111
- ind2 =    2222222222222
- point1 =    *
- point2 =         *
+<p>ind1 =    1111111111111 <br>
+ ind2 =    2222222222222 <br>
+ point1 =  &nbsp;&nbsp;* <br>
+ point2 =  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
 <br><br>
 
- result =  1122222111111</p>
+ result =  1122221111111</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>individual <span class="symbol-target" id="randomCopy">&nbsp;</span><a class="symbol-link" href="#randomCopy">randomCopy</a>(individual)(in individual <i>ind1</i>, in individual <i>ind2</i>) if (isArray!individual);
