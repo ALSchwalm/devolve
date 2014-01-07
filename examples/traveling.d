@@ -28,7 +28,7 @@ alias individual = char[4];
  */
 double fitness(in individual ind) {
     double total = 0;
-    
+
     for(uint i=0; i < ind.length-1; ++i) {
         char lower = min(ind[i], ind[i+1]);
         char higher = max(ind[i], ind[i+1]);
