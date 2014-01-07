@@ -15,7 +15,7 @@ Below is a quick introduction to usage of the library. Documentation generated b
 [bootDoc] may be found [here].
 
 [bootDoc]: https://github.com/JakobOvrum/bootDoc
-[here]: http://alschwalm.com/devolve/list.crossover.html
+[here]: http://alschwalm.com/devolve/
 
 Basic Usage
 =====
