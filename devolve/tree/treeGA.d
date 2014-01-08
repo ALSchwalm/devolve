@@ -44,7 +44,7 @@ class TreeGA(T,
             uint currentNodeNumber = 0;
             file ~= graphSubTree(node, currentNodeNumber);
             
-            file ~= "labelloc=\"t\"; label=\"" ~ description ~ "\"};";
+            file ~= "labelloc=\"t\"; label=\"" ~ description ~ "\"}";
             std.file.write(name, file);
         }
 
