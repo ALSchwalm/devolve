@@ -13,3 +13,7 @@ MODULES =
         $(MODULE tree.treeGA)
 
         $(MODULE bstring.bstringGA)
+        $(MODULE bstring.crossover)
+        $(MODULE bstring.generator)
+        $(MODULE bstring.mutator)
+        
