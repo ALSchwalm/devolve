@@ -12,11 +12,18 @@ all: devolve.a $(EXAMPLE_OUT)
 debug: DFLAGS += -debug -g
 debug: devolve.a $(EXAMPLE_OUT)
 
+unittest: DFLAGS += -unittest
+unittest: unittest.out
+	./unittest.out
+
 $(EXAMPLE_OUT): %.out: %.d devolve.a
-	dmd $< devolve.a -op -of$@ $(DFLAGS)
+	dmd -op $(DFLAGS) $< devolve.a -of$@ 
 
 devolve.a: $(LIB_SRC)
-	dmd $(LIB_SRC) $(DFLAGS) -lib -ofdevolve.a 
+	dmd $(DFLAGS) -lib $(LIB_SRC) -ofdevolve.a 
+
+unittest.out: $(LIB_SRC)
+	dmd $(DFLAGS) $(LIB_SRC) -ofunittest.out
 
 clean: 
-	rm -f devolve.a $(EXAMPLE_OUT) $(EXAMPLE_SRC:.d=.o)
+	rm -f devolve.a $(EXAMPLE_OUT) $(EXAMPLE_SRC:.d=.o) unittest.o unittest.out

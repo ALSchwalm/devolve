@@ -26,6 +26,17 @@ template topPar(uint num) if (num > 0) {
     }
 }
 
+unittest {
+    auto pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+
+    alias bestTwo = topPar!2;
+    auto best = bestTwo!"a[0]"(pop);
+    assert(best == [[8, 2, 2], [4, 1, 1]]);
+
+    best = bestTwo!("a[0]", "a < b")(pop);
+    assert(best == [[1, 2, 4], [2, 3, 3]]);
+}
+
 /**
  * The population is sorted by the fitness function and the 'num'
  * most fit members are selected. The direction of the sort may
@@ -35,13 +46,24 @@ template top(uint num) if (num > 0) {
     ///
     individual[] top(alias fitness, alias comp = "a > b", individual)
         (individual[] population) {
-    
+
+        alias unaryFun!(fitness) fitnessFun;
         alias binaryFun!(comp) compFun;
-        sort!((a, b) => compFun(fitness(a), fitness(b)))(population);
+        sort!((a, b) => compFun(fitnessFun(a), fitnessFun(b)))(population);
         return population[0..num];
     }
 }
 
+unittest {
+    auto pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    
+    alias bestTwo = top!2;
+    auto best = bestTwo!"a[0]"(pop);
+    assert(best == [[8, 2, 2], [4, 1, 1]]);
+
+    best = bestTwo!("a[0]", "a < b")(pop);
+    assert(best == [[1, 2, 4], [2, 3, 3]]);
+}
 
 /**
  * Select 'numberOfTournaments' individuals from the population by
@@ -63,6 +85,8 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
         (individual[] population) {
 
         alias binaryFun!(comp) compFun;
+        alias unaryFun!(fitness) fitnessFun;
+        
         individual winners[numberOfTournaments];
 
         foreach(i; parallel(iota(numberOfTournaments))) {
@@ -79,7 +103,7 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
 
             auto choice = uniform(0.0f, 1.0f);
             bool found = false;
-            sort!((a, b) => compFun(fitness(a), fitness(b)))(tournamentPool[]);
+            sort!((a, b) => compFun(fitnessFun(a), fitnessFun(b)))(tournamentPool[]);
 
             foreach(j; 0..tournamentSize) {
                 if (choice < probability * (1-probability)^^j) {
@@ -96,9 +120,18 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
                 winners[i] = tournamentPool[0];
             }
         }
-        population[0..num] = winners[];
-        return population[0..num];
+        population[0..numberOfTournaments] = winners[];
+        return population[0..numberOfTournaments];
     }
+}
+
+unittest {
+    auto pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    
+    alias bestTwo = tournament!(2, 3, 0.7);
+    auto best = bestTwo!"a[0]"(pop);
+
+    assert(best.length == 2);
 }
 
 
@@ -152,4 +185,13 @@ template roulette(uint num) if (num > 0) {
         population[0..num] = winners[];
         return population[0..num];
     }
+}
+
+unittest {
+    auto pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    
+    alias bestTwo = roulette!2;
+    auto best = bestTwo!"a[0]"(pop);
+
+    assert(best.length == 2);
 }
