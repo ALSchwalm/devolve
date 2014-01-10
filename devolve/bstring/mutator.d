@@ -1,7 +1,13 @@
 module devolve.bstring.mutator;
 import std.random;
+import std.bitmanip;
 
-void randomFlip(individual)(ref individual ind) {
-    auto num = uniform(0, individual.max);
-    ind^=num;
+void randomFlip(ref BitArray ind) {
+
+    foreach(ref bit; ind) {
+        if (uniform(0, 2)) {
+            bit = !bit;
+        }
+    }
+    
 }

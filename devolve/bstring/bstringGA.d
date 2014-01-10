@@ -1,14 +1,14 @@
 module devolve.bstring.bstringGA;
 import devolve.baseGA;
 import devolve.selector;
-import devolve.bstring.generator; //for integralType
+import devolve.bstring.generator;
 
-import std.string : format;
 import std.stdio;
 import std.random;
 import std.algorithm;
 import std.conv;
 import std.traits;
+import std.bitmanip;
 
 /**
  * Genetic algorithm for genomes taking the form of binary strings.
@@ -27,11 +27,11 @@ class BStringGA(uint length,
                 alias fitness,
                 alias generator,
                 alias selector = topPar!2,
-                alias crossover = XOR,
+                alias crossover = randomSwap,
                 alias mutator = randomFlip,
-                alias comp = "a > b") : BaseGA!(integralType!length, PopSize, comp)
+                alias comp = "a > b") : BaseGA!(BitArray, PopSize, comp)
 {
-    alias T = integralType!length;
+    alias T = BitArray;
     /**
      * Default constructor. No statistics will be printed, 
      * and mutation will be set at 1%
@@ -66,7 +66,7 @@ class BStringGA(uint length,
                 population ~= generator();
             }
             else {
-                population ~= generator!T();
+                population ~= generator!length();
             }       
         }
 
@@ -74,18 +74,18 @@ class BStringGA(uint length,
         foreach(generation; 0..generations) {
 
             while(population.length < PopSize) {
-                population ~= crossover(population[uniform(0, population.length)],
-                                        population[uniform(0, population.length)]);
+                auto parent1 = population[uniform(0, population.length)];
+                auto parent2 = population[uniform(0, population.length)];
+                static if (isCallable!crossover) {
+                    population ~= crossover(parent1, parent2);
+                }
+                else {
+                    population ~= crossover!length(parent1, parent2);
+                }
             }
 
             foreach(i; 0..to!uint(PopSize*m_mutationRate)) {
                 mutator(population[uniform(0, PopSize)]);
-            }
-
-            //Zero out values outside valid range
-            T fix = 2^^length-1;
-            foreach(ref ind; population) {
-                ind &= fix;
             }
 
             //if the user has defined their own selector, just cal it
@@ -98,11 +98,9 @@ class BStringGA(uint length,
 
 
             if (m_statFrequency && generation % m_statFrequency == 0) {
-                writeln(format("(gen %d) Top Score: %f, Individual: %0*b",
-                               generation,
-                               fitness(population[0]),
-                               length,
-                               population[0]));
+                writeln("(gen ", generation, ") ",
+                        "Top Score: ", fitness(population[0]),
+                        ", Individual: ", population[0]);
             }
             if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
                 best = population[0];
@@ -115,10 +113,8 @@ class BStringGA(uint length,
             }
         }
 
-        writeln(format("(Historical best) Score: %f, Individual: %0*b",
-                               fitness(population[0]),
-                               length,
-                               population[0]));
+        writeln("\n(Historical best) Score: ", fitness(best),
+                ", Individual: ", best);
         return best;
     }
 }

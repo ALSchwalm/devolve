@@ -2,17 +2,17 @@
 
 import devolve.bstring;
 import devolve.selector;
+import std.bitmanip;
 
 immutable weights = [1, 4, 5, 12, 8, 3, 9, 10, 2, 4];
 immutable capacity = 27;
 
-double fitness(ulong ind) {
+double fitness(in BitArray ind) {
     auto total = 0;
-    foreach(i; 0..weights.length) {
-        if (ind & 1) {
+    foreach(i, bit; ind ) {
+        if (bit) {
             total += weights[i];
         }
-        ind >>= 1;
     }
     if (total > capacity) {
         return 0;
@@ -32,13 +32,13 @@ void main() {
             fitness,
             
             //Generator: The initial population will zero'd
-            preset!0,
+            preset!([1, 0, 1, 0, 0]),
             
             //Selector: Select the top 2 individuals each generation
-            topPar!2,
+            top!2,
 
             //Crossover: Just copy one of the parents
-            XOR,
+            singlePoint,
 
             //Mutation: Swap the alleles (cities)
             randomFlip);
