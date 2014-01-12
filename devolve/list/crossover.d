@@ -36,6 +36,15 @@ individual singlePoint(individual)(in individual ind1,
     return newInd;
 };
 
+unittest {
+
+    int[] parent1 = [1, 2, 3, 4];
+    int[] parent2 = [3, 4, 5, 6, 8, 9, 10];
+
+    auto child = singlePoint(parent1, parent2);
+    assert(child.length <= 4);
+}
+
 
 /**
  * Same as singlePoint but without size guarantees. 
@@ -91,6 +100,15 @@ individual twoPoint(individual)(in individual ind1,
 }
 
 
+unittest {
+
+    int[] parent1 = [1, 2, 3, 4];
+    int[] parent2 = [3, 4, 5, 6, 8, 9, 10];
+
+    auto child = twoPoint(parent1, parent2);
+    assert(child.length <= 4);
+}
+
 /**
  * The new individual is a copy of one of the parents
  * selected at random.
@@ -115,3 +133,14 @@ individual randomCopy(individual)(in individual ind1,
     }
     return newInd;
 }
+
+unittest {
+
+    int[] parent1 = [1, 2, 3, 4];
+    int[] parent2 = [3, 4, 5, 6, 8, 9, 10];
+
+    auto child = randomCopy(parent1, parent2);
+    assert(child == parent1 || child == parent2);
+}
+
+

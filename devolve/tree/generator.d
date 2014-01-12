@@ -20,7 +20,18 @@ private auto unpackCall(A, B...)
     }
 }
 
+unittest {
+    auto del = function(int x, int y) {return x+y;};
+    auto term = function() {return 2;};
+    
+    auto n = new Node!(typeof(del))(del, "node");
+    auto child = new Node!(typeof(term))(term, "child");
+
+    assert(unpackCall!(typeof(del))(del, [child, child]) == 4);
+}
+
 class BaseNode(T) {
+    
     this(string _name) {
         name = _name;
     }
@@ -115,6 +126,25 @@ private class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
     
     const(T) val; 
     BaseType children[ParameterTypeTuple!T.length];
+}
+
+unittest {
+
+    auto del = function(int x, int y) {return x+y;};
+    auto term = function() {return 2;};
+    
+    auto n = new Node!(typeof(del))(del, "node");
+
+    assert(n.children.length == 2);
+
+    auto child = new Node!(typeof(term))(term, "child");
+
+    assert(child.children.length == 0);
+    n.setChildren([child, child]);
+    
+    assert(n.getHeight == 2);
+    assert(n.eval() == 4);
+    assert(n.toString() == "node(child(), child())");
 }
 
 
@@ -237,4 +267,15 @@ private :
     const(BaseNode!T)[] nodes;
     const(T delegate())[] randomConstants;
     const(BaseNode!T)[] terminators;
+}
+
+unittest {
+    TreeGenerator!int gen;
+    
+    gen.register!"-a"("negative");
+    gen.register!"a+b"("sum");
+    gen.registerConstant!2;
+
+    auto t = gen.getRandomTree(4);
+    assert(t.getHeight() == 4);
 }

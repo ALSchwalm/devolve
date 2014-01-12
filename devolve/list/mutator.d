@@ -12,6 +12,13 @@ void randomSwap(individual)(ref individual ind) {
     std.algorithm.swap(ind[one], ind[two]);
 };
 
+unittest {
+    auto ind = [1, 2, 3, 4];
+    auto prev = ind.dup;
+    randomSwap(ind);
+    assert(sort(prev) == sort(ind));
+}
+
 /**
  * Mutate an individual by replaceing a random allele
  * with a random value in the range [low, high)
@@ -21,3 +28,8 @@ void randomRange(allele : allele[], allele low, allele high)(ref allele[] ind) {
     ind[i] = cast(allele)(uniform(low, high));
 }
 
+unittest {
+    auto ind = [1, 2, 3, 4];
+    auto prev = ind.dup;
+    randomRange!(typeof(ind), 0, 10)(ind);
+}
