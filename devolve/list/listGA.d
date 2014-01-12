@@ -19,6 +19,7 @@ import std.typetuple;
  *    T = Type representing the genome. Should be a dynamic or statically sized array
  *    PopSize = The size of the population
  *    fitness = User defined fitness function. Must return double
+ *    generator = Function used to create new members of the population
  *    selector = Selection method used to pick parents of next generation. 
  *    crossover = Used to crossover individuals to create the new generation. 
  *    mutator = Used to alter the population. 

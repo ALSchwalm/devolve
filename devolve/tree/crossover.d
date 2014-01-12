@@ -3,6 +3,12 @@ import devolve.tree.generator;
 import std.random;
 import std.stdio;
 
+
+/**
+ * Create a new individual by cloning ind1 and copying a random
+ * subtree of ind2 into ind1. The height of the resulting
+ * individual will be equal to ind1's height.
+ */
 BaseNode!T singlePoint(T)(in BaseNode!T ind1,
                           in BaseNode!T ind2) {
 

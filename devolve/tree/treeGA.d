@@ -13,8 +13,23 @@ import std.conv;
 import std.stdio;
 import std.file;
 
+///Convenience alias
 alias Tree = BaseNode;
 
+/**
+ * Genetic algorithm for genomes in the form of a tree. Particularly well suited
+ * for growing algorithms.
+ *
+ * Params:
+ *    T = Type of the tree. Should be the return type and parameter type of the functions composing the tree
+ *    PopSize = The size of the population
+ *    depth = Maximum depth of the tree
+ *    fitness = User defined fitness function. Must return double
+ *    selector = Selection method used to pick parents of next generation. 
+ *    crossover = Used to crossover individuals to create the new generation. 
+ *    mutator = Used to alter the population. 
+ *    comp = Used to determine whether a larger or smaller fitness is better.
+ */
 class TreeGA(T,
              uint PopSize,
              uint depth,
@@ -25,19 +40,29 @@ class TreeGA(T,
              alias comp = "a > b") : BaseGA!(BaseNode!T, PopSize, comp)
         if (PopSize > 0 && depth > 0) {
 
-        this(TreeGenerator!T g) {
-            generator = g;
+        @disable this() {}
+
+        ///Create a tree GA with the given generator.
+        ///NOTE: additional functions may still be registered with the generator after this point
+        this(TreeGenerator!T gen) {
+            generator = gen;
         }
 
+        ///Whether to generate a graph of the tree after 'evolution' completes
         @property bool autoGenerateGraph(bool generate) {
             return m_generateGraph = generate;
         }
 
+        ///ditto
         @property bool autoGenerateGraph() {
             return m_generateGraph;
         }
 
-        void generateGraph(BaseNode!T node, string name="output.dot", string description="") {
+        /**
+         * Generate a a Graphviz dot file named filename with additional description
+         * 'description' using node
+         */
+        void generateGraph(BaseNode!T node, string filename="output.dot", string description="") {
 
             string file = "digraph G{ graph [ordering=\"out\"];\n";
             file ~= "node0 [ label = \"" ~ node.name ~ "\"];\n";
@@ -45,9 +70,20 @@ class TreeGA(T,
             file ~= graphSubTree(node, currentNodeNumber);
             
             file ~= "labelloc=\"t\"; label=\"" ~ description ~ "\"}";
-            std.file.write(name, file);
+            std.file.write(filename, file);
         }
 
+        /**
+         * Evolution function works as follows.
+         *
+         * $(OL
+         *   $(LI The population is created using the supplied `generator`)
+         *   $(LI Crossing-over is preformed to created missing population)
+         *   $(LI The population is mutated with probability `mutation_rate`)
+         *   $(LI The parents of the next generation are selected)
+         *   $(LI Statistics are recorded for the best individual)
+         *   $(LI Terminate if criteria is met, otherwise go to 2.)) 
+         */
         override BaseNode!T evolve(uint generations) {
             
             foreach(i; 0..PopSize) {

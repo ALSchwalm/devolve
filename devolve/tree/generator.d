@@ -30,23 +30,44 @@ unittest {
     assert(unpackCall!(typeof(del))(del, [child, child]) == 4);
 }
 
+/**
+ * Genome used with the TreeGA. 'T' must be the type of the 
+ * parameters and return values from the functions composing
+ * the tree.
+ */
 class BaseNode(T) {
     
-    this(string _name) {
+    protected this(string _name) {
         name = _name;
     }
 
+    ///Evaluate the node by calling the wrapped function with eval of each child
     abstract T eval() const ;
+
+    ///Get the number of children
     abstract uint getNumChildren() const;
-    abstract ref BaseNode!T getChild(uint);
-    abstract ref const(BaseNode!T) getChild(uint) const;
-    abstract void setChild(BaseNode!T, uint);
-    abstract void setChildren(BaseNode!T[]);
+
+    ///Get the child at index by reference
+    abstract ref BaseNode!T getChild(uint index);
+
+    ///Get the child at index by const reference
+    abstract ref const(BaseNode!T) getChild(uint index) const;
+
+    ///Set the child at index to node
+    abstract void setChild(BaseNode!T node, uint index);
+
+    ///Set the children. The length of children should equal getNumChildren()
+    abstract void setChildren(BaseNode!T[] children);
+
+    ///Get the maximum number of nodes from this node to a leaf.
     abstract uint getHeight() const;
+
+    ///Get a deep copy of this node
     abstract BaseNode!T clone(bool = false) const;
+
+    ///
     immutable string name;
 }
-
 
 private class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
     alias BaseNode!(ReturnType!T) BaseType;
@@ -147,13 +168,19 @@ unittest {
     assert(n.toString() == "node(child(), child())");
 }
 
-
+/**
+ * Generator used to create new trees for the population. 
+ * A generator will also be passed to the mutator and
+ * crossover functions of the GA.
+ */
 struct TreeGenerator(T) {
 
+    ///Create a new Tree with a height of height
     auto opCall(uint height) const {
         return getRandomTree(height);
     }
 
+    ///Register a function which cannot be known at compile time
     void register(A)(A func, string name)
         if (is(ReturnType!A == T) &&
             EraseAll!(T, staticMap!(Unqual, ParameterTypeTuple!A)).length == 0) {
@@ -161,19 +188,33 @@ struct TreeGenerator(T) {
             addNode!A(func, name);
     }
 
+    ///Register a compile time known function
     void register(alias func)(string name) {
         registerH!(func)(name);
     }
-        
+
+    ///Register a constant value (this will strip the '()' when printing the tree)
     void registerConstant(T constant)() {
         register!constant(to!string(constant));
     }
 
+    ///Register constants in the range [lower, upper). 
     void registerConstantRange(A)(A lower, A upper) {
         T randConst() {return uniform(lower, upper);}
         randomConstants ~= &randConst;
     }
 
+    /**
+     * Register an input to the grown algorithm.
+     * EXAMPLES:
+     * ------------
+     *    int x;
+     *    TreeGenerator!int gen;
+     *
+     *    //Same effect as 'register!( () {return x;})("x");
+     *    gen.registerInput!x;
+     * ------------
+     */
     void registerInput(alias input)() {
         auto inputValue() {
             return input;
@@ -183,9 +224,9 @@ struct TreeGenerator(T) {
             (&inputValue, input.stringof);
     }
 
-        
-    BaseNode!T getRandomTree(uint depth) const {
-        if (depth == 1) {
+    ///Create a random tree with height of exactly height
+    BaseNode!T getRandomTree(uint height) const {
+        if (height == 1) {
             return getRandomTerminator();
         }
 
@@ -195,17 +236,21 @@ struct TreeGenerator(T) {
         children.length = root.getNumChildren();
 
         for(uint i=0; i < children.length; ++i) {
-            children[i] = getRandomTree(depth-1);
+            children[i] = getRandomTree(height-1);
         }
         root.setChildren(children);
         return root;
     }
 
+    ///Create a random node
+    ///WARNING: It is not safe to 'eval' this note immediately
     auto getRandomNode() const {
         assert(nodes.length > 0, "Generator has no registered nodes");
         return nodes[uniform(0, nodes.length)].clone(true);
     }
 
+    ///Create a random terminator from the set of registered terminators
+    ///NOTE: This set includes any registered function with 0 parameters, constants, and inputs
     auto getRandomTerminator() const {
         assert(randomConstants.length > 0 || terminators.length > 0,
                "Generator has no registered terminators");
