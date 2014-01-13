@@ -19,8 +19,12 @@ import std.traits;
  */
 individual singlePoint(individual)(in individual ind1,
                                    in individual ind2)
-    if (isArray!individual) {
-        
+if (isArray!individual)
+out (child) {
+    assert(child.length <= min(ind1.length, ind2.length));
+}
+body {
+  
     individual newInd;
 
     static if (isStaticArray!individual) {
@@ -85,8 +89,12 @@ individual singlePointVariable(individual)(in individual ind1,
  */
 individual twoPoint(individual)(in individual ind1,
                                 in individual ind2)
-    if (isArray!individual) {
-        
+if (isArray!individual)
+out (child) {
+    assert(child.length <= min(ind1.length, ind2.length));
+}
+body {
+
     individual newInd;
     auto start = uniform(0, min(ind1.length, ind2.length));
     auto end = uniform(start, min(ind1.length, ind2.length));
@@ -115,7 +123,12 @@ unittest {
  */
 individual randomCopy(individual)(in individual ind1,
                                   in individual ind2)
-    if (isArray!individual) {
+if (isArray!individual)
+out (child) {
+    assert(child == ind1 || child == ind2);
+}
+body {
+
         
     individual newInd;
 
@@ -142,5 +155,4 @@ unittest {
     auto child = randomCopy(parent1, parent2);
     assert(child == parent1 || child == parent2);
 }
-
 
