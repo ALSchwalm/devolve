@@ -14,5 +14,4 @@ void randomFlip(ref BitArray ind) {
             bit = !bit;
         }
     }
-    
 }
