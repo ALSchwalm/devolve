@@ -3,10 +3,16 @@ module devolve.net.generator;
 import std.typecons;
 import std.random;
 import std.conv;
+import std.math;
 
 ///Convenience alias
-alias Layer = Neuron[];
+alias HiddenLayer = HiddenNeuron[];
 
+///Convenience alias
+alias InputLayer = InputNeuron[];
+
+///Convenience alias
+alias OutputLayer = OutputNeuron[];
 
 /**
  * Abstract class used to describe the neurons which make up 
@@ -40,6 +46,7 @@ class HiddenNeuron : Neuron {
         double total = 0;
         foreach(connection; connections) {
             total += connection.neuron.eval() * connection.weight;
+            assert(!isNaN(total));
         }
         return total;
     }
@@ -58,11 +65,14 @@ class HiddenNeuron : Neuron {
 class InputNeuron : Neuron {
     
     override double eval() const {
+        assert(!isNaN(val));
         return val;
     }
 
     override InputNeuron clone() const {
-        return new InputNeuron;
+        auto input = new InputNeuron;
+        input.val = val;
+        return input;
     }
 
     double val;
@@ -71,142 +81,156 @@ class InputNeuron : Neuron {
 /**
  * Class for neurons  which return the values
  */
-class OutputNeuron : HiddenNeuron {}
+class OutputNeuron : Neuron {
+    override double eval() const {
+        double total = 0;
+        foreach(connection; connections) {
+            total += connection.neuron.eval() * connection.weight;
+            assert(!isNaN(total));
+        }
+        return tanh(total);
+    }
 
+    ///Create a new deep copy of the neuron
+    override OutputNeuron clone() const {
+        auto n = new OutputNeuron;
+        n.connections = cloneConnections();
+        return n;
+    }
+}
+
+/**
+ * Genome used with netGA. Represents a simple layered
+ * neural network with inputs and outputs as doubles
+ */
 class Network
 {
     ///Evaluate this network using the given inputs
-    double[] opCall(double[] inputs)
+    double[] opCall(in double[] inputs)
     in {
-        assert(inputs.length == layers[0].length);
+        assert(inputLayer.length == inputs.length);
     }
     body {
-        auto inputNeurons = to!(InputNeuron[])(layers[0]);
-        foreach(i, neuron; inputNeurons) {
+        foreach(i, ref neuron; inputLayer) {
             neuron.val = inputs[i];
         }
 
         double[] outputs;
-        foreach(node; layers[$-1]) {
+        foreach(node; outputLayer) {
             outputs ~= node.eval();
         }
         return outputs;
     }
-    
+
     ///Preform a deep copy of an existing network
     Network clone() const
     out (cloned) {
-        assert(cloned.layers.length == layers.length);
-        foreach(i, layer; layers) {
-            assert(cloned.layers[i].length == layer.length);
+        assert(cloned.hiddenLayers.length == hiddenLayers.length);
+        foreach(i, layer; hiddenLayers) {
+            assert(cloned.hiddenLayers[i].length == layer.length);
         }
+        assert(cloned.inputLayer.length == inputLayer.length);
+        assert(cloned.outputLayer.length == outputLayer.length);
     }
     body {
         auto n = new Network();
-        foreach(i, layer; layers) {
-            n.layers.length = layer.length;
+        foreach(i, neuron; inputLayer) {
+            n.inputLayer ~= neuron.clone();
+        }
+
+        n.hiddenLayers.length = hiddenLayers.length;
+        foreach(i, layer; hiddenLayers) {
             foreach(neuron; layer) {
-                n.layers[i] ~= neuron.clone();
+                n.hiddenLayers[i] ~= neuron.clone();
             }
+        }
+
+        foreach(i, neuron; outputLayer) {
+            n.outputLayer ~= neuron.clone();
         }
         return n;
     }
 
-    ///Array of layers which make up the network, including input and output
-    Layer[] layers;
+    ///Array of inner layers
+    HiddenLayer[] hiddenLayers;
+
+    ///Layer of input neurons
+    InputLayer inputLayer;
+
+    ///Array of output neurons
+    OutputLayer outputLayer;
 }
 
 
 /**
  * Generator to create neural net based genomes.
+ * Params:
+ *    inputLayerSize = Number of neurons in the input layer
+ *    outputLayerSize = Number of neurons in the output layer
+ *    hiddenLayers = Number of 'hidden' inner layers
+ *    hiddenLayerMaxSize = Maximum number of neurons in each hidden layer
+ *    maxConnections = Maximum number of connections for each neurons, minimum is
+ *                     set to 1
  */
-struct NetGenerator {    
-    /**
-     * Constructor
-     * Params:
-     *    inputLayerSize = Number of neurons in the input layer
-     *    outputLayerSize = Number of neurons in the output layer
-     *    hiddenLayers = Number of 'hidden' inner layers
-     *    hiddenLayerMaxSize = Maximum number of neurons in each hidden layer
-     *    maxConnections = Maximum number of connections for each neurons, minimum is
-     *                     set to 1
-     */
-    this(uint _inputLayerSize, uint _outputLayerSize,
-         uint _hiddenLayers, uint _hiddenLayerMaxSize,
-         uint _maxConnections) {
-        inputLayerSize = _inputLayerSize;
-        outputLayerSize = _outputLayerSize;
-        hiddenLayerMaxSize = _hiddenLayerMaxSize;
-        hiddenLayers = _hiddenLayers;
-        maxConnections = _maxConnections;
+Network randomConnections( uint inputLayerSize, uint outputLayerSize,
+                           uint hiddenLayers, uint hiddenLayerMaxSize,
+                           uint maxConnections)()
+out (net){
+    assert(net.inputLayer.length == inputLayerSize);
+    assert(net.hiddenLayers.length == hiddenLayers);
+    assert(net.outputLayer.length == outputLayerSize);
+    foreach(i; 0..hiddenLayers) {
+        assert(net.hiddenLayers.length < hiddenLayerMaxSize);
     }
-
-    ///Construct a Network using this generator
-    auto opCall()
-    out (net){
-        assert(net.layers.length == hiddenLayers + 2);
-        assert(net.layers[0].length == inputLayerSize);
-        assert(net.layers[$-1].length == outputLayerSize);
-        foreach(i; 1..net.layers.length-2) {
-            assert(net.layers[i].length < hiddenLayerMaxSize);
-        }
-    }
-    body {
-        auto n = new Network;
+}
+body {
+    auto n = new Network;
         
-        //Add input layer
-        Layer input;
-        foreach(i; 0..inputLayerSize) {
-            input ~= new InputNeuron;
-        }
-        n.layers ~= input;
+    //Add input layer
+    foreach(i; 0..inputLayerSize) {
+        n.inputLayer ~= new InputNeuron;
+    }
+        
+    //Add hidden layers
+    foreach(i; 0..hiddenLayers) {
+        HiddenLayer hidden;
 
-        //Add hidden layers
-        foreach(i; 0..hiddenLayers) {
-            Layer hidden;
-
-            //There must be at least 1 neuron in a layer
-            auto numLayerNeurons = uniform(1, hiddenLayerMaxSize);
+        //There must be at least 1 neuron in a layer
+        auto numLayerNeurons = uniform(1, hiddenLayerMaxSize);
             
-            foreach(j; 0..numLayerNeurons)
-            {
-                auto hiddenNeuron = new HiddenNeuron;
-
-                auto numConnections = uniform(0, maxConnections);
-                foreach(k; 0..numConnections) {
-                    auto weight = uniform(0.0, 2.0);
-                    auto connection = n.layers[$-1][uniform(0, n.layers[$-1].length)];
-                    hiddenNeuron.connections ~= Neuron.Connection(weight, connection);
+        foreach(j; 0..numLayerNeurons)
+        {
+            auto hiddenNeuron = new HiddenNeuron;
+            auto numConnections = uniform(0, maxConnections);
+                
+            foreach(_; 0..numConnections) {
+                auto weight = uniform(-2.0, 2.0);
+                Neuron connection;
+                if (i == 0) {
+                    connection = n.inputLayer[uniform(0, $)];
                 }
-
-                hidden ~= hiddenNeuron;
-            }
-            n.layers ~= hidden;
-        }
-
-        //Add output layer
-        Layer output;
-        foreach(i; 0..outputLayerSize) {
-            auto outputNeuron = new OutputNeuron;
-
-            foreach(j; 0..maxConnections) {
-                auto weight = uniform(0.0, 2.0);
-                auto connection = n.layers[$-1][uniform(0, n.layers[$-1].length)];
-                outputNeuron.connections ~= Neuron.Connection(weight, connection);
+                else {
+                    connection = n.hiddenLayers[$-1][uniform(0, $)];
+                }
+                hiddenNeuron.connections ~= Neuron.Connection(weight, connection);
             }
 
-            output ~= outputNeuron;
+            hidden ~= hiddenNeuron;
         }
-        n.layers ~= output;
-        return n;
+        n.hiddenLayers ~= hidden;
     }
 
-    ///
-    immutable {
-        uint hiddenLayers;
-        uint hiddenLayerMaxSize;
-        uint inputLayerSize;
-        uint outputLayerSize;
-        uint maxConnections;
+    //Add output layer
+    foreach(i; 0..outputLayerSize) {
+        auto outputNeuron = new OutputNeuron;
+
+        foreach(j; 0..maxConnections) {
+            auto weight = uniform(-2.0, 2.0);
+            auto connection = n.hiddenLayers[$-1][uniform(0, $)];
+            outputNeuron.connections ~= Neuron.Connection(weight, connection);
+        }
+
+        n.outputLayer ~= outputNeuron;
     }
+    return n;
 }
