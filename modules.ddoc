@@ -16,4 +16,9 @@ MODULES =
         $(MODULE bstring.crossover)
         $(MODULE bstring.generator)
         $(MODULE bstring.mutator)
+
+        $(MODULE net.netGA)
+        $(MODULE net.crossover)
+        $(MODULE net.generator)
+        $(MODULE net.mutator)
         
