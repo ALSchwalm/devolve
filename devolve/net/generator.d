@@ -4,6 +4,7 @@ import std.typecons;
 import std.random;
 import std.conv;
 import std.math;
+import std.algorithm;
 
 ///Convenience alias
 alias HiddenLayer = HiddenNeuron[];
@@ -27,14 +28,6 @@ class Neuron {
     
     ///Connected nodes
     Connection[] connections;
-
-    protected Connection[] cloneConnections() const {
-        Connection[] c;
-        foreach(connection; connections) {
-            c ~= Connection(connection.weight, connection.neuron.clone());
-        }
-        return c;
-    }
 }
 
 /**
@@ -46,16 +39,13 @@ class HiddenNeuron : Neuron {
         double total = 0;
         foreach(connection; connections) {
             total += connection.neuron.eval() * connection.weight;
-            assert(!isNaN(total));
         }
         return total;
     }
 
     ///Create a new deep copy of the neuron
     override HiddenNeuron clone() const {
-        auto n = new HiddenNeuron;
-        n.connections = cloneConnections();
-        return n;
+        return new HiddenNeuron;
     }
 }
 
@@ -65,7 +55,6 @@ class HiddenNeuron : Neuron {
 class InputNeuron : Neuron {
     
     override double eval() const {
-        assert(!isNaN(val));
         return val;
     }
 
@@ -86,16 +75,13 @@ class OutputNeuron : Neuron {
         double total = 0;
         foreach(connection; connections) {
             total += connection.neuron.eval() * connection.weight;
-            assert(!isNaN(total));
         }
         return tanh(total);
     }
 
     ///Create a new deep copy of the neuron
     override OutputNeuron clone() const {
-        auto n = new OutputNeuron;
-        n.connections = cloneConnections();
-        return n;
+        return new OutputNeuron;
     }
 }
 
@@ -141,12 +127,42 @@ class Network
         n.hiddenLayers.length = hiddenLayers.length;
         foreach(i, layer; hiddenLayers) {
             foreach(neuron; layer) {
-                n.hiddenLayers[i] ~= neuron.clone();
+                auto newNeuron = neuron.clone();
+                
+                const(Neuron)[] target;
+                ulong index;
+                Neuron newTarget;
+                
+                foreach(connection; neuron.connections) {
+                    if (i > 0) {
+                        target = find(hiddenLayers[i-1], connection.neuron);
+                        index = hiddenLayers[i-1].length - target.length;
+                        newTarget = n.hiddenLayers[i-1][index];
+                    }
+                    else {
+                        target = find(inputLayer, connection.neuron);
+                        index = inputLayer.length - target.length;
+                        newTarget = n.inputLayer[index];
+                    }
+                    newNeuron.connections ~= Neuron.Connection(connection.weight,
+                                                               newTarget);
+                }
+
+                n.hiddenLayers[i] ~= newNeuron;
             }
         }
 
         foreach(i, neuron; outputLayer) {
-            n.outputLayer ~= neuron.clone();
+            auto newNeuron = neuron.clone();
+            
+            foreach(connection; neuron.connections) {
+                auto target = find(hiddenLayers[$-1], connection.neuron);
+                auto index = hiddenLayers[$-1].length - target.length;
+
+                auto newTarget = n.hiddenLayers[$-1][index];
+                newNeuron.connections ~= Neuron.Connection(connection.weight, newTarget);
+            }
+            n.outputLayer ~= newNeuron;
         }
         return n;
     }
