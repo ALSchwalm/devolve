@@ -217,7 +217,7 @@ body {
         foreach(j; 0..numLayerNeurons)
         {
             auto hiddenNeuron = new HiddenNeuron;
-            auto numConnections = uniform(0, maxConnections);
+            auto numConnections = uniform(1, maxConnections);
                 
             foreach(_; 0..numConnections) {
                 auto weight = uniform(-2.0, 2.0);
