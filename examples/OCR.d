@@ -9,10 +9,9 @@ import std.range;
 import std.math;
 
 const(double[][26]) trainingData;
-const(double[][6])  testData;
+const(double[][7])  testData;
 
 double[][] loadPBM(string fileName, uint characters){
-
     double[][] data;
     
     auto file = File(fileName);
@@ -39,7 +38,7 @@ double[][] loadPBM(string fileName, uint characters){
 
 static this() {
     trainingData = loadPBM("examples/assets/mono.pbm", 26);
-    testData = loadPBM("examples/assets/arial.pbm", 6);
+    testData = loadPBM("examples/assets/arial.pbm", 7);
 }
 
 double fitness(Network individual) {
@@ -47,8 +46,14 @@ double fitness(Network individual) {
 
     foreach(i, pointList; trainingData) {
         auto result = individual(pointList);
-        total += 2*result[i];
-        total -= abs(reduce!"a+b"(result));
+        foreach(j, letterProb; result) {
+            if (i == j) {
+                total += letterProb;
+            }
+            else if (letterProb > result[i]) {
+                total -= letterProb - result[i];
+            }
+        }
     }
     return total;
 }
@@ -57,8 +62,10 @@ void main() {
 
     auto ga = new NetGA!(1000,
                          fitness,
-                         randomConnections!(11*14, 26, 1, 20, 5))(0.05, 10);
-    auto best = ga.evolve(50);
+                         randomConnections!(11*14, 26, 1, 100, 10),
+                         topPar!2,
+                         randomMerge)(0.05, 10);
+    auto best = ga.evolve(500);
 
     char[] str;
     foreach(pointList; testData) {
