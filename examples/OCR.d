@@ -46,26 +46,20 @@ double fitness(Network individual) {
 
     foreach(i, pointList; trainingData) {
         auto result = individual(pointList);
-        foreach(j, letterProb; result) {
-            if (i == j) {
-                total += letterProb;
-            }
-            else if (letterProb > result[i]) {
-                total -= letterProb - result[i];
-            }
-        }
+        auto pos = minPos!"a > b"(result);
+        if (result.length - pos.length == i) {total += 1;}
     }
     return total;
 }
 
 void main() {
 
-    auto ga = new NetGA!(1000,
+    auto ga = new NetGA!(100,
                          fitness,
-                         randomConnections!(11*14, 26, 1, 100, 10),
+                         randomConnections!(11*14, 26, 1, 110, 10),
                          topPar!2,
-                         randomMerge)(0.05, 10);
-    auto best = ga.evolve(500);
+                         randomMerge)(0.1, 10);
+    auto best = ga.evolve(1000);
 
     char[] str;
     foreach(pointList; testData) {
