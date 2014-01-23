@@ -2,10 +2,13 @@ module devolve.baseGA;
 
 import std.functional;
 
+///Base class to used for convenience 
 class BaseGA(T, uint PopSize, alias comp) {
 
+    ///All GAs must be able to preform an evolution
     abstract T evolve(uint);
 
+    ///Basic property GAs should have
     @property {
         float mutationRate(float rate) {
             return m_mutationRate = rate;
@@ -32,15 +35,18 @@ class BaseGA(T, uint PopSize, alias comp) {
         }
     }
 
+    ///Stores the population being evolved
     T population[];
+
+    ///Stores the most fit individual at any given time
     T best;
 
 protected:
+
     alias binaryFun!(comp) _compFun;
     bool function(double, double) compFun = &_compFun!(double, double);
     double m_termination = double.nan;
 
     float m_mutationRate = 0.01f;
     uint m_statFrequency = 0;
-    
 }
