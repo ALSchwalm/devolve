@@ -6,9 +6,11 @@ import devolve.bstring.generator;
 import std.stdio;
 import std.random;
 import std.algorithm;
-import std.conv;
 import std.traits;
 import std.bitmanip;
+import std.traits;
+import std.conv;
+
 
 /**
  * Genetic algorithm for genomes taking the form of binary strings.
@@ -60,42 +62,14 @@ class BStringGA(uint length,
      */
     override T evolve(uint generations){
 
-        //Add initial population
-        foreach(i; 0..PopSize) {
-            static if (isCallable!generator) {
-                population ~= generator();
-            }
-            else {
-                population ~= generator!length();
-            }       
-        }
+        generation();
 
         //Perform evolution
         foreach(generation; 0..generations) {
-
-            while(population.length < PopSize) {
-                auto parent1 = population[uniform(0, population.length)];
-                auto parent2 = population[uniform(0, population.length)];
-                static if (isCallable!crossover) {
-                    population ~= crossover(parent1, parent2);
-                }
-                else {
-                    population ~= crossover!length(parent1, parent2);
-                }
-            }
-
-            foreach(i; 0..to!uint(PopSize*m_mutationRate)) {
-                mutator(population[uniform(0, PopSize)]);
-            }
-
-            //if the user has defined their own selector, just cal it
-            static if (isCallable!selector) {
-                population = selector(population); 
-            }
-            else {
-                population = selector!(fitness, comp)(population);
-            }
-
+            
+            crossingOver();
+            mutation();
+            selection();
 
             if (m_statFrequency && generation % m_statFrequency == 0) {
                 writeln("(gen ", generation, ") ",
@@ -116,5 +90,53 @@ class BStringGA(uint length,
         writeln("\n(Historical best) Score: ", fitness(best),
                 ", Individual: ", best);
         return best;
+    }
+
+protected:
+
+    ///Add initial population using generator
+    void generation() {        
+        foreach(i; 0..PopSize) {
+            static if (isCallable!generator) {
+                population ~= generator();
+            }
+            else {
+                population ~= generator!length();
+            }       
+        }
+    }
+
+    ///Preform add new members by crossing-over the population left
+    ///after selection
+    void crossingOver() {
+        while(population.length < PopSize) {
+            auto parent1 = population[uniform(0, population.length)];
+            auto parent2 = population[uniform(0, population.length)];
+            static if (isCallable!crossover) {
+                population ~= crossover(parent1, parent2);
+            }
+            else {
+                population ~= crossover!length(parent1, parent2);
+            }
+        }
+    }
+
+    ///Preform mutation on members of the population
+    void mutation() {   
+        foreach(i; 0..to!uint(PopSize*m_mutationRate)) {
+            mutator(population[uniform(0, PopSize)]);
+        }
+    }
+
+    ///Select the most fit members of the population
+    void selection() {
+        
+        //if the user has defined their own selector, just call it
+        static if (isCallable!selector) {
+            population = selector(population); 
+        }
+        else {
+            population = selector!(fitness, comp)(population);
+        }
     }
 }
