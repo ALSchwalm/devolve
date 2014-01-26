@@ -11,7 +11,8 @@ import std.math;
 const(double[][26]) trainingData;
 const(double[][7])  testData;
 
-double[][] loadPBM(string fileName, uint characters){
+//Load data from a PBM file containing 'numCharacters' characters
+double[][] loadPBM(string fileName, uint numCharacters){
     double[][] data;
     
     auto file = File(fileName);
@@ -21,8 +22,8 @@ double[][] loadPBM(string fileName, uint characters){
     range.drop(1);
     auto dimensions = to!(uint[])(split(dimensionLine, " "));
 
-    auto charWidth = dimensions[0] / characters;
-    data.length = characters;
+    auto charWidth = dimensions[0] / numCharacters;
+    data.length = numCharacters;
 
     uint i=0;
     foreach(line; range) {
@@ -41,6 +42,7 @@ static this() {
     testData = loadPBM("examples/assets/arial.pbm", 7);
 }
 
+//Fitness: total number of correct letters output
 double fitness(Network individual) {
     double total = 0;
 
@@ -54,11 +56,34 @@ double fitness(Network individual) {
 
 void main() {
 
-    auto ga = new NetGA!(100,
+    auto ga = new NetGA!(//Population of 150 individuals
+                         150,
+
+                         //The above fitness function
                          fitness,
+
+                         /*
+                          *Generator: create random networks with the following properties
+                          *  inputLayerSize:     number of nodes (in this case pixels) inputed
+                          *  outputLayerSize:    number of outputs (in this case a value for each letter
+                          *                      of the alphabet.
+                          *  hiddenLayers:       number of 'hidden' inner layers
+                          *  hiddenLayerMaxSize: the maxium number of nodes in each hidden layer
+                          *  maxConnections:     maximum number of connections from each node to the
+                          *                      previous layer
+                          */
                          randomConnections!(11*14, 26, 1, 110, 10),
-                         topPar!2,
-                         randomMerge)(0.1, 10);
+
+                         //Select the top 10 individuals in parallel
+                         topPar!10,
+
+                         //Randomly copy the weights and connections from each parent
+                         //to create the child
+                         randomMerge)
+        //Set the mutation rate to 20% and output statistics every 10 generations
+        (0.2, 10);
+
+    //Grow for 1000 generations
     auto best = ga.evolve(1000);
 
     char[] str;
@@ -68,5 +93,8 @@ void main() {
         auto pos = minPos!"a > b"(result);
         str ~= to!char(result.length - pos.length + 97);
     }
+
+    //Write the output string. With sufficient evolution, should print something
+    //like 'devolve'
     writeln(str);
 }
