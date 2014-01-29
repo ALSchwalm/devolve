@@ -186,6 +186,18 @@
  and setting mutation rate and statistic frequency</p>
 </dl>
 </div>
+<hr><div class="row-fluid declaration"><h3>bool <span class="symbol-target" id="autoGenerateGraph">&nbsp;</span><a class="symbol-link" href="#autoGenerateGraph">autoGenerateGraph</a>(bool <i>generate</i>);
+<br>bool <span class="symbol-target" id="autoGenerateGraph">&nbsp;</span><a class="symbol-link" href="#autoGenerateGraph">autoGenerateGraph</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Whether to <i>generate</i> a graph of the net after 'evolution' completes</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="generateGraph">&nbsp;</span><a class="symbol-link" href="#generateGraph">generateGraph</a>(Network <i>net</i>, string <i>filename</i> = "output.dot", string <i>description</i> = "");
+</h3></div>
+<div class="declaration-content"><dl><p>Generate a a Graphviz dot file named <i>filename</i> with additional <i>description</i>
+ '<i>description</i>' using node</p>
+</dl>
+</div>
 <hr><div class="row-fluid declaration"><h3>Network <span class="symbol-target" id="evolve">&nbsp;</span><a class="symbol-link" href="#evolve">evolve</a>(uint <i>generations</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Evolution function works as follows.
@@ -196,6 +208,27 @@
    <li>The parents of the next generation are selected</li>
    <li>Statistics are recorded for the best individual</li>
    <li>Terminate if criteria is met, otherwise go to 2.</li></ol></p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="generation">&nbsp;</span><a class="symbol-link" href="#generation">generation</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Add initial population using generator</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="crossingOver">&nbsp;</span><a class="symbol-link" href="#crossingOver">crossingOver</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Preform add new members by crossing-over the population left
+after selection</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="mutation">&nbsp;</span><a class="symbol-link" href="#mutation">mutation</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Preform <span class="symbol-target" id="mutation">&nbsp;</span><a class="symbol-link" href="#mutation">mutation</a> on members of the population</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="selection">&nbsp;</span><a class="symbol-link" href="#selection">selection</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Select the most fit members of the population</p>
 </dl>
 </div>
 </div>
