@@ -50,84 +50,104 @@ class ListGA(T,
              alias crossover = singlePoint,
              alias mutator = randomSwap,
              alias comp = "a > b") : BaseGA!(T, PopSize, comp)
-    {
-        /**
-         * Default constructor. No statistics will be printed, 
-         * and mutation will be set at 1%
-         */
-        this(){}
+{
+    /**
+     * Default constructor. No statistics will be printed, 
+     * and mutation will be set at 1%
+     */
+    this(){}
 
-        /**
-         * Convienience constructor, equivilant to default constructing
-         * and setting mutation rate and statistic frequency
-         */
-        this(float mutRate, uint statFreq) {
-            m_mutationRate = mutRate;
-            m_statFrequency = statFreq;
-        }
+    /**
+     * Convienience constructor, equivilant to default constructing
+     * and setting mutation rate and statistic frequency
+     */
+    this(float mutRate, uint statFreq) {
+        m_mutationRate = mutRate;
+        m_statFrequency = statFreq;
+    }
 
-        /**
-         * Evolution function works as follows.
-         *
-         * $(OL
-         *   $(LI The population is created using the supplied `generator`)
-         *   $(LI Crossing-over is preformed to created missing population)
-         *   $(LI The population is mutated with probability `mutation_rate`)
-         *   $(LI The parents of the next generation are selected)
-         *   $(LI Statistics are recorded for the best individual)
-         *   $(LI Terminate if criteria is met, otherwise go to 2.)) 
-         */
-        override T evolve(uint generations){
+    /**
+     * Evolution function works as follows.
+     *
+     * $(OL
+     *   $(LI The population is created using the supplied `generator`)
+     *   $(LI Crossing-over is preformed to created missing population)
+     *   $(LI The population is mutated with probability `mutation_rate`)
+     *   $(LI The parents of the next generation are selected)
+     *   $(LI Statistics are recorded for the best individual)
+     *   $(LI Terminate if criteria is met, otherwise go to 2.)) 
+     */
+    override T evolve(uint generations){
 
-            //Add initial population
-            foreach(i; 0..PopSize) {
-                population ~= generator();
+        generation();
+            
+        //Perform evolution
+        foreach(generation; 0..generations) {
+
+            crossingOver();
+            mutation();
+            selection();
+
+            if (m_statFrequency && generation % m_statFrequency == 0) {
+                writeln("(gen ", generation, ") ",
+                        "Top Score: ", fitness(population[0]),
+                        ", Individual: ", population[0]);
             }
-
-            //Perform evolution
-            foreach(generation; 0..generations) {
-
-                while(population.length < PopSize) {
-                    population ~= crossover(population[uniform(0, population.length)],
-                                            population[uniform(0, population.length)]);
+            if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
+                static if (isDynamicArray!T) {
+                    best.length = population[0].length;
                 }
+                best[] = population[0][];
 
-                foreach(i; 0..to!uint(PopSize*m_mutationRate)) {
-                    mutator(population[uniform(0, PopSize)]);
-                }
-
-                //if the user has defined their own selector, just cal it
-                static if (isCallable!selector) {
-                    population = selector(population); 
-                }
-                else {
-                    population = selector!(fitness, comp)(population);
-                }
-
-
-                if (m_statFrequency && generation % m_statFrequency == 0) {
-                    writeln("(gen ", generation, ") ",
-                            "Top Score: ", fitness(population[0]),
-                            ", Individual: ", population[0]);
-                }
-                if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
-                    static if (isDynamicArray!T) {
-                        best.length = population[0].length;
-                    }
-                    best[] = population[0][];
-
-                    if (m_termination != double.nan && compFun(fitness(best), m_termination)) {
-                        writeln("\n(Termination criteria met) Score: ", fitness(best),
-                                ", Individual: ", best);
-                        break;
-                    }
+                if (m_termination != double.nan && compFun(fitness(best), m_termination)) {
+                    writeln("\n(Termination criteria met) Score: ", fitness(best),
+                            ", Individual: ", best);
+                    break;
                 }
             }
-
-            writeln("\n(Historical best) Score: ", fitness(best),
-                    ", Individual: ", best);
-            return best;
         }
+
+        writeln("\n(Historical best) Score: ", fitness(best),
+                ", Individual: ", best);
+        return best;
+    }
+
+protected:
+
+    ///Add initial population using generator
+    void generation() {
+        //Add initial population
+        foreach(i; 0..PopSize) {
+            population ~= generator();
+        }
+    }
+
+    ///Preform add new members by crossing-over the population left
+    ///after selection
+    void crossingOver() {
+        while(population.length < PopSize) {
+            population ~= crossover(population[uniform(0, population.length)],
+                                    population[uniform(0, population.length)]);
+        }
+    }
+
+    ///Preform mutation on members of the population
+    void mutation() {
+        foreach(i; 0..to!uint(PopSize*m_mutationRate)) {
+            mutator(population[uniform(0, PopSize)]);
+        }
+    }
+
+    ///Select the most fit members of the population
+    void selection() {
+        //if the user has defined their own selector, just cal it
+        static if (isCallable!selector) {
+            population = selector(population); 
+        }
+        else {
+            population = selector!(fitness, comp)(population);
+        }
+    }
 }
 
 version(unittest) {
