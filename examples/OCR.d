@@ -83,8 +83,11 @@ void main() {
         //Set the mutation rate to 20% and output statistics every 10 generations
         (0.2, 10);
 
+    //Generate a graph of the neural net as output.dot
+    ga.autoGenerateGraph=true;
+
     //Grow for 1000 generations
-    auto best = ga.evolve(1000);
+    auto best = ga.evolve(10);
 
     char[] str;
     foreach(pointList; testData) {
