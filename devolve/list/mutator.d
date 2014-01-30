@@ -23,9 +23,12 @@ unittest {
  * Mutate an individual by replaceing a random allele
  * with a random value in the range [low, high)
  */
-void randomRange(allele : allele[], allele low, allele high)(ref allele[] ind) {
-    auto i = uniform(0, ind.length);
-    ind[i] = cast(allele)(uniform(low, high));
+template randomRange(alias low, alias high) {
+    void randomRange(individual)(ref individual ind) {
+        alias allele = typeof(ind[0]);
+        auto i = uniform(0, ind.length);
+        ind[i] = cast(allele)(uniform(low, high));
+    }
 }
 
 unittest {
