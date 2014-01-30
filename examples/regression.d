@@ -15,14 +15,14 @@ static this() {
                        map!f(iota(-10, 10, 0.5)))).idup;
 }
 
+//Input variable for the grown function
 double x;
 
 /*
  * Evaluate function `g`. Fitness is the cumulative difference between g(x)
  * and a given point (x, y).
  */
-
-double fitness(ref Tree!double algorithm) {
+double fitness(in Tree!double algorithm) {
     double fit = 1;
 
     foreach(ref pair; points) {
