@@ -24,6 +24,8 @@ unittest {
  * with a random value in the range [low, high)
  */
 template randomRange(alias low, alias high) {
+
+    ///
     void randomRange(individual)(ref individual ind) {
         alias allele = typeof(ind[0]);
         auto i = uniform(0, ind.length);
