@@ -1,3 +1,4 @@
+#!/usr/bin/env rdmd
 
 import devolve.list;
 import devolve.selector;
@@ -6,11 +7,11 @@ import std.algorithm, std.typecons, std.random;
 import std.stdio;
 
 immutable NUM_ANTS = 5;
-immutable FIELD_SIZE = 100;
+immutable FIELD_SIZE = 1000;
 
 alias Tuple!(int, "x", int, "y") Point;
-immutable HOME = Point(0, 0);
-immutable TARGET = Point(10, 10);
+immutable HOME = Point(FIELD_SIZE/2, FIELD_SIZE/2);
+immutable TARGET = Point(HOME.x+1, HOME.y+1);
 
 alias individual = float[NUM_ANTS];
 
@@ -20,34 +21,29 @@ struct Ant {
     this(float _follow) {follow = _follow;}
     
     float follow; //probability that the ant will follow a path
-    Point[] path = [Point(FIELD_SIZE/2, FIELD_SIZE/2)];
+    bool reverse = false;
+    Point[] path = [HOME];
 
     void move() {
         int x = path[$-1].x;
         int y = path[$-1].y;
 
-        Point move = Point(x+uniform(-1, 1), y+uniform(-1, 1));
+        //Get random move
+        auto choices = [ Point(x, y+1), Point(x, y-1),
+                         Point(x+1, y), Point(x-1, y)];
+        randomShuffle(choices);
+
+        Point move = choices[0];
         int moveScore = 0;
         
-        //Get random move
-        
-        
-        foreach(i; [-1, 1]) {
-            if (field[x+i][y] > moveScore) {
-                //move = Point(x+i, y);
-                moveScore = field[x+i][y];
-            }
-        }
-
-        foreach(i; [-1, 1]) {
-            if (field[x][y+i] > moveScore) {
-                //move = Point(x, y+i);
-                moveScore = field[x][y+i];
+        foreach(ref choice; choices) {
+            if (field[choice.x][choice.y] > moveScore) {
+                move = choice;
+                moveScore = field[choice.x][choice.y];
             }
         }
         
         path ~= move;
-        writeln(path);
     }
 }
 
@@ -59,13 +55,14 @@ uint play(in individual percents) {
     }
 
     uint trips = 0;
-    foreach(turn; 0..10) {
-        foreach(ant; ants) {
+    foreach(turn; 0..100) {
+        foreach(ref ant; ants) {
             ant.move();
-            if (ant.path[$-1] == HOME &&
+            if (ant.path.length > 0 &&
+                ant.path[$-1] == HOME &&
                 find(ant.path, TARGET) != []) {
                 trips += 1;
-                ant.path = [];
+                ant.path = [HOME];
             }
         }
     }
@@ -74,9 +71,12 @@ uint play(in individual percents) {
 }
 
 
-
 double fitness(in individual ind){
-    return play(ind);
+    uint total = 0;
+    foreach(i; 0..10) {
+        total += play(ind);
+    }
+    return total/10.0;
 }
 
 void main() {
@@ -99,11 +99,7 @@ void main() {
         randomCopy,
 
         //Mutation: Swap the alleles (cities)
-        devolve.list.mutator.randomRange!(0.1, 1.0),
-
-        //Statistics must also know to record the historically lowest value
-        //and selector should order with lowest value first (shortest distance)
-        "a < b");
+        devolve.list.mutator.randomRange!(0.1, 1.0));
 
     //Set a 10% mutation rate
     ga.mutationRate = 0.1f;
@@ -112,5 +108,5 @@ void main() {
     ga.statFrequency = 5;
 
     // Run for 30 generations. Converges rapidly on abcd or dcba
-    ga.evolve(1);
+    ga.evolve(100);
 }
