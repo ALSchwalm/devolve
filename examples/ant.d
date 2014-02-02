@@ -4,14 +4,14 @@ import devolve.list;
 import devolve.selector;
 
 import std.algorithm, std.typecons, std.random;
-import std.stdio;
+import std.stdio, std.range;
 
 immutable NUM_ANTS = 5;
 immutable FIELD_SIZE = 1000;
 
 alias Tuple!(int, "x", int, "y") Point;
 immutable HOME = Point(FIELD_SIZE/2, FIELD_SIZE/2);
-immutable TARGET = Point(HOME.x+1, HOME.y+1);
+immutable TARGET = Point(HOME.x+10, HOME.y+10);
 
 alias individual = float[NUM_ANTS];
 
@@ -28,29 +28,46 @@ struct Ant {
         int x = path[$-1].x;
         int y = path[$-1].y;
 
-        //Get random move
-        auto choices = [ Point(x, y+1), Point(x, y-1),
-                         Point(x+1, y), Point(x-1, y)];
-        randomShuffle(choices);
+        if (!reverse) {
+            //Get random move
+            auto choices = [ Point(x, y+1), Point(x, y-1),
+                             Point(x+1, y), Point(x-1, y)];
+            randomShuffle(choices);
 
-        Point move = choices[0];
-        int moveScore = 0;
-        
-        foreach(ref choice; choices) {
-            if (field[choice.x][choice.y] > moveScore) {
-                move = choice;
-                moveScore = field[choice.x][choice.y];
+            Point move = choices[0];
+            int moveScore = -1;
+
+            auto totalScore = reduce!"a+b"(map!(a => field[a.x][a.y])(choices))+4;
+            foreach(ref choice; choices) {
+                //writeln(follow);
+                //writeln(uniform(0.0, 1.0)*follow, (field[choice.x][choice.y]+1.0)/totalScore);
+                if (field[choice.x][choice.y] > moveScore &&
+                    find(path, choice) == [] &&
+                    uniform(0.0, 1.0)*follow < (field[choice.x][choice.y]+1.0)/totalScore) {
+                    
+                    move = choice;
+                    moveScore = field[choice.x][choice.y];
+                }
             }
+
+            if (move == TARGET) {
+                path = TARGET ~ path;
+                reverse = true;
+            }
+            
+            path ~= move;
         }
-        
-        path ~= move;
+        else {
+            field[x][y] += 1;
+            path = path.dropBackOne();
+        }
     }
 }
 
 uint play(in individual percents) {
 
     Ant[NUM_ANTS] ants;
-    foreach(i, ant; ants) {
+    foreach(i, ref ant; ants) {
         ant = Ant(percents[i]);
     }
 
@@ -61,8 +78,10 @@ uint play(in individual percents) {
             if (ant.path.length > 0 &&
                 ant.path[$-1] == HOME &&
                 find(ant.path, TARGET) != []) {
+                
                 trips += 1;
                 ant.path = [HOME];
+                ant.reverse = false;
             }
         }
     }
@@ -70,13 +89,13 @@ uint play(in individual percents) {
     return trips;
 }
 
-
+immutable ROUNDS = 5;
 double fitness(in individual ind){
-    uint total = 0;
-    foreach(i; 0..10) {
+    double total = 0;
+    foreach(i; 0..ROUNDS) {
         total += play(ind);
     }
-    return total/10.0;
+    return total/ROUNDS;
 }
 
 void main() {
@@ -84,7 +103,7 @@ void main() {
     auto ga = new ListGA!(
         
         //Population of 10 individuals
-        individual, 10,
+        individual, 100,
             
         //Fitness: The above fitness function
         fitness,
@@ -93,10 +112,10 @@ void main() {
         randRange!(individual, NUM_ANTS, 0.1, 1.0),
             
         //Selector: Select the top 2 individuals each generation
-        topPar!2,
+        topPar!10,
 
         //Crossover: Just copy one of the parents
-        randomCopy,
+        singlePoint,
 
         //Mutation: Swap the alleles (cities)
         devolve.list.mutator.randomRange!(0.1, 1.0));
