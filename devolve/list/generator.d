@@ -1,16 +1,48 @@
 module devolve.list.generator;
-import std.random;
+import std.random, std.traits;
 
 /**
- * Create the initial population by creating 'num' random
+ * Create individuals as static arrays filled with 
  * allels in the range [low, high).
  */
-auto randRange(allele : allele[], uint num, allele low, allele high)() {
-    allele[num] ind;
-    foreach (i; 0..num) {
-        ind[i] = cast(allele)(uniform(low, high));
+template randRange(alias low, alias high) {
+
+    ///
+    auto randRange(individual)() if (isStaticArray!individual) {
+        individual ind;
+        alias allele = typeof(ind[0]);
+        
+        foreach (i; 0..individual.length) {
+            ind[i] = cast(allele)(uniform(low, high));
+        }
+        return ind;
     }
-    return ind;
+}
+
+unittest {
+    alias individual = int[4];
+    alias rangeOneTen = randRange!(0, 10);
+
+    auto ind = rangeOneTen!individual;
+    foreach(allele; ind) {
+        assert(allele < 10 && allele >= 0);
+    }
+}
+
+/**
+ * Create individuals as dynamic arrays filled with 
+ * 'num' allels in the range [low, high).
+ */
+template randRange(uint num, alias low, alias high) {
+
+    ///
+    auto randRange(allele: allele[])() {
+        allele[] ind;
+        foreach (i; 0..num) {
+            ind ~= cast(allele)(uniform(low, high));
+        }
+        return ind;
+    }
 }
 
 

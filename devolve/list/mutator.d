@@ -36,5 +36,10 @@ template randomRange(alias low, alias high) {
 unittest {
     auto ind = [1, 2, 3, 4];
     auto prev = ind.dup;
-    randomRange!(typeof(ind), 0, 10)(ind);
+    alias mutate = randomRange!(0, 10);
+
+    mutate(ind);
+    foreach(allele; ind) {
+        assert(allele >= 0 && allele < 10);
+    }
 }

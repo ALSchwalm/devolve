@@ -118,7 +118,12 @@ protected:
     void generation() {
         //Add initial population
         foreach(i; 0..PopSize) {
-            population ~= generator();
+            static if (isCallable!generator) {
+                population ~= generator();
+            }
+            else {
+                population ~= generator!T();
+            }
         }
     }
 
