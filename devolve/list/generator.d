@@ -45,6 +45,18 @@ template randRange(uint num, alias low, alias high) {
     }
 }
 
+unittest {
+    alias individual = int[];
+    alias rangeOneTen = randRange!(5, 0, 10);
+
+    auto ind = rangeOneTen!individual;
+    assert (ind.length == 5);
+    foreach(allele; ind) {
+        assert(allele < 10 && allele >= 0);
+    }
+}
+
+
 
 /**
  * Create the initial population using some preset value.
