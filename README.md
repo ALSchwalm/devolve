@@ -22,12 +22,7 @@ Building
 
 The library may be build with `make`, for release builds. Alternatively, run
 `make debug` for a debug build. This will also build all of the examples
-in the examples folder. 
-
-Unittests
-===========
-
-Unitests may be built and run with `make unittest`.
+in the examples folder. Unitests may be built and run with `make unittest`.
 
 Basic Usage
 =====
