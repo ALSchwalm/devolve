@@ -38,10 +38,15 @@ algorithm should run.)
 <dl>
   
 <h2>Examples</h2>
+
+These examples and others examples may be found in the
+<a href="https://github.com/ALSchwalm/devolve/tree/master/examples">
+examples folder.</a>
+
 <h3>The Traveling Salesman</h3>
 --------------
 import devolve.list;
-import devolve.selector;
+import selector = devolve.selector;
 
 import std.algorithm;
 
@@ -88,16 +93,16 @@ void main() {
             fitness,
             
             //Generator: The initial population will be copies of 'cbad'
-            preset!('c', 'b', 'a', 'd'),
+            generator.preset!('c', 'b', 'a', 'd'),
             
             //Selector: Select the top 2 individuals each generation
-            topPar!2,
+            selector.topPar!2,
 
             //Crossover: Just copy one of the parents
-            randomCopy,
+            crossover.randomCopy,
 
             //Mutation: Swap the alleles (cities)
-            randomSwap,
+            mutator.randomSwap,
 
             //Statistics must also know to record the historically lowest value
             //and selector should order with lowest value first (shortest distance)
@@ -117,7 +122,7 @@ void main() {
 <h3>Symbolic Regression</h3>
 ---------------
 import devolve.tree;
-import devolve.selector;
+import selector = devolve.selector;
 
 import std.math, std.conv, std.range;
 import std.typecons, std.algorithm;
@@ -196,16 +201,16 @@ void main() {
                            * Selector: Select the top 100 members by evalutating each
                            * member in parallel.
                            */
-                          topPar!50,
+                          selector.topPar!50,
 
                           /*
                            * Crossover: Copy one of the parents, and replace a random 
                            * node with a subtree from the other parent
                            */
-                          singlePoint,
+                          crossover.singlePoint,
 
                           //Mutator: Replace a random node with a new random subtree
-                          randomBranch,
+                          mutator.randomBranch,
 
                           //More fit values are smaller
                           "a < b")(gen);
@@ -230,8 +235,5 @@ void main() {
 
 }
 -----------
-Other examples may be found in the
-<a href="https://github.com/ALSchwalm/devolve/tree/master/examples">
-examples folder.</a>
 
             

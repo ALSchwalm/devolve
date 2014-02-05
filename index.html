@@ -195,9 +195,14 @@ algorithm should run.</li>
 <dl>
   
 <h2>Examples</h2>
+
+These examples and others examples may be found in the
+<a href="https://github.com/ALSchwalm/devolve/tree/master/examples">
+examples folder.</a>
+
 <h3>The Traveling Salesman</h3>
 <pre class="d_code"><span class="d_keyword">import</span> devolve.list;
-<span class="d_keyword">import</span> devolve.selector;
+<span class="d_keyword">import</span> selector = devolve.selector;
 
 <span class="d_keyword">import</span> std.algorithm;
 
@@ -244,16 +249,16 @@ algorithm should run.</li>
 </span>            fitness,
             
             <span class="d_comment">//Generator: The initial population will be copies of 'cbad'
-</span>            preset!('c', 'b', 'a', 'd'),
+</span>            generator.preset!('c', 'b', 'a', 'd'),
             
             <span class="d_comment">//Selector: Select the top 2 individuals each generation
-</span>            topPar!2,
+</span>            selector.topPar!2,
 
             <span class="d_comment">//Crossover: Just copy one of the parents
-</span>            randomCopy,
+</span>            crossover.randomCopy,
 
             <span class="d_comment">//Mutation: Swap the alleles (cities)
-</span>            randomSwap,
+</span>            mutator.randomSwap,
 
             <span class="d_comment">//Statistics must also know to record the historically lowest value
 </span>            <span class="d_comment">//and selector should order with lowest value first (shortest distance)
@@ -272,7 +277,7 @@ algorithm should run.</li>
 
 <h3>Symbolic Regression</h3>
 <pre class="d_code"><span class="d_keyword">import</span> devolve.tree;
-<span class="d_keyword">import</span> devolve.selector;
+<span class="d_keyword">import</span> selector = devolve.selector;
 
 <span class="d_keyword">import</span> std.math, std.conv, std.range;
 <span class="d_keyword">import</span> std.typecons, std.algorithm;
@@ -351,16 +356,16 @@ algorithm should run.</li>
                            * Selector: Select the top 100 members by evalutating each
                            * member in parallel.
                            */</span>
-                          topPar!50,
+                          selector.topPar!50,
 
                           <span class="d_comment">/*
                            * Crossover: Copy one of the parents, and replace a random 
                            * node with a subtree from the other parent
                            */</span>
-                          singlePoint,
+                          crossover.singlePoint,
 
                           <span class="d_comment">//Mutator: Replace a random node with a new random subtree
-</span>                          randomBranch,
+</span>                          mutator.randomBranch,
 
                           <span class="d_comment">//More fit values are smaller
 </span>                          <span class="d_string">"a &lt; b"</span>)(gen);
@@ -385,9 +390,6 @@ algorithm should run.</li>
 
 }
 </pre>
-Other examples may be found in the
-<a href="https://github.com/ALSchwalm/devolve/tree/master/examples">
-examples folder.</a>
 
             
 
