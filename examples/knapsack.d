@@ -1,7 +1,7 @@
 #!/usr/bin/env rdmd
 
 import devolve.bstring;
-import devolve.selector;
+import selector = devolve.selector;
 import std.bitmanip;
 
 immutable weights = [1, 4, 5, 12, 8, 3, 9, 10, 2, 4];
@@ -32,16 +32,16 @@ void main() {
             fitness,
             
             //Generator: The initial population will zero'd
-            preset!([1, 0, 1, 0, 0]),
+            generator.preset!([1, 0, 1, 0, 0]),
             
             //Selector: Select the top 2 individuals each generation
-            top!2,
+            selector.top!2,
 
             //Crossover: Just copy one of the parents
-            singlePoint,
+            crossover.singlePoint,
 
             //Mutation: Swap the alleles (cities)
-            randomFlip);
+            mutator.randomFlip);
 
     //Set a 10% mutation rate
     ga.mutationRate = 0.1f;

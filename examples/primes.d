@@ -1,7 +1,7 @@
 #!/usr/bin/env rdmd
 
 import devolve.tree;
-import devolve.selector;
+import selector = devolve.selector;
 
 immutable auto primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
 
@@ -78,16 +78,16 @@ void main() {
                            * Selector: Select the top 100 members by evalutating each
                            * member in parallel.
                            */
-                          topPar!100,
+                          selector.topPar!100,
 
                           /*
                            * Crossover: Copy one of the parents, and replace a random 
                            * node with a subtree from the other parent
                            */
-                          singlePoint,
+                          crossover.singlePoint,
 
                           //Mutator: Replace a random node with a new random subtree
-                          randomBranch)(gen);
+                          mutator.randomBranch)(gen);
 
     //Set a mutation rate
     ga.mutationRate = 0.25;

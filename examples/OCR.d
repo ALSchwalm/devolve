@@ -1,12 +1,9 @@
 #!/usr/bin/env rdmd
 
 import devolve.net;
-import devolve.selector;
-import std.stdio;
-import std.algorithm;
-import std.conv;
-import std.range;
-import std.math;
+import selector = devolve.selector;
+import std.stdio, std.algorithm, std.conv;
+import std.range, std.math;
 
 const(double[][26]) trainingData;
 const(double[][7])  testData;
@@ -72,14 +69,14 @@ void main() {
                           *  maxConnections:     maximum number of connections from each node to the
                           *                      previous layer
                           */
-                         randomConnections!(11*14, 26, 1, 110, 10),
+                         generator.randomConnections!(11*14, 26, 1, 110, 10),
 
                          //Select the top 10 individuals in parallel
-                         topPar!10,
+                         selector.topPar!10,
 
                          //Randomly copy the weights and connections from each parent
                          //to create the child
-                         randomMerge)
+                         crossover.randomMerge)
         //Set the mutation rate to 20% and output statistics every 10 generations
         (0.2, 10);
 

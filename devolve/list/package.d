@@ -1,6 +1,6 @@
 module devolve.list;
 
 public import devolve.list.listGA;
-public import devolve.list.mutator;
-public import devolve.list.generator;
-public import devolve.list.crossover;
+public import mutator = devolve.list.mutator;
+public import crossover = devolve.list.crossover;
+public import generator = devolve.list.generator;

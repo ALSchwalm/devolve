@@ -159,7 +159,7 @@ version(unittest) {
     double fitness(int[4] ind) {return reduce!"a+b"(ind);}
     
     unittest {
-        import devolve;
-        auto ga = new ListGA!(int[4], 10, fitness, preset!(1, 2, 3, 4));
+        import devolve.list;
+        auto ga = new ListGA!(int[4], 10, fitness, generator.preset!(1, 2, 3, 4));
     }
 }

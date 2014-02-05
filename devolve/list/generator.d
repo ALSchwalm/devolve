@@ -5,10 +5,10 @@ import std.random, std.traits;
  * Create individuals as static arrays filled with 
  * allels in the range [low, high).
  */
-template randRange(alias low, alias high) {
+template randomRange(alias low, alias high) {
 
     ///
-    auto randRange(individual)() if (isStaticArray!individual) {
+    auto randomRange(individual)() if (isStaticArray!individual) {
         individual ind;
         alias allele = typeof(ind[0]);
         
@@ -21,7 +21,7 @@ template randRange(alias low, alias high) {
 
 unittest {
     alias individual = int[4];
-    alias rangeOneTen = randRange!(0, 10);
+    alias rangeOneTen = randomRange!(0, 10);
 
     auto ind = rangeOneTen!individual;
     foreach(allele; ind) {
@@ -33,10 +33,10 @@ unittest {
  * Create individuals as dynamic arrays filled with 
  * 'num' allels in the range [low, high).
  */
-template randRange(uint num, alias low, alias high) {
+template randomRange(uint num, alias low, alias high) {
 
     ///
-    auto randRange(allele: allele[])() {
+    auto randomRange(allele: allele[])() {
         allele[] ind;
         foreach (i; 0..num) {
             ind ~= cast(allele)(uniform(low, high));
@@ -47,7 +47,7 @@ template randRange(uint num, alias low, alias high) {
 
 unittest {
     alias individual = int[];
-    alias rangeOneTen = randRange!(5, 0, 10);
+    alias rangeOneTen = randomRange!(5, 0, 10);
 
     auto ind = rangeOneTen!individual;
     assert (ind.length == 5);

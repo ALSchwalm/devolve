@@ -1,7 +1,7 @@
 #!/usr/bin/env rdmd
 
 import devolve.list;
-import devolve.selector;
+import selector = devolve.selector;
 
 import std.algorithm;
 
@@ -48,16 +48,16 @@ void main() {
             fitness,
             
             //Generator: The initial population will be copies of 'cbad'
-            preset!('c', 'b', 'a', 'd'),
+            generator.preset!('c', 'b', 'a', 'd'),
             
             //Selector: Select the top 2 individuals each generation
-            topPar!2,
+            selector.topPar!2,
 
             //Crossover: Just copy one of the parents
-            randomCopy,
+            crossover.randomCopy,
 
             //Mutation: Swap the alleles (cities)
-            randomSwap,
+            mutator.randomSwap,
 
             //Statistics must also know to record the historically lowest value
             //and selector should order with lowest value first (shortest distance)

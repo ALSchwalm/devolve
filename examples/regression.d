@@ -1,7 +1,7 @@
 #!/usr/bin/env rdmd
 
 import devolve.tree;
-import devolve.selector;
+import selector = devolve.selector;
 
 import std.math, std.conv, std.range;
 import std.typecons, std.algorithm;
@@ -80,16 +80,16 @@ void main() {
                            * Selector: Select the top 100 members by evalutating each
                            * member in parallel.
                            */
-                          topPar!50,
+                          selector.topPar!50,
 
                           /*
                            * Crossover: Copy one of the parents, and replace a random 
                            * node with a subtree from the other parent
                            */
-                          singlePoint,
+                          crossover.singlePoint,
 
                           //Mutator: Replace a random node with a new random subtree
-                          randomBranch,
+                          mutator.randomBranch,
 
                           //More fit values are smaller
                           "a < b")(gen);
