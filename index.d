@@ -46,7 +46,6 @@ examples folder.</a>
 <h3>The Traveling Salesman</h3>
 --------------
 import devolve.list;
-import selector = devolve.selector;
 
 import std.algorithm;
 
@@ -122,7 +121,6 @@ void main() {
 <h3>Symbolic Regression</h3>
 ---------------
 import devolve.tree;
-import selector = devolve.selector;
 
 import std.math, std.conv, std.range;
 import std.typecons, std.algorithm;
@@ -235,5 +233,3 @@ void main() {
 
 }
 -----------
-
-            
