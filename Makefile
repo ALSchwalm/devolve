@@ -7,14 +7,18 @@ LIB_SRC = $(wildcard devolve/**/*.d) $(wildcard devolve/*.d)
 DFLAGS = -w -wi
 
 all: DFLAGS += -release -O -inline -noboundscheck
-all: devolve.a $(EXAMPLE_OUT)
+all: devolve.a
 
 debug: DFLAGS += -debug -g
-debug: devolve.a $(EXAMPLE_OUT)
+debug: devolve.a
 
 unittest: DFLAGS += -unittest
 unittest: unittest.out
-	./unittest.out
+	@./unittest.out ; test $$? -eq 0
+	@printf "\nAll tests pass\n"
+
+examples: DFLAGS += -release -O -inline -noboundscheck
+examples: devolve.a $(EXAMPLE_OUT)
 
 $(EXAMPLE_OUT): %.out: %.d devolve.a
 	dmd -op $(DFLAGS) $< devolve.a -of$@ 
