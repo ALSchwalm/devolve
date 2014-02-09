@@ -25,14 +25,18 @@ void main() {
 
     auto ga = new BStringGA!(
         
+            //One bit for each item
+            weights.length,
+
             //Population of 10 individuals
-            weights.length, 10,
+            10,
             
             //Fitness: The above fitness function
             fitness,
             
             //Generator: The initial population will zero'd
-            generator.preset!([1, 0, 1, 0, 0]),
+            //   NOTE: equivalent to preset!([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            generator.preset!([]),
             
             //Selector: Select the top 2 individuals each generation
             selector.top!2,
