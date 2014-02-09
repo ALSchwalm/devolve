@@ -1,7 +1,6 @@
 #!/usr/bin/env rdmd
 
 import devolve.bstring;
-import selector = devolve.selector;
 import std.bitmanip;
 
 immutable weights = [1, 4, 5, 12, 8, 3, 9, 10, 2, 4];

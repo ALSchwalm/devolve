@@ -1,7 +1,6 @@
 #!/usr/bin/env rdmd
 
 import devolve.tree;
-import selector = devolve.selector;
 
 import std.math, std.conv, std.range;
 import std.typecons, std.algorithm;

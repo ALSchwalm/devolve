@@ -1,9 +1,8 @@
 #!/usr/bin/env rdmd
 
 import devolve.tree;
-import selector = devolve.selector;
 
-immutable auto primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+immutable primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
 
 /*
  * All inputs and function argument and return types

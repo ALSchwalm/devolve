@@ -1,7 +1,7 @@
 #!/usr/bin/env rdmd
 
 import devolve.net;
-import selector = devolve.selector;
+
 import std.stdio, std.algorithm, std.conv;
 import std.range, std.math;
 

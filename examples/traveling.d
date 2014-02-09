@@ -1,7 +1,6 @@
 #!/usr/bin/env rdmd
 
 import devolve.list;
-import selector = devolve.selector;
 
 import std.algorithm;
 

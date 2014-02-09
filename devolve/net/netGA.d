@@ -119,14 +119,14 @@ class NetGA( uint PopSize,
     override Network evolve(uint generations){
 
         generation();
-            
+
         //Perform evolution
         foreach(generation; 0..generations) {
 
             crossingOver();
             mutation();
             selection();
-                
+
             if (m_statFrequency && generation % m_statFrequency == 0) {
                 writeln("(gen ", generation, ") ",
                         "Top Score: ", fitness(population[0]),
@@ -151,7 +151,7 @@ class NetGA( uint PopSize,
                 " / Over " ~ to!string(generations) ~ " generations";
             generateGraph(best, "best.dot", description);
         }
-        
+
         return best;
     }
 

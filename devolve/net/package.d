@@ -5,3 +5,4 @@ public import mutator = devolve.net.mutator;
 public import crossover = devolve.net.crossover;
 public import generator = devolve.net.generator;
 public import devolve.net.generator;
+public import selector = devolve.selector;

@@ -1,12 +1,11 @@
 #!/usr/bin/env rdmd
 
 import devolve.list;
-import devolve.selector;
 
 import std.algorithm, std.typecons, std.random;
 import std.stdio, std.range;
 
-immutable NUM_ANTS = 5;
+immutable NUM_ANTS = 50;
 immutable FIELD_SIZE = 1000;
 
 alias Tuple!(int, "x", int, "y") Point;
@@ -18,6 +17,7 @@ alias individual = float[NUM_ANTS];
 int[FIELD_SIZE][FIELD_SIZE] field;
 
 struct Ant {
+
     this(float _follow) {follow = _follow;}
     
     float follow; //probability that the ant will follow a path
@@ -39,12 +39,11 @@ struct Ant {
 
             auto totalScore = reduce!"a+b"(map!(a => field[a.x][a.y])(choices))+4;
             foreach(ref choice; choices) {
-                //writeln(follow);
-                //writeln(uniform(0.0, 1.0)*follow, (field[choice.x][choice.y]+1.0)/totalScore);
                 if (field[choice.x][choice.y] > moveScore &&
                     find(path, choice) == [] &&
-                    uniform(0.0, 1.0)*follow < (field[choice.x][choice.y]+1.0)/totalScore) {
-                    
+                    //uniform(0.0, 1.0) < (field[choice.x][choice.y]+1.0)/totalScore &&
+                    uniform(0.0, 1.0) < follow) {
+
                     move = choice;
                     moveScore = field[choice.x][choice.y];
                 }
@@ -64,6 +63,7 @@ struct Ant {
     }
 }
 
+immutable TURNS = 200;
 uint play(in individual percents) {
 
     Ant[NUM_ANTS] ants;
@@ -72,7 +72,7 @@ uint play(in individual percents) {
     }
 
     uint trips = 0;
-    foreach(turn; 0..100) {
+    foreach(turn; 0..TURNS) {
         foreach(ref ant; ants) {
             ant.move();
             if (ant.path.length > 0 &&
@@ -89,7 +89,7 @@ uint play(in individual percents) {
     return trips;
 }
 
-immutable ROUNDS = 5;
+immutable ROUNDS = 2;
 double fitness(in individual ind){
     double total = 0;
     foreach(i; 0..ROUNDS) {
@@ -103,22 +103,22 @@ void main() {
     auto ga = new ListGA!(
         
         //Population of 10 individuals
-        individual, 100,
+        individual, 50,
             
         //Fitness: The above fitness function
         fitness,
             
-        //TODO: fix this
-        randRange!(individual, NUM_ANTS, 0.1, 1.0),
+        //Generator: Each allele is in the range [0.1, 1.0)
+        generator.randomRange!(0.1, 1.0),
             
         //Selector: Select the top 2 individuals each generation
-        topPar!10,
+        selector.topPar!10,
 
-        //Crossover: Just copy one of the parents
-        singlePoint,
+        //Crossover: Single point combination of the parents
+        crossover.singlePoint,
 
-        //Mutation: Swap the alleles (cities)
-        devolve.list.mutator.randomRange!(0.1, 1.0));
+        //Mutation: Create a new value in the range (0.1, 1.0]
+        mutator.randomRange!(0.1, 1.0));
 
     //Set a 10% mutation rate
     ga.mutationRate = 0.1f;
@@ -126,6 +126,6 @@ void main() {
     //Print statistics every 5 generations
     ga.statFrequency = 5;
 
-    // Run for 30 generations. Converges rapidly on abcd or dcba
+    // Evolve the population
     ga.evolve(100);
 }
