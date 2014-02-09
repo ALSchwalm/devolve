@@ -20,9 +20,9 @@ Below is a quick introduction to usage of the library. Documentation generated b
 Building
 ==========
 
-The library may be build with `make`, for release builds. Alternatively, run
-`make debug` for a debug build. This will also build all of the examples
-in the examples folder. Unitests may be built and run with `make unittest`.
+The library may be built with `make`, for release builds. Alternatively, run
+`make debug` for a debug build. The examples in `examples/` may be built with
+`make examples`, and unittests may be built and run with `make unittest`.
 
 Basic Usage
 =====
