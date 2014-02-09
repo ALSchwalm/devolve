@@ -134,6 +134,12 @@ class NetGA( uint PopSize,
             }
             if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
                 best = population[0].clone();
+
+                if (m_termination != double.nan && !compFun(m_termination, fitness(best))) {
+                    writeln("\n(Termination criteria met) Score: ", fitness(best),
+                            ", Individual: ", best);
+                    break;
+                }
             }
         }
 

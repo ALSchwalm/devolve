@@ -46,9 +46,12 @@ void main() {
     //Set a 10% mutation rate
     ga.mutationRate = 0.1f;
 
+    //Score cannot be better than capacity
+    ga.terminationValue = capacity;
+    
     //Print statistics every 5 generations
     ga.statFrequency = 5;
 
-    // Run for 30 generations. Converges rapidly on abcd or dcba
+    // Run for 30 generations. Converges rapidly on 27
     ga.evolve(30);
 }

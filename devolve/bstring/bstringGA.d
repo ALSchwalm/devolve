@@ -79,7 +79,7 @@ class BStringGA(uint length,
             if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
                 best = population[0];
 
-                if (m_termination != double.nan && compFun(fitness(best), m_termination)) {
+                if (m_termination != double.nan && !compFun(m_termination, fitness(best))) {
                     writeln("\n(Termination criteria met) Score: ", fitness(best),
                             ", Individual: ", best);
                     break;
