@@ -1,11 +1,8 @@
 module devolve.selector;
-import std.algorithm;
-import std.parallelism;
-import std.functional;
-import std.range;
-import std.random;
-import std.traits;
-import std.stdio;
+import devolve.statistics;
+
+import std.algorithm, std.parallelism, std.functional;
+import std.range, std.random, std.traits;
 
 /**
  * Select the 'num' most fit individuals from the population
@@ -15,13 +12,16 @@ import std.stdio;
 template topPar(uint num) if (num > 0) {
 
     ///
-    individual[] topPar(alias fitness, alias comp = "a > b", individual)
-        (individual[] population) {
+    individual[] topPar(alias fitness, alias comp = "a > b", individual, statistics)
+        (individual[] population, statistics s) {
         
         alias binaryFun!(comp) compFun;
 
         auto fitnessVals = taskPool.amap!fitness(population);
-        sort!((a, b) => compFun(a[0], b[0]))(zip(fitnessVals, population));
+        auto popFitRange = zip(fitnessVals, population);
+        sort!((a, b) => compFun(a[0], b[0]))(popFitRange);
+        
+        s.addGeneration(popFitRange);
         return population[0..num];
     }
 }

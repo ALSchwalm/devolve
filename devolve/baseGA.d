@@ -1,5 +1,6 @@
 module devolve.baseGA;
 
+import devolve.statistics;
 import std.functional;
 
 ///Base class to used for convenience 
@@ -38,11 +39,11 @@ class BaseGA(T, uint PopSize, alias comp) {
     ///Stores the population being evolved
     T population[];
 
-    ///Stores the most fit individual at any given time
-    T best;
+    ///Calculates and stores statistics for the evolution
+    auto statRecord = new StatCollector!(T, _compFun);
 
 protected:
-
+    
     alias binaryFun!(comp) _compFun;
     bool function(double, double) compFun = &_compFun!(double, double);
     double m_termination = double.nan;
