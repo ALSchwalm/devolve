@@ -3,13 +3,9 @@ import devolve.baseGA;
 import devolve.selector;
 import devolve.bstring.generator;
 
-import std.stdio;
-import std.random;
-import std.algorithm;
-import std.traits;
-import std.bitmanip;
-import std.traits;
-import std.conv;
+import std.stdio, std.random, std.algorithm;
+import std.traits, std.bitmanip, std.traits;
+import std.conv, std.math;
 
 
 /**
@@ -79,7 +75,7 @@ class BStringGA(uint length,
             if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
                 best = population[0];
 
-                if (m_termination != double.nan && !compFun(m_termination, fitness(best))) {
+                if (!isNaN(m_termination) && !compFun(m_termination, fitness(best))) {
                     writeln("\n(Termination criteria met) Score: ", fitness(best),
                             ", Individual: ", best);
                     break;

@@ -6,12 +6,8 @@ import devolve.net.crossover;
 import devolve.selector;
 import devolve.baseGA;
 
-import std.algorithm;
-import std.random;
-import std.stdio;
-import std.conv;
-import std.traits;
-import std.file;
+import std.algorithm, std.random, std.stdio;
+import std.conv, std.traits, std.file, std.math;
 
 /**
  * Genetic algorithm for genomes in the form of artificial neural nets
@@ -135,7 +131,7 @@ class NetGA( uint PopSize,
             if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
                 best = population[0].clone();
 
-                if (m_termination != double.nan && !compFun(m_termination, fitness(best))) {
+                if (!isNaN(m_termination) && !compFun(m_termination, fitness(best))) {
                     writeln("\n(Termination criteria met) Score: ", fitness(best),
                             ", Individual: ", best);
                     break;

@@ -6,12 +6,8 @@ import devolve.tree.crossover;
 import devolve.tree.generator;
 import devolve.selector;
 
-import std.random;
-import std.typetuple;
-import std.traits;
-import std.conv;
-import std.stdio;
-import std.file;
+import std.random, std.typetuple, std.traits;
+import std.conv, std.stdio, std.file, std.math;
 
 ///Convenience alias
 alias Tree = BaseNode;
@@ -103,7 +99,7 @@ if (PopSize > 0 && depth > 0) {
             if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
                 best = population[0].clone();
 
-                if (m_termination != double.nan && !compFun(m_termination, fitness(best))) {
+                if (!isNaN(m_termination) && !compFun(m_termination, fitness(best))) {
                     writeln("\n(Termination criteria met) Score: ", fitness(best),
                             ", Individual: ", best);
                     break;

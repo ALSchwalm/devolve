@@ -4,12 +4,8 @@ import devolve.list.crossover;
 import devolve.list.mutator;
 import devolve.selector;
 
-import std.stdio;
-import std.random;
-import std.algorithm;
-import std.conv;
-import std.traits;
-import std.typetuple;
+import std.stdio, std.random, std.algorithm;
+import std.conv, std.traits, std.typetuple, std.math;
 
 /**
  * Genetic algorithm for genomes in the form of a list. This includes
@@ -99,7 +95,7 @@ class ListGA(T,
                 }
                 best[] = population[0][];
 
-                if (m_termination != double.nan && !compFun(m_termination, fitness(best))) {
+                if (!isNaN(m_termination) && !compFun(m_termination, fitness(best))) {
                     writeln("\n(Termination criteria met) Score: ", fitness(best),
                             ", Individual: ", best);
                     break;
