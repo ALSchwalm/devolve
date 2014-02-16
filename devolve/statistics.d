@@ -16,13 +16,14 @@ class StatCollector(T, alias comp = "a > b") {
 
     ///Object holding statistics for a single generation
     struct Statistics {
-        double averageFit;
+        double meanFit;
+        double standardDeviation;
         individualFit best;
         individualFit worst;
 
         string toString() const {
-            return format("Best: %g\tWorst: %g\tAverage: %g",
-                          best.fitness, worst.fitness, averageFit);
+            return format("Best: %g\tWorst: %g\tMean: %g\tSD: %g",
+                          best.fitness, worst.fitness, meanFit, standardDeviation);
         }
     }
 
@@ -66,7 +67,6 @@ class StatCollector(T, alias comp = "a > b") {
         } body {
 
         Statistics stat;
-        double total = 0;
 
         if (isNaN(stat.best.fitness) || compFun(range[0][0], stat.best.fitness)) {
             stat.best.fitness = range[0][0];
@@ -96,22 +96,31 @@ class StatCollector(T, alias comp = "a > b") {
             }
         }
 
+        double total = 0;
         foreach (ref pair; range) {
             total += pair[0];
         }
-        stat.averageFit = total / range.length;
+        stat.meanFit = total / range.length;
+
+        total = 0;
+        foreach (ref pair; range) {
+            total += (pair[0] - stat.meanFit)^^2;
+        }
+        stat.standardDeviation = sqrt(total / range.length);
+
         stats ~= stat;
     }
 
 
     void writeCSV(string name = "data.csv") const {
-        string contents = "Best, Worst, Average\n";
+        string contents = "Best, Worst, Mean, SD\n";
 
         foreach(ref stat; stats) {
-            contents ~= format("%s, %s, %s\n",
+            contents ~= format("%s, %s, %s, %s\n",
                               stat.best.fitness,
                               stat.worst.fitness,
-                              stat.averageFit);
+                              stat.meanFit,
+                              stat.standardDeviation);
 
         }
         std.file.write(name, contents);
