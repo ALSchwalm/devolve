@@ -124,31 +124,30 @@ class NetGA( uint PopSize,
             selection();
 
             if (m_statFrequency && generation % m_statFrequency == 0) {
-                writeln("(gen ", generation, ") ",
-                        "Top Score: ", fitness(population[0]),
-                        ", Individual: ", population[0]);
+                writeln("(gen ", generation, ") ", statRecord.last);
             }
-            if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
-                best = population[0].clone();
 
-                if (!isNaN(m_termination) && !compFun(m_termination, fitness(best))) {
-                    writeln("\n(Termination criteria met) Score: ", fitness(best),
-                            ", Individual: ", best);
-                    break;
-                }
+            if (!isNaN(m_termination) &&
+                !compFun(m_termination, statRecord.last.best.fitness)) {
+
+                writeln("\n(Termination criteria met) Score: ", statRecord.last.best.fitness,
+                        ", Individual: ", statRecord.last.best.individual );
+                break;
             }
         }
-
-        writeln("\n(Historical best) Score: ", fitness(best),
-                ", Individual: ", best);
 
         if (m_generateGraph) {
-            string description = "Fitness = " ~ to!string(fitness(best)) ~
+            string description = "Fitness = "
+                ~ to!string(statRecord.historicalBest.fitness) ~
                 " / Over " ~ to!string(generations) ~ " generations";
-            generateGraph(best, "best.dot", description);
+
+            generateGraph(statRecord.historicalBest.individual, "best.dot", description);
         }
 
-        return best;
+        writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness,
+                ", Individual: ", statRecord.historicalBest.individual);
+
+        return statRecord.historicalBest.individual;
     }
 
 protected:
@@ -184,7 +183,7 @@ protected:
             population = selector(population); 
         }
         else {
-            population = selector!(fitness, comp)(population);
+            population = selector!(fitness, comp)(population, statRecord);
         }
     }
 

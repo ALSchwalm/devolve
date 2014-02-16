@@ -28,9 +28,9 @@ template topPar(uint num) if (num > 0) {
 
 unittest {
     import devolve.statistics;
-    
-    auto pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
-    auto stat = new StatisticsCollector!(typeof(pop[0]));
+
+    double[][] pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    auto stat = new StatCollector!(typeof(pop[0]));
 
     alias bestTwo = topPar!2;
     auto best = bestTwo!"a[0]"(pop, stat);
@@ -65,14 +65,14 @@ template top(uint num) if (num > 0) {
 unittest {
     import devolve.statistics;
     
-    auto pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
-    auto stat = new StatisticsCollector!(typeof(pop[0]));
+    double[][] pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    auto stat = new StatCollector!(typeof(pop[0]));
     
     alias bestTwo = top!2;
-    auto best = bestTwo!"a[0]"(pop);
+    auto best = bestTwo!"a[0]"(pop, stat);
     assert(best == [[8, 2, 2], [4, 1, 1]]);
 
-    best = bestTwo!("a[0]", "a < b")(pop);
+    best = bestTwo!("a[0]", "a < b")(pop, stat);
     assert(best == [[1, 2, 4], [2, 3, 3]]);
 }
 
@@ -148,8 +148,8 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
 unittest {
     import devolve.statistics;
     
-    auto pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
-    auto stat = new StatisticsCollector!(typeof(pop[0]));
+    double[][] pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    auto stat = new StatCollector!(typeof(pop[0]));
     
     alias bestTwo = tournament!(2, 3, 0.7);
     auto best = bestTwo!"a[0]"(pop, stat);
@@ -215,8 +215,8 @@ template roulette(uint num) if (num > 0) {
 unittest {
     import devolve.statistics;
     
-    auto pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
-    auto stat = new StatisticsCollector!(typeof(pop[0]));
+    double[][] pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    auto stat = new StatCollector!(typeof(pop[0]));
     
     alias bestTwo = roulette!2;
     auto best = bestTwo!"a[0]"(pop, stat);

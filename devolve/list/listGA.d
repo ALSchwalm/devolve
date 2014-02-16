@@ -76,7 +76,7 @@ class ListGA(T,
     override T evolve(uint generations){
 
         generation();
-            
+
         //Perform evolution
         foreach(generation; 0..generations) {
 
@@ -90,7 +90,7 @@ class ListGA(T,
 
             if (!isNaN(m_termination) &&
                 !compFun(m_termination, statRecord.last.best.fitness)) {
-                
+
                 writeln("\n(Termination criteria met) Score: ", statRecord.last.best.fitness,
                         ", Individual: ", statRecord.last.best.individual );
                 break;
@@ -99,6 +99,7 @@ class ListGA(T,
 
         writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness,
                 ", Individual: ", statRecord.historicalBest.individual);
+
         return statRecord.historicalBest.individual;
     }
 

@@ -84,7 +84,7 @@ void main() {
     ga.autoGenerateGraph=true;
 
     //Grow for 1000 generations
-    auto best = ga.evolve(10);
+    auto best = ga.evolve(1000);
 
     char[] str;
     foreach(pointList; testData) {

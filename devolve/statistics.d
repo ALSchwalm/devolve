@@ -1,6 +1,6 @@
 module devolve.statistics;
 
-import std.typecons, std.traits, std.math, std.conv;
+import std.typecons, std.traits, std.math, std.conv, std.functional;
 
 /**
  * Class to hold statistics about each generation during an evolution.
@@ -8,11 +8,11 @@ import std.typecons, std.traits, std.math, std.conv;
  * call 'addGeneration' with a sorted range of individuals and doubles
  * representing the fitness of each individual.
  */
-class StatCollector(T, alias comp) {
+class StatCollector(T, alias comp = "a > b") {
 
     ///Convienience alias
     alias individualFit = Tuple!(double, "fitness", T, "individual");
-    
+
     ///Object holding statistics for a single generation
     struct Statistics {
         double averageFit;
@@ -26,7 +26,6 @@ class StatCollector(T, alias comp) {
         }
     }
 
-    
     @property {
         ///Get the most recent generation statistics
         Statistics last() {
@@ -64,7 +63,7 @@ class StatCollector(T, alias comp) {
 
         Statistics stat;
         double total = 0;
-        
+
         if (isNaN(stat.best.fitness) || compFun(range[0][0], stat.best.fitness)) {
             stat.best.fitness = range[0][0];
             static if (hasMember!(T, "clone")) {
@@ -76,14 +75,14 @@ class StatCollector(T, alias comp) {
 
             if (isNaN(m_historicalBest.fitness) ||
                 compFun(stat.best.fitness, m_historicalBest.fitness)) {
-                
+
                 m_historicalBest = stat.best;
             }
-            
+
         }
         if (isNaN(stat.worst.fitness) ||
             !compFun(stat.worst.fitness, range[$-1][0])) {
-            
+
             stat.worst.fitness = range[$-1][0];
             static if (hasMember!(T, "clone")) {
                 stat.worst.individual = range[$-1][1].clone();
@@ -92,18 +91,19 @@ class StatCollector(T, alias comp) {
                 stat.worst.individual = range[$-1][1];
             }
         }
-        
+
         foreach (ref pair; range) {
             total += pair[0];
         }
         stat.averageFit = total / range.length;
         stats ~= stat;
     }
-    
+
 protected:
     Statistics[] stats;
 
-    individualFit m_historicalBest;
+    alias _compFun = binaryFun!(comp);
+    bool function(double, double) compFun = &_compFun!(double, double);
 
-    bool function(double, double) compFun = &comp!(double, double);
+    individualFit m_historicalBest;
 }

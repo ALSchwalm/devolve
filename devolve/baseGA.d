@@ -40,7 +40,7 @@ class BaseGA(T, uint PopSize, alias comp) {
     T population[];
 
     ///Calculates and stores statistics for the evolution
-    auto statRecord = new StatCollector!(T, _compFun);
+    auto statRecord = new StatCollector!(T, comp);
 
 protected:
     
