@@ -1,6 +1,6 @@
 module devolve.statistics;
 
-import std.typecons, std.traits, std.math, std.conv, std.functional;
+import std.typecons, std.traits, std.math, std.string, std.functional;
 
 /**
  * Class to hold statistics about each generation during an evolution.
@@ -20,9 +20,8 @@ class StatCollector(T, alias comp = "a > b") {
         individualFit worst;
 
         string toString()  {
-            return "Fitness - Best: " ~ to!string(best.fitness) ~
-                ", Worst: " ~ to!string(worst.fitness) ~ 
-                ", Average: " ~ to!string(averageFit);
+            return format("Best: %g\tWorst: %g\tAverage: %g",
+                          best.fitness, worst.fitness, averageFit);
         }
     }
 

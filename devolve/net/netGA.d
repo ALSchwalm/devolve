@@ -123,9 +123,7 @@ class NetGA( uint PopSize,
             mutation();
             selection();
 
-            if (m_statFrequency && generation % m_statFrequency == 0) {
-                writeln("(gen ", generation, ") ", statRecord.last);
-            }
+            showStatistics(generation);
 
             if (!isNaN(m_termination) &&
                 !compFun(m_termination, statRecord.last.best.fitness)) {

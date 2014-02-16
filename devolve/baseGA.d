@@ -1,7 +1,7 @@
 module devolve.baseGA;
 
 import devolve.statistics;
-import std.functional;
+import std.functional, std.stdio;
 
 ///Base class to used for convenience 
 class BaseGA(T, uint PopSize, alias comp) {
@@ -43,6 +43,12 @@ class BaseGA(T, uint PopSize, alias comp) {
     auto statRecord = new StatCollector!(T, comp);
 
 protected:
+
+    void showStatistics(int generation) {
+        if (m_statFrequency && generation % m_statFrequency == 0) {
+            writefln("(gen %3d) %s", generation, statRecord.last);
+        }
+    }
     
     alias binaryFun!(comp) _compFun;
     bool function(double, double) compFun = &_compFun!(double, double);

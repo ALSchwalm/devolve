@@ -91,9 +91,7 @@ if (PopSize > 0 && depth > 0) {
             mutation();
             selection();
 
-            if (statFrequency && generation % statFrequency == 0) {
-                writeln("(gen ", generation, ") ", statRecord.last);
-            }
+            showStatistics(generation);
 
             if (!isNaN(m_termination) &&
                 !compFun(m_termination, statRecord.last.best.fitness)) {
