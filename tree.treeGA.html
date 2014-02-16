@@ -60,6 +60,7 @@
 		
 	<li class="sidebar-list-entry tree-leaf"><a href="baseGA.html" title="baseGA"><i class="icon-th"></i>baseGA</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="selector.html" title="selector"><i class="icon-th"></i>selector</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="statistics.html" title="statistics"><i class="icon-th"></i>statistics</a></li>
         
         <li class="sidebar-list-entry tree-leaf"><a href="list.crossover.html" title="list.crossover"><i class="icon-th"></i>list.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="list.generator.html" title="list.generator"><i class="icon-th"></i>list.generator</a></li>
@@ -116,6 +117,7 @@
 						
 	<li class="sidebar-list-entry tree-leaf"><a href="baseGA.html" title="baseGA"><i class="icon-th"></i>baseGA</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="selector.html" title="selector"><i class="icon-th"></i>selector</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="statistics.html" title="statistics"><i class="icon-th"></i>statistics</a></li>
         
         <li class="sidebar-list-entry tree-leaf"><a href="list.crossover.html" title="list.crossover"><i class="icon-th"></i>list.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="list.generator.html" title="list.generator"><i class="icon-th"></i>list.generator</a></li>
@@ -194,12 +196,12 @@ additional functions may still be registered with the generator after this point
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>bool <span class="symbol-target" id="autoGenerateGraph">&nbsp;</span><a class="symbol-link" href="#autoGenerateGraph">autoGenerateGraph</a>(bool <i>generate</i>);
-<br>bool <span class="symbol-target" id="autoGenerateGraph">&nbsp;</span><a class="symbol-link" href="#autoGenerateGraph">autoGenerateGraph</a>();
+<br>const bool <span class="symbol-target" id="autoGenerateGraph">&nbsp;</span><a class="symbol-link" href="#autoGenerateGraph">autoGenerateGraph</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Whether to <i>generate</i> a graph of the tree after 'evolution' completes</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="generateGraph">&nbsp;</span><a class="symbol-link" href="#generateGraph">generateGraph</a>(BaseNode!T <i>node</i>, string <i>filename</i> = "output.dot", string <i>description</i> = "");
+<hr><div class="row-fluid declaration"><h3>const void <span class="symbol-target" id="generateGraph">&nbsp;</span><a class="symbol-link" href="#generateGraph">generateGraph</a>(const(BaseNode!T) <i>node</i>, string <i>filename</i> = "output.dot", string <i>description</i> = "");
 </h3></div>
 <div class="declaration-content"><dl><p>Generate a a Graphviz dot file named <i>filename</i> with additional <i>description</i>
  '<i>description</i>' using <i>node</i></p>

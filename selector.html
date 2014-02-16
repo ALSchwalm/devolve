@@ -60,6 +60,7 @@
 		
 	<li class="sidebar-list-entry tree-leaf"><a href="baseGA.html" title="baseGA"><i class="icon-th"></i>baseGA</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="selector.html" title="selector"><i class="icon-th"></i>selector</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="statistics.html" title="statistics"><i class="icon-th"></i>statistics</a></li>
         
         <li class="sidebar-list-entry tree-leaf"><a href="list.crossover.html" title="list.crossover"><i class="icon-th"></i>list.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="list.generator.html" title="list.generator"><i class="icon-th"></i>list.generator</a></li>
@@ -116,6 +117,7 @@
 						
 	<li class="sidebar-list-entry tree-leaf"><a href="baseGA.html" title="baseGA"><i class="icon-th"></i>baseGA</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="selector.html" title="selector"><i class="icon-th"></i>selector</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="statistics.html" title="statistics"><i class="icon-th"></i>statistics</a></li>
         
         <li class="sidebar-list-entry tree-leaf"><a href="list.crossover.html" title="list.crossover"><i class="icon-th"></i>list.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="list.generator.html" title="list.generator"><i class="icon-th"></i>list.generator</a></li>
@@ -162,7 +164,7 @@
  by evaluating their fitnesses in parallel. The direction
  of the sorting may be set with 'comp'.</p>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>individual[] <span class="symbol-target" id="topPar">&nbsp;</span><a class="symbol-link" href="#topPar">topPar</a>(alias fitness, alias comp = "a &gt; b", individual)(individual[] <i>population</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>individual[] <span class="symbol-target" id="topPar">&nbsp;</span><a class="symbol-link" href="#topPar">topPar</a>(alias fitness, alias comp = "a &gt; b", individual, statRecord)(individual[] <i>population</i>, statRecord <i>record</i>);
 </h3></div>
 <div class="declaration-content"><br><br>
 </div>
@@ -173,7 +175,7 @@
  most fit members are selected. The direction of the sort may
  be set with comp, default is highest fitness first.</p>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>individual[] <span class="symbol-target" id="top">&nbsp;</span><a class="symbol-link" href="#top">top</a>(alias fitness, alias comp = "a &gt; b", individual)(individual[] <i>population</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>individual[] <span class="symbol-target" id="top">&nbsp;</span><a class="symbol-link" href="#top">top</a>(alias fitness, alias comp = "a &gt; b", individual, statRecord)(individual[] <i>population</i>, statRecord <i>record</i>);
 </h3></div>
 <div class="declaration-content"><br><br>
 </div>
@@ -189,7 +191,7 @@
  is preformed on each pool in parallel. If the individual has a
  'clone' method it will be invoked when copying.</p>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>individual[] <span class="symbol-target" id="tournament">&nbsp;</span><a class="symbol-link" href="#tournament">tournament</a>(alias fitness, alias comp = "a &gt; b", individual)(individual[] <i>population</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>individual[] <span class="symbol-target" id="tournament">&nbsp;</span><a class="symbol-link" href="#tournament">tournament</a>(alias fitness, alias comp = "a &gt; b", individual, statRecord)(individual[] <i>population</i>, statRecord <i>record</i>);
 </h3></div>
 <div class="declaration-content"><br><br>
 </div>
@@ -202,7 +204,7 @@
  parallel. If 'individual' has a 'clone' method it will be invoked
  when copying.</p>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>individual[] <span class="symbol-target" id="roulette">&nbsp;</span><a class="symbol-link" href="#roulette">roulette</a>(alias fitness, alias comp = "a &gt; b", individual)(individual[] <i>population</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>individual[] <span class="symbol-target" id="roulette">&nbsp;</span><a class="symbol-link" href="#roulette">roulette</a>(alias fitness, alias comp = "a &gt; b", individual, statRecord)(individual[] <i>population</i>, statRecord <i>record</i>);
 </h3></div>
 <div class="declaration-content"><br><br>
 </div>

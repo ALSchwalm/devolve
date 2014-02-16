@@ -1,6 +1,7 @@
 MODULES = 
 	$(MODULE baseGA)
         $(MODULE selector)
+        $(MODULE statistics)
         
         $(MODULE list.crossover)
         $(MODULE list.generator)

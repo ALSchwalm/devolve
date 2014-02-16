@@ -60,6 +60,7 @@
 		
 	<li class="sidebar-list-entry tree-leaf"><a href="baseGA.html" title="baseGA"><i class="icon-th"></i>baseGA</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="selector.html" title="selector"><i class="icon-th"></i>selector</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="statistics.html" title="statistics"><i class="icon-th"></i>statistics</a></li>
         
         <li class="sidebar-list-entry tree-leaf"><a href="list.crossover.html" title="list.crossover"><i class="icon-th"></i>list.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="list.generator.html" title="list.generator"><i class="icon-th"></i>list.generator</a></li>
@@ -116,6 +117,7 @@
 						
 	<li class="sidebar-list-entry tree-leaf"><a href="baseGA.html" title="baseGA"><i class="icon-th"></i>baseGA</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="selector.html" title="selector"><i class="icon-th"></i>selector</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="statistics.html" title="statistics"><i class="icon-th"></i>statistics</a></li>
         
         <li class="sidebar-list-entry tree-leaf"><a href="list.crossover.html" title="list.crossover"><i class="icon-th"></i>list.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="list.generator.html" title="list.generator"><i class="icon-th"></i>list.generator</a></li>
@@ -171,7 +173,7 @@
 <div class="declaration-content"><dl><p>Basic property GAs should have</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>float <span class="symbol-target" id="mutationRate">&nbsp;</span><a class="symbol-link" href="#mutationRate">mutationRate</a>();
+<hr><div class="row-fluid declaration"><h3>const float <span class="symbol-target" id="mutationRate">&nbsp;</span><a class="symbol-link" href="#mutationRate">mutationRate</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Basic property GAs should have</p>
 </dl>
@@ -181,7 +183,7 @@
 <div class="declaration-content"><dl><p>Basic property GAs should have</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="statFrequency">&nbsp;</span><a class="symbol-link" href="#statFrequency">statFrequency</a>();
+<hr><div class="row-fluid declaration"><h3>const uint <span class="symbol-target" id="statFrequency">&nbsp;</span><a class="symbol-link" href="#statFrequency">statFrequency</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Basic property GAs should have</p>
 </dl>
@@ -191,19 +193,20 @@
 <div class="declaration-content"><dl><p>Basic property GAs should have</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="terminationValue">&nbsp;</span><a class="symbol-link" href="#terminationValue">terminationValue</a>();
+<hr><div class="row-fluid declaration"><h3>const double <span class="symbol-target" id="terminationValue">&nbsp;</span><a class="symbol-link" href="#terminationValue">terminationValue</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Basic property GAs should have</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const const(StatCollector!(T, comp)) <span class="symbol-target" id="statRecord">&nbsp;</span><a class="symbol-link" href="#statRecord">statRecord</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Get a handle to the recorded statistics for this genome
+Basic property GAs should have</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>T[] <span class="symbol-target" id="population">&nbsp;</span><a class="symbol-link" href="#population">population</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Stores the <span class="symbol-target" id="population">&nbsp;</span><a class="symbol-link" href="#population">population</a> being evolved</p>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>T <span class="symbol-target" id="best">&nbsp;</span><a class="symbol-link" href="#best">best</a>;
-</h3></div>
-<div class="declaration-content"><dl><p>Stores the most fit individual at any given time</p>
 </dl>
 </div>
 </div>
