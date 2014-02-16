@@ -114,7 +114,7 @@ if (PopSize > 0 && depth > 0) {
         writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness,
                 ", Individual: ", statRecord.historicalBest.individual);
 
-        return statRecord.historicalBest.individual;
+        return statRecord.historicalBest.individual.clone();
     }
 
 protected:

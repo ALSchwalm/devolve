@@ -36,7 +36,7 @@ class BaseGA(T, uint PopSize, alias comp) {
         }
 
         ///Get a handle to the recorded statistics for this genome
-        StatCollector!(T, comp) statRecord() {
+        const(StatCollector!(T, comp)) statRecord() const {
             return m_statRecord;
         }
     }
@@ -47,7 +47,7 @@ class BaseGA(T, uint PopSize, alias comp) {
 
 protected:
 
-    void showStatistics(int generation) {
+    void showStatistics(int generation) const {
         if (m_statFrequency && generation % m_statFrequency == 0) {
             writefln("(gen %3d) %s", generation, statRecord.last);
         }

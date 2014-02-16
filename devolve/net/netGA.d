@@ -145,7 +145,7 @@ class NetGA( uint PopSize,
 
         writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness);
 
-        return statRecord.historicalBest.individual;
+        return statRecord.historicalBest.individual.clone();
     }
 
 protected:

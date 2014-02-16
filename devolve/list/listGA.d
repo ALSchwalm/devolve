@@ -73,7 +73,7 @@ class ListGA(T,
      *   $(LI Statistics are recorded for the best individual)
      *   $(LI Terminate if criteria is met, otherwise go to 2.)) 
      */
-    override T evolve(uint generations){
+    override const(T) evolve(uint generations){
 
         generation();
 

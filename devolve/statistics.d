@@ -38,7 +38,7 @@ class StatCollector(T, alias comp = "a > b") {
         }
 
         ///Get the best recorded individual
-        individualFit historicalBest() {
+        const(individualFit) historicalBest() const {
             return m_historicalBest;
         }
     }
@@ -104,7 +104,7 @@ class StatCollector(T, alias comp = "a > b") {
     }
 
 
-    void write(string name = "data.csv") const {
+    void writeCSV(string name = "data.csv") const {
         string contents = "Best, Worst, Average\n";
 
         foreach(ref stat; stats) {

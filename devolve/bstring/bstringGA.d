@@ -29,7 +29,7 @@ class BStringGA(uint length,
                 alias mutator = randomFlip,
                 alias comp = "a > b") : BaseGA!(BitArray, PopSize, comp)
 {
-    alias T = BitArray;
+
     /**
      * Default constructor. No statistics will be printed, 
      * and mutation will be set at 1%
@@ -56,7 +56,7 @@ class BStringGA(uint length,
      *   $(LI Statistics are recorded for the best individual)
      *   $(LI Terminate if criteria is met, otherwise go to 2.)) 
      */
-    override T evolve(uint generations){
+    override BitArray evolve(uint generations){
 
         generation();
 
@@ -81,7 +81,7 @@ class BStringGA(uint length,
         writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness,
                 ", Individual: ", statRecord.historicalBest.individual);
 
-        return statRecord.historicalBest.individual;
+        return statRecord.historicalBest.individual.dup;
     }
 
 protected:
