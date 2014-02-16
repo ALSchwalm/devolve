@@ -1,7 +1,7 @@
 module devolve.statistics;
 
 import std.typecons, std.traits, std.math, std.string, std.functional;
-import std.algorithm, std.range;
+import std.algorithm, std.range, std.file;
 
 /**
  * Class to hold statistics about each generation during an evolution.
@@ -20,7 +20,7 @@ class StatCollector(T, alias comp = "a > b") {
         individualFit best;
         individualFit worst;
 
-        string toString()  {
+        string toString() const {
             return format("Best: %g\tWorst: %g\tAverage: %g",
                           best.fitness, worst.fitness, averageFit);
         }
@@ -28,12 +28,12 @@ class StatCollector(T, alias comp = "a > b") {
 
     @property {
         ///Get the most recent generation statistics
-        Statistics last() {
-            return stats[$-1];
+        const(Statistics) last() const {
+            return  stats[$-1];
         }
 
         ///Get statistics for the first generation
-        Statistics first() {
+        const(Statistics) first() const {
             return stats[0];
         }
 
@@ -44,12 +44,12 @@ class StatCollector(T, alias comp = "a > b") {
     }
 
     ///Get a list of all recorded statistics
-    const(Statistics[]) opSlice() {
+    const(Statistics[]) opSlice() const {
         return stats;
     }
 
     ///Get a list of all recorded statistics in the range [x..y]
-    const(Statistics[]) opSlice(size_t x, size_t y) {
+    const(Statistics[]) opSlice(size_t x, size_t y) const {
         return stats[x..y];
     }
 
@@ -101,6 +101,20 @@ class StatCollector(T, alias comp = "a > b") {
         }
         stat.averageFit = total / range.length;
         stats ~= stat;
+    }
+
+
+    void write(string name = "data.csv") const {
+        string contents = "Best, Worst, Average\n";
+
+        foreach(ref stat; stats) {
+            contents ~= format("%s, %s, %s\n",
+                              stat.best.fitness,
+                              stat.worst.fitness,
+                              stat.averageFit);
+
+        }
+        std.file.write(name, contents);
     }
 
 protected:

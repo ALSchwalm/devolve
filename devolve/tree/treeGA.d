@@ -50,7 +50,7 @@ if (PopSize > 0 && depth > 0) {
     }
 
     ///ditto
-    @property bool autoGenerateGraph() {
+    @property bool autoGenerateGraph() const {
         return m_generateGraph;
     }
 
@@ -58,7 +58,9 @@ if (PopSize > 0 && depth > 0) {
      * Generate a a Graphviz dot file named filename with additional description
      * 'description' using node
      */
-    void generateGraph(BaseNode!T node, string filename="output.dot", string description="") {
+    void generateGraph(const(BaseNode!T) node,
+                       string filename="output.dot",
+                       string description="") const {
 
         string file = "digraph G{ graph [ordering=\"out\"];\n";
         file ~= "node0 [ label = \"" ~ node.name ~ "\"];\n";
@@ -148,7 +150,7 @@ protected:
             population = selector(population); 
         }
         else {
-            population = selector!(fitness, comp)(population, statRecord);
+            population = selector!(fitness, comp)(population, m_statRecord);
         }
     }
 
@@ -158,7 +160,7 @@ private:
     bool m_generateGraph = false;
     TreeGenerator!T generator;
 
-    string graphSubTree(BaseNode!T node, ref uint num) {
+    string graphSubTree(const(BaseNode!T) node, ref uint num) const {
         string output = "";
         uint parent = num;
         foreach(i; 0..node.getNumChildren()) {

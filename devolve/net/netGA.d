@@ -46,7 +46,7 @@ class NetGA( uint PopSize,
     }
 
     ///ditto
-    @property bool autoGenerateGraph() {
+    @property bool autoGenerateGraph() const {
         return m_generateGraph;
     }
 
@@ -54,7 +54,9 @@ class NetGA( uint PopSize,
      * Generate a a Graphviz dot file named filename with additional description
      * 'description' using node
      */
-    void generateGraph(Network net, string filename="output.dot", string description="") {
+    void generateGraph(const(Network) net,
+                       string filename="output.dot",
+                       string description="") const {
 
         string file = "graph G{ concentrate = true; graph [];\n";
 
@@ -128,8 +130,7 @@ class NetGA( uint PopSize,
             if (!isNaN(m_termination) &&
                 !compFun(m_termination, statRecord.last.best.fitness)) {
 
-                writeln("\n(Termination criteria met) Score: ", statRecord.last.best.fitness,
-                        ", Individual: ", statRecord.last.best.individual );
+                writeln("\n(Termination criteria met) Score: ", statRecord.last.best.fitness);
                 break;
             }
         }
@@ -142,8 +143,7 @@ class NetGA( uint PopSize,
             generateGraph(statRecord.historicalBest.individual, "best.dot", description);
         }
 
-        writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness,
-                ", Individual: ", statRecord.historicalBest.individual);
+        writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness);
 
         return statRecord.historicalBest.individual;
     }
@@ -181,7 +181,7 @@ protected:
             population = selector(population); 
         }
         else {
-            population = selector!(fitness, comp)(population, statRecord);
+            population = selector!(fitness, comp)(population, m_statRecord);
         }
     }
 

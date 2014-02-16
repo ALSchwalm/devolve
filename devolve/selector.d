@@ -20,7 +20,7 @@ template topPar(uint num) if (num > 0) {
         auto fitnessVals = taskPool.amap!fitness(population);
         auto popFitRange = zip(fitnessVals, population);
         sort!((a, b) => compFun(a[0], b[0]))(popFitRange);
-        
+
         record.registerGeneration(popFitRange);
         return population[0..num];
     }

@@ -70,4 +70,5 @@ void main() {
 
     // Run for 30 generations. Converges rapidly on abcd or dcba
     ga.evolve(30);
+    ga.statRecord.write;
 }

@@ -15,7 +15,7 @@ class BaseGA(T, uint PopSize, alias comp) {
             return m_mutationRate = rate;
         }
 
-        float mutationRate() {
+        float mutationRate() const {
             return m_mutationRate;
         }
 
@@ -23,7 +23,7 @@ class BaseGA(T, uint PopSize, alias comp) {
             return m_statFrequency = freq;
         }
 
-        uint statFrequency() {
+        uint statFrequency() const {
             return m_statFrequency;
         }
 
@@ -31,16 +31,19 @@ class BaseGA(T, uint PopSize, alias comp) {
             return m_termination = termination;
         }
 
-        double terminationValue() {
+        double terminationValue() const {
             return m_termination;
+        }
+
+        ///Get a handle to the recorded statistics for this genome
+        StatCollector!(T, comp) statRecord() {
+            return m_statRecord;
         }
     }
 
     ///Stores the population being evolved
     T population[];
-
-    ///Calculates and stores statistics for the evolution
-    auto statRecord = new StatCollector!(T, comp);
+    
 
 protected:
 
@@ -49,11 +52,12 @@ protected:
             writefln("(gen %3d) %s", generation, statRecord.last);
         }
     }
-    
+
     alias binaryFun!(comp) _compFun;
     bool function(double, double) compFun = &_compFun!(double, double);
+    
     double m_termination = double.nan;
-
     float m_mutationRate = 0.01f;
     uint m_statFrequency = 0;
+    auto m_statRecord = new StatCollector!(T, comp);
 }

@@ -139,7 +139,7 @@ protected:
             population = selector(population); 
         }
         else {
-            population = selector!(fitness, comp)(population, statRecord);
+            population = selector!(fitness, comp)(population, m_statRecord);
         }
     }
 }
