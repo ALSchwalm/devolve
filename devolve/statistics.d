@@ -1,6 +1,6 @@
 module devolve.statistics;
 
-import std.typecons, std.traits, std.math;
+import std.typecons, std.traits, std.math, std.conv;
 
 /**
  * Class to hold statistics about each generation during an evolution.
@@ -10,11 +10,20 @@ import std.typecons, std.traits, std.math;
  */
 class StatCollector(T, alias comp) {
 
+    ///Convienience alias
+    alias individualFit = Tuple!(double, "fitness", T, "individual");
+    
     ///Object holding statistics for a single generation
     struct Statistics {
         double averageFit;
-        Tuple!(double, "fitness", T, "individual") best;
-        Tuple!(double, "fitness", T, "individual") worst;
+        individualFit best;
+        individualFit worst;
+
+        string toString()  {
+            return "Fitness - High: " ~ to!string(best.fitness) ~
+                ", Low: " ~ to!string(worst.fitness) ~ 
+                ", Average: " ~ to!string(averageFit);
+        }
     }
 
     
@@ -28,13 +37,20 @@ class StatCollector(T, alias comp) {
         Statistics first() {
             return stats[0];
         }
+
+        ///Get the best recorded individual
+        individualFit historicalBest() {
+            return m_historicalBest;
+        }
     }
 
-    Statistics[] opSlice() {
+    ///Get a list of all recorded statistics
+    const(Statistics[]) opSlice() {
         return stats;
     }
-    
-    Statistics[] opSlice(size_t x, size_t y) {
+
+    ///Get a list of all recorded statistics in the range [x..y]
+    const(Statistics[]) opSlice(size_t x, size_t y) {
         return stats[x..y];
     }
 
@@ -42,7 +58,7 @@ class StatCollector(T, alias comp) {
      * Add the generation to the statistical history.
      * 'popFitRange' must be in sorted order.
      */
-    void addGeneration(popFitRange)(popFitRange range)
+    void registerGeneration(popFitRange)(popFitRange range)
         if (is(typeof(range[0][0]) == double) &&
             is(typeof(range[0][1]) == T)) {
 
@@ -57,6 +73,13 @@ class StatCollector(T, alias comp) {
             else {
                 stat.best.individual = range[0][1];
             }
+
+            if (isNaN(m_historicalBest.fitness) ||
+                compFun(stat.best.fitness, m_historicalBest.fitness)) {
+                
+                m_historicalBest = stat.best;
+            }
+            
         }
         if (isNaN(stat.worst.fitness) ||
             !compFun(stat.worst.fitness, range[$-1][0])) {
@@ -78,8 +101,9 @@ class StatCollector(T, alias comp) {
     }
     
 protected:
-    ///List of statistics for each generation
     Statistics[] stats;
+
+    individualFit m_historicalBest;
 
     bool function(double, double) compFun = &comp!(double, double);
 }

@@ -85,9 +85,7 @@ class ListGA(T,
             selection();
 
             if (m_statFrequency && generation % m_statFrequency == 0) {
-                writeln("(gen ", generation, ") ",
-                        "Top Score: ", statRecord.last.best.fitness,
-                        ", Individual: ", statRecord.last.best.individual);
+                writeln("(gen ", generation, ") ", statRecord.last);
             }
 
             if (!isNaN(m_termination) &&
@@ -99,9 +97,9 @@ class ListGA(T,
             }
         }
 
-        writeln("\n(Historical best) Score: ", statRecord.last.best.fitness,
-                ", Individual: ", statRecord.last.best.individual);
-        return statRecord.last.best.individual;
+        writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness,
+                ", Individual: ", statRecord.historicalBest.individual);
+        return statRecord.historicalBest.individual;
     }
 
 protected:
