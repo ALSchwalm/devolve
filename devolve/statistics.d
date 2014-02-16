@@ -1,6 +1,7 @@
 module devolve.statistics;
 
 import std.typecons, std.traits, std.math, std.string, std.functional;
+import std.algorithm, std.range;
 
 /**
  * Class to hold statistics about each generation during an evolution.
@@ -57,8 +58,12 @@ class StatCollector(T, alias comp = "a > b") {
      * 'popFitRange' must be in sorted order.
      */
     void registerGeneration(popFitRange)(popFitRange range)
-        if (is(typeof(range[0][0]) == double) &&
-            is(typeof(range[0][1]) == T)) {
+        if (isForwardRange!popFitRange && 
+            is(typeof(range[0][0]) == double) &&
+            is(typeof(range[0][1]) == T))
+        in {
+            assert(range.isSorted!((a, b) => compFun(a[0], b[0])));
+        } body {
 
         Statistics stat;
         double total = 0;

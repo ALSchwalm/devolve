@@ -36,7 +36,8 @@ unittest {
     auto best = bestTwo!"a[0]"(pop, stat);
     assert(best == [[8, 2, 2], [4, 1, 1]]);
 
-    best = bestTwo!("a[0]", "a < b")(pop, stat);
+    auto stat2 = new StatCollector!(typeof(pop[0]), "a < b");
+    best = bestTwo!("a[0]", "a < b")(pop, stat2);
     assert(best == [[1, 2, 4], [2, 3, 3]]);
 }
 
@@ -72,7 +73,8 @@ unittest {
     auto best = bestTwo!"a[0]"(pop, stat);
     assert(best == [[8, 2, 2], [4, 1, 1]]);
 
-    best = bestTwo!("a[0]", "a < b")(pop, stat);
+    auto stat2 = new StatCollector!(typeof(pop[0]), "a < b");
+    best = bestTwo!("a[0]", "a < b")(pop, stat2);
     assert(best == [[1, 2, 4], [2, 3, 3]]);
 }
 
@@ -136,7 +138,7 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
         }
 
         sort!((a, b) => compFun(a[0], b[0]))(winners[]);
-        record.registerGeneration(winners);
+        record.registerGeneration(winners[]);
         
         foreach(int i, ref winner; winners) {
             population[i] = winner[1];
