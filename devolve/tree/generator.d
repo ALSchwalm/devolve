@@ -47,6 +47,9 @@ class BaseNode(T) {
     ///Get the number of children
     abstract uint getNumChildren() const;
 
+    ///
+    abstract override string toString() const;
+
     ///Get the child at index by reference
     abstract ref BaseNode!T getChild(uint index);
 
@@ -126,7 +129,7 @@ private class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
         return max+1;
     }
 
-    override string toString()  {
+    override string toString() const {
         static if (ParameterTypeTuple!T.length == 0) {
             static if (constant) {
                 return name;

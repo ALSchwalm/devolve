@@ -1,6 +1,7 @@
 module devolve.baseGA;
 
-import std.functional;
+import devolve.statistics;
+import std.functional, std.stdio;
 
 ///Base class to used for convenience 
 class BaseGA(T, uint PopSize, alias comp) {
@@ -14,7 +15,7 @@ class BaseGA(T, uint PopSize, alias comp) {
             return m_mutationRate = rate;
         }
 
-        float mutationRate() {
+        float mutationRate() const {
             return m_mutationRate;
         }
 
@@ -22,7 +23,7 @@ class BaseGA(T, uint PopSize, alias comp) {
             return m_statFrequency = freq;
         }
 
-        uint statFrequency() {
+        uint statFrequency() const {
             return m_statFrequency;
         }
 
@@ -30,23 +31,33 @@ class BaseGA(T, uint PopSize, alias comp) {
             return m_termination = termination;
         }
 
-        double terminationValue() {
+        double terminationValue() const {
             return m_termination;
+        }
+
+        ///Get a handle to the recorded statistics for this genome
+        const(StatCollector!(T, comp)) statRecord() const {
+            return m_statRecord;
         }
     }
 
     ///Stores the population being evolved
     T population[];
-
-    ///Stores the most fit individual at any given time
-    T best;
+    
 
 protected:
 
+    void showStatistics(int generation) const {
+        if (m_statFrequency && generation % m_statFrequency == 0) {
+            writefln("(gen %3d) %s", generation, statRecord.last);
+        }
+    }
+
     alias binaryFun!(comp) _compFun;
     bool function(double, double) compFun = &_compFun!(double, double);
+    
     double m_termination = double.nan;
-
     float m_mutationRate = 0.01f;
     uint m_statFrequency = 0;
+    auto m_statRecord = new StatCollector!(T, comp);
 }

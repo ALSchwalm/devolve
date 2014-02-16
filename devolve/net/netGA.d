@@ -46,7 +46,7 @@ class NetGA( uint PopSize,
     }
 
     ///ditto
-    @property bool autoGenerateGraph() {
+    @property bool autoGenerateGraph() const {
         return m_generateGraph;
     }
 
@@ -54,7 +54,9 @@ class NetGA( uint PopSize,
      * Generate a a Graphviz dot file named filename with additional description
      * 'description' using node
      */
-    void generateGraph(Network net, string filename="output.dot", string description="") {
+    void generateGraph(const(Network) net,
+                       string filename="output.dot",
+                       string description="") const {
 
         string file = "graph G{ concentrate = true; graph [];\n";
 
@@ -123,32 +125,27 @@ class NetGA( uint PopSize,
             mutation();
             selection();
 
-            if (m_statFrequency && generation % m_statFrequency == 0) {
-                writeln("(gen ", generation, ") ",
-                        "Top Score: ", fitness(population[0]),
-                        ", Individual: ", population[0]);
-            }
-            if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
-                best = population[0].clone();
+            showStatistics(generation);
 
-                if (!isNaN(m_termination) && !compFun(m_termination, fitness(best))) {
-                    writeln("\n(Termination criteria met) Score: ", fitness(best),
-                            ", Individual: ", best);
-                    break;
-                }
+            if (!isNaN(m_termination) &&
+                !compFun(m_termination, statRecord.last.best.fitness)) {
+
+                writeln("\n(Termination criteria met) Score: ", statRecord.last.best.fitness);
+                break;
             }
         }
-
-        writeln("\n(Historical best) Score: ", fitness(best),
-                ", Individual: ", best);
 
         if (m_generateGraph) {
-            string description = "Fitness = " ~ to!string(fitness(best)) ~
+            string description = "Fitness = "
+                ~ to!string(statRecord.historicalBest.fitness) ~
                 " / Over " ~ to!string(generations) ~ " generations";
-            generateGraph(best, "best.dot", description);
+
+            generateGraph(statRecord.historicalBest.individual, "best.dot", description);
         }
 
-        return best;
+        writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness);
+
+        return statRecord.historicalBest.individual.clone();
     }
 
 protected:
@@ -184,11 +181,11 @@ protected:
             population = selector(population); 
         }
         else {
-            population = selector!(fitness, comp)(population);
+            population = selector!(fitness, comp)(population, m_statRecord);
         }
     }
 
-    bool m_generateGraph = false;
+    bool m_generateGraph = true;
 
 }
 

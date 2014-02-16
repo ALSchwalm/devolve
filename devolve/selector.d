@@ -1,11 +1,8 @@
 module devolve.selector;
-import std.algorithm;
-import std.parallelism;
-import std.functional;
-import std.range;
-import std.random;
-import std.traits;
-import std.stdio;
+
+import std.algorithm, std.parallelism, std.functional;
+import std.range, std.random, std.traits, std.array;
+import std.typecons;
 
 /**
  * Select the 'num' most fit individuals from the population
@@ -15,25 +12,32 @@ import std.stdio;
 template topPar(uint num) if (num > 0) {
 
     ///
-    individual[] topPar(alias fitness, alias comp = "a > b", individual)
-        (individual[] population) {
+    individual[] topPar(alias fitness, alias comp = "a > b", individual, statRecord)
+        (individual[] population, statRecord record) {
         
         alias binaryFun!(comp) compFun;
 
         auto fitnessVals = taskPool.amap!fitness(population);
-        sort!((a, b) => compFun(a[0], b[0]))(zip(fitnessVals, population));
+        auto popFitRange = zip(fitnessVals, population);
+        sort!((a, b) => compFun(a[0], b[0]))(popFitRange);
+
+        record.registerGeneration(popFitRange);
         return population[0..num];
     }
 }
 
 unittest {
-    auto pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    import devolve.statistics;
+
+    double[][] pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    auto stat = new StatCollector!(typeof(pop[0]));
 
     alias bestTwo = topPar!2;
-    auto best = bestTwo!"a[0]"(pop);
+    auto best = bestTwo!"a[0]"(pop, stat);
     assert(best == [[8, 2, 2], [4, 1, 1]]);
 
-    best = bestTwo!("a[0]", "a < b")(pop);
+    auto stat2 = new StatCollector!(typeof(pop[0]), "a < b");
+    best = bestTwo!("a[0]", "a < b")(pop, stat2);
     assert(best == [[1, 2, 4], [2, 3, 3]]);
 }
 
@@ -43,25 +47,34 @@ unittest {
  * be set with comp, default is highest fitness first.
  */
 template top(uint num) if (num > 0) {
-    ///
-    individual[] top(alias fitness, alias comp = "a > b", individual)
-        (individual[] population) {
 
-        alias unaryFun!(fitness) fitnessFun;
+    ///
+    individual[] top(alias fitness, alias comp = "a > b", individual, statRecord)
+        (individual[] population, statRecord record) {
+
         alias binaryFun!(comp) compFun;
-        sort!((a, b) => compFun(fitnessFun(a), fitnessFun(b)))(population);
+        
+        auto fitnessVals = array(map!fitness(population));
+        auto popFitRange = zip(fitnessVals, population);
+        popFitRange.sort!((a, b) => compFun(a[0], b[0]));
+        
+        record.registerGeneration(popFitRange);
         return population[0..num];
     }
 }
 
 unittest {
-    auto pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    import devolve.statistics;
+    
+    double[][] pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    auto stat = new StatCollector!(typeof(pop[0]));
     
     alias bestTwo = top!2;
-    auto best = bestTwo!"a[0]"(pop);
+    auto best = bestTwo!"a[0]"(pop, stat);
     assert(best == [[8, 2, 2], [4, 1, 1]]);
 
-    best = bestTwo!("a[0]", "a < b")(pop);
+    auto stat2 = new StatCollector!(typeof(pop[0]), "a < b");
+    best = bestTwo!("a[0]", "a < b")(pop, stat2);
     assert(best == [[1, 2, 4], [2, 3, 3]]);
 }
 
@@ -80,14 +93,14 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
         tournamentSize > 0 &&
         probability > 0 &&
         probability <= 1.0) {
+    
     ///
-    individual[] tournament(alias fitness, alias comp = "a > b", individual)
-        (individual[] population) {
+    individual[] tournament(alias fitness, alias comp = "a > b", individual, statRecord)
+        (individual[] population, statRecord record) {
 
         alias binaryFun!(comp) compFun;
-        alias unaryFun!(fitness) fitnessFun;
         
-        individual winners[numberOfTournaments];
+        Tuple!(double, individual) winners[numberOfTournaments];
 
         foreach(i; parallel(iota(numberOfTournaments))) {
         
@@ -103,11 +116,14 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
 
             auto choice = uniform(0.0f, 1.0f);
             bool found = false;
-            sort!((a, b) => compFun(fitnessFun(a), fitnessFun(b)))(tournamentPool[]);
+            
+            auto fitnessVals = array(map!fitness(tournamentPool[]));
+            auto poolFitRange = zip(fitnessVals, tournamentPool[]);
+            poolFitRange.sort!((a, b) => compFun(a[0], b[0]));
 
             foreach(j; 0..tournamentSize) {
                 if (choice < probability * (1-probability)^^j) {
-                    winners[i] = tournamentPool[j];
+                    winners[i] = poolFitRange[j];
                     found = true;
                     break;
                 }
@@ -117,19 +133,28 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
             //In the unlikely event that the choice was not in the range of any
             //individual, select the most fit
             if (!found) {
-                winners[i] = tournamentPool[0];
+                winners[i] = poolFitRange[0];
             }
         }
-        population[0..numberOfTournaments] = winners[];
+
+        sort!((a, b) => compFun(a[0], b[0]))(winners[]);
+        record.registerGeneration(winners[]);
+        
+        foreach(int i, ref winner; winners) {
+            population[i] = winner[1];
+        }
         return population[0..numberOfTournaments];
     }
 }
 
 unittest {
-    auto pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    import devolve.statistics;
+    
+    double[][] pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    auto stat = new StatCollector!(typeof(pop[0]));
     
     alias bestTwo = tournament!(2, 3, 0.7);
-    auto best = bestTwo!"a[0]"(pop);
+    auto best = bestTwo!"a[0]"(pop, stat);
 
     assert(best.length == 2);
 }
@@ -144,8 +169,8 @@ unittest {
  */
 template roulette(uint num) if (num > 0) {
     ///
-    individual[] roulette(alias fitness, alias comp = "a > b", individual)
-        (individual[] population) {
+    individual[] roulette(alias fitness, alias comp = "a > b", individual, statRecord)
+        (individual[] population, statRecord record) {
     
         alias binaryFun!(comp) compFun;
         individual[num] winners;
@@ -153,6 +178,8 @@ template roulette(uint num) if (num > 0) {
         auto fitnessVals = taskPool.amap!fitness(population);
         auto popWithFitness = zip(fitnessVals, population);
         sort!((a, b) => compFun(a[0], b[0]))(popWithFitness);
+
+        record.registerGeneration(popWithFitness);
 
         immutable auto total = reduce!"a+b"(fitnessVals);
 
@@ -188,10 +215,13 @@ template roulette(uint num) if (num > 0) {
 }
 
 unittest {
-    auto pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    import devolve.statistics;
+    
+    double[][] pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
+    auto stat = new StatCollector!(typeof(pop[0]));
     
     alias bestTwo = roulette!2;
-    auto best = bestTwo!"a[0]"(pop);
+    auto best = bestTwo!"a[0]"(pop, stat);
 
     assert(best.length == 2);
 }

@@ -29,7 +29,7 @@ class BStringGA(uint length,
                 alias mutator = randomFlip,
                 alias comp = "a > b") : BaseGA!(BitArray, PopSize, comp)
 {
-    alias T = BitArray;
+
     /**
      * Default constructor. No statistics will be printed, 
      * and mutation will be set at 1%
@@ -56,36 +56,32 @@ class BStringGA(uint length,
      *   $(LI Statistics are recorded for the best individual)
      *   $(LI Terminate if criteria is met, otherwise go to 2.)) 
      */
-    override T evolve(uint generations){
+    override BitArray evolve(uint generations){
 
         generation();
 
         //Perform evolution
         foreach(generation; 0..generations) {
-            
+
             crossingOver();
             mutation();
             selection();
 
-            if (m_statFrequency && generation % m_statFrequency == 0) {
-                writeln("(gen ", generation, ") ",
-                        "Top Score: ", fitness(population[0]),
-                        ", Individual: ", population[0]);
-            }
-            if (generation == 0 || compFun(fitness(population[0]), fitness(best))) {
-                best = population[0];
+            showStatistics(generation);
 
-                if (!isNaN(m_termination) && !compFun(m_termination, fitness(best))) {
-                    writeln("\n(Termination criteria met) Score: ", fitness(best),
-                            ", Individual: ", best);
-                    break;
-                }
+            if (!isNaN(m_termination) &&
+                !compFun(m_termination, statRecord.last.best.fitness)) {
+
+                writeln("\n(Termination criteria met) Score: ", statRecord.last.best.fitness,
+                        ", Individual: ", statRecord.last.best.individual );
+                break;
             }
         }
 
-        writeln("\n(Historical best) Score: ", fitness(best),
-                ", Individual: ", best);
-        return best;
+        writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness,
+                ", Individual: ", statRecord.historicalBest.individual);
+
+        return statRecord.historicalBest.individual.dup;
     }
 
 protected:
@@ -126,13 +122,13 @@ protected:
 
     ///Select the most fit members of the population
     void selection() {
-        
+
         //if the user has defined their own selector, just call it
         static if (isCallable!selector) {
             population = selector(population); 
         }
         else {
-            population = selector!(fitness, comp)(population);
+            population = selector!(fitness, comp)(population, m_statRecord);
         }
     }
 }
