@@ -20,8 +20,8 @@ class StatCollector(T, alias comp = "a > b") {
         individualFit worst;
 
         string toString()  {
-            return "Fitness - High: " ~ to!string(best.fitness) ~
-                ", Low: " ~ to!string(worst.fitness) ~ 
+            return "Fitness - Best: " ~ to!string(best.fitness) ~
+                ", Worst: " ~ to!string(worst.fitness) ~ 
                 ", Average: " ~ to!string(averageFit);
         }
     }
