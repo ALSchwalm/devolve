@@ -185,7 +185,7 @@ protected:
         }
     }
 
-    bool m_generateGraph = false;
+    bool m_generateGraph = true;
 
 }
 
