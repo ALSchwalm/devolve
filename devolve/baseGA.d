@@ -47,9 +47,17 @@ class BaseGA(T, uint PopSize, alias comp) {
         return statRecord.historicalBest.individual;
     }
 
+    ///Add initial population using generator
     abstract void generation();
+
+    ///Add new members by crossing-over the population left
+    ///after selection
     abstract void crossingOver();
+
+    ///Preform mutation on members of the population
     abstract void mutation();
+
+    ///Select the most fit members of the population
     abstract void selection();
 
     ///Basic property GAs should have
@@ -86,7 +94,11 @@ class BaseGA(T, uint PopSize, alias comp) {
 
     ///Stores the population being evolved
     T population[];
-    
+
+    ///Register a function to call when the evolution is ended.
+    void registerTerminationCallback(void delegate(uint) callback) {
+        terminationCallbacks ~= callback;
+    }
 
 protected:
 

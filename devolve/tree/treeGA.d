@@ -122,17 +122,6 @@ protected:
         }
     }
 
-    void generateGraphCallback(uint generations) {
-        if (m_generateGraph) {
-            string description = "Fitness = "
-                ~ to!string(statRecord.historicalBest.fitness) ~
-                " / Over "  ~ to!string(generations) ~ " generations";
-
-            generateGraph(statRecord.historicalBest.individual, "best.dot", description);
-        }
-    }
-
-
 private:
     bool m_generateGraph = false;
     TreeGenerator!T generator;
@@ -148,6 +137,16 @@ private:
             output ~= graphSubTree(childNode, num);
         }
         return output;
+    }
+
+    void generateGraphCallback(uint generations) {
+        if (m_generateGraph) {
+            string description = "Fitness = "
+                ~ to!string(statRecord.historicalBest.fitness) ~
+                " / Over "  ~ to!string(generations) ~ " generations";
+
+            generateGraph(statRecord.historicalBest.individual, "best.dot", description);
+        }
     }
 }
 
