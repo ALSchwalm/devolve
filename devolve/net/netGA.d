@@ -108,53 +108,8 @@ class NetGA( uint PopSize,
         std.file.write(filename, file);
     }
 
-    /**
-     * Evolution function works as follows.
-     *
-     * $(OL
-     *   $(LI The population is created using the supplied `generator`)
-     *   $(LI Crossing-over is preformed to created missing population)
-     *   $(LI The population is mutated with probability `mutation_rate`)
-     *   $(LI The parents of the next generation are selected)
-     *   $(LI Statistics are recorded for the best individual)
-     *   $(LI Terminate if criteria is met, otherwise go to 2.)) 
-     */
-    /*override Network evolve(uint generations){
-
-        generation();
-
-        //Perform evolution
-        foreach(generation; 0..generations) {
-
-            crossingOver();
-            mutation();
-            selection();
-
-            showStatistics(generation);
-
-            if (!isNaN(m_termination) &&
-                !compFun(m_termination, statRecord.last.best.fitness)) {
-
-                writeln("\n(Termination criteria met) Score: ", statRecord.last.best.fitness);
-                break;
-            }
-        }
-
-        if (m_generateGraph) {
-            string description = "Fitness = "
-                ~ to!string(statRecord.historicalBest.fitness) ~
-                " / Over " ~ to!string(generations) ~ " generations";
-
-            generateGraph(statRecord.historicalBest.individual, "best.dot", description);
-        }
-
-        writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness);
-
-        return statRecord.historicalBest.individual.clone();
-    }*/
-
 protected:
-    
+
     ///Add initial population using generator
     override void generation() {
         //Add initial population
