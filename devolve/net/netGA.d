@@ -15,9 +15,9 @@ import std.conv, std.traits, std.file, std.math;
  * Params:
  *    PopSize = The size of the population
  *    fitness = User defined fitness function. Must return double
- *    selector = Selection method used to pick parents of next generation. 
- *    crossover = Used to crossover individuals to create the new generation. 
- *    mutator = Used to alter the population. 
+ *    selector = Selection method used to pick parents of next generation.
+ *    crossover = Used to crossover individuals to create the new generation.
+ *    mutator = Used to alter the population.
  *    comp = Used to determine whether a larger or smaller fitness is better.
  */
 class NetGA( uint PopSize,
@@ -29,13 +29,18 @@ class NetGA( uint PopSize,
              alias comp = "a > b") : BaseGA!(Network, PopSize, comp)
 {
     ///Default constructor
-    this(){}
-        
-    /** 
+    this(){
+        if (find(terminationCallbacks, &generateGraphCallback) == [])
+            terminationCallbacks ~= &generateGraphCallback;
+    }
+
+    /**
      * Convienience constructor, equivilant to default constructing
      * and setting mutation rate and statistic frequency
      */
     this(float mutRate, uint statFreq) {
+        this();
+
         m_mutationRate = mutRate;
         m_statFrequency = statFreq;
     }
@@ -66,10 +71,10 @@ class NetGA( uint PopSize,
             file ~= "neuron" ~ to!string(currentNum) ~ " [ label=\"InputNeuron\"];\n";
             ++currentNum;
         }
-        
+
         foreach(i, layer; net.hiddenLayers) {
             if (i != 0) {prevLayerNum = currentNum;}
-            
+
             foreach(j, neuron; layer) {
                 file ~= "neuron" ~ to!string(currentNum) ~ " [ label=\"HiddenNeuron\" ];\n";
                 ulong index;
@@ -114,7 +119,7 @@ class NetGA( uint PopSize,
      *   $(LI Statistics are recorded for the best individual)
      *   $(LI Terminate if criteria is met, otherwise go to 2.)) 
      */
-    override Network evolve(uint generations){
+    /*override Network evolve(uint generations){
 
         generation();
 
@@ -146,7 +151,7 @@ class NetGA( uint PopSize,
         writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness);
 
         return statRecord.historicalBest.individual.clone();
-    }
+    }*/
 
 protected:
     
@@ -188,7 +193,7 @@ protected:
     override void selection() {
         //if the user has defined their own selector, just call it
         static if (isCallable!selector) {
-            population = selector(population); 
+            population = selector(population);
         }
         else {
             population = selector!(fitness, comp)(population, m_statRecord);
@@ -197,5 +202,13 @@ protected:
 
     bool m_generateGraph = true;
 
-}
+    void generateGraphCallback(uint generations) {
+        if (m_generateGraph) {
+            string description = "Fitness = "
+                ~ to!string(statRecord.historicalBest.fitness) ~
+                " / Over "  ~ to!string(generations) ~ " generations";
 
+            generateGraph(statRecord.historicalBest.individual, "best.dot", description);
+        }
+    }
+}

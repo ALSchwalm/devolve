@@ -62,45 +62,6 @@ class ListGA(T,
         m_statFrequency = statFreq;
     }
 
-    /**
-     * Evolution function works as follows.
-     *
-     * $(OL
-     *   $(LI The population is created using the supplied `generator`)
-     *   $(LI Crossing-over is preformed to created missing population)
-     *   $(LI The population is mutated with probability `mutation_rate`)
-     *   $(LI The parents of the next generation are selected)
-     *   $(LI Statistics are recorded for the best individual)
-     *   $(LI Terminate if criteria is met, otherwise go to 2.)) 
-     */
-    override const(T) evolve(uint generations){
-
-        generation();
-
-        //Perform evolution
-        foreach(generation; 0..generations) {
-
-            crossingOver();
-            mutation();
-            selection();
-
-            showStatistics(generation);
-
-            if (!isNaN(m_termination) &&
-                !compFun(m_termination, statRecord.last.best.fitness)) {
-
-                writeln("\n(Termination criteria met) Score: ", statRecord.last.best.fitness,
-                        ", Individual: ", statRecord.last.best.individual );
-                break;
-            }
-        }
-
-        writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness,
-                ", Individual: ", statRecord.historicalBest.individual);
-
-        return statRecord.historicalBest.individual;
-    }
-
 protected:
 
     ///Add initial population using generator

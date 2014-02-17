@@ -1,6 +1,6 @@
 module devolve.baseGA;
 
-import devolve.statistics;
+import devolve.statistics, devolve.utils;
 import std.functional, std.stdio, std.math;
 
 ///Base class to used for convenience 
@@ -17,7 +17,35 @@ class BaseGA(T, uint PopSize, alias comp) {
      *   $(LI Statistics are recorded for the best individual)
      *   $(LI Terminate if criteria is met, otherwise go to 2.)) 
      */
-    abstract const(T) evolve(uint generations);
+    const(T) evolve(uint generations){
+
+        generation();
+
+        //Perform evolution
+        foreach(generation; 0..generations) {
+
+            crossingOver();
+            mutation();
+            selection();
+
+            showStatistics(generation);
+
+            if (!isNaN(m_termination) &&
+                !compFun(m_termination, statRecord.last.best.fitness)) {
+
+                showFinalStatistics("Termination criteria met");
+                break;
+            }
+        }
+
+        showFinalStatistics("Historical Best");
+
+        foreach(callback; terminationCallbacks) {
+            callback(generations);
+        }
+
+        return statRecord.historicalBest.individual;
+    }
 
     abstract void generation();
     abstract void crossingOver();
@@ -62,9 +90,32 @@ class BaseGA(T, uint PopSize, alias comp) {
 
 protected:
 
+    protected template isPrintable(T) {
+        static if (__traits(compiles, writeln(statRecord.historicalBest.individual))) {
+            enum : bool {
+                isPrintable = true
+            }
+        }
+        else {
+            enum : bool {
+                isPrintable = false
+            }
+        }
+    }
+
     void showStatistics(int generation) const {
         if (m_statFrequency && generation % m_statFrequency == 0) {
             writefln("(gen %3d) %s", generation, statRecord.last);
+        }
+    }
+
+    void showFinalStatistics(string cause) const {
+        static if (isPrintable!T) {
+            writeln("\n(", cause, ") Score: ", statRecord.historicalBest.fitness,
+                    ", Individual: ", statRecord.last.best.individual);
+        }
+        else {
+            writeln("\n(", cause, ") Score: ", statRecord.last.best.fitness);
         }
     }
 
@@ -75,4 +126,6 @@ protected:
     float m_mutationRate = 0.01f;
     uint m_statFrequency = 0;
     auto m_statRecord = new StatCollector!(T, comp);
+
+    void delegate(uint)[] terminationCallbacks;
 }

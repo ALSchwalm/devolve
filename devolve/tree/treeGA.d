@@ -8,6 +8,7 @@ import devolve.selector;
 
 import std.random, std.typetuple, std.traits;
 import std.conv, std.stdio, std.file, std.math;
+import std.algorithm;
 
 ///Convenience alias
 alias Tree = BaseNode;
@@ -41,6 +42,9 @@ if (PopSize > 0 && depth > 0) {
     ///Create a tree GA with the given generator.
     ///NOTE: additional functions may still be registered with the generator after this point
     this(TreeGenerator!T gen) {
+        if (find(terminationCallbacks, &generateGraphCallback) == [])
+            terminationCallbacks ~= &generateGraphCallback;
+
         generator = gen;
     }
 
@@ -69,52 +73,6 @@ if (PopSize > 0 && depth > 0) {
             
         file ~= "labelloc=\"t\"; label=\"" ~ description ~ "\"}";
         std.file.write(filename, file);
-    }
-
-    /**
-     * Evolution function works as follows.
-     *
-     * $(OL
-     *   $(LI The population is created using the supplied `generator`)
-     *   $(LI Crossing-over is preformed to created missing population)
-     *   $(LI The population is mutated with probability `mutation_rate`)
-     *   $(LI The parents of the next generation are selected)
-     *   $(LI Statistics are recorded for the best individual)
-     *   $(LI Terminate if criteria is met, otherwise go to 2.)) 
-     */
-    override BaseNode!T evolve(uint generations) {
-
-        generation();
-
-        //Perform evolution
-        foreach(generation; 0..generations) {
-
-            crossingOver();
-            mutation();
-            selection();
-
-            showStatistics(generation);
-
-            if (!isNaN(m_termination) &&
-                !compFun(m_termination, statRecord.last.best.fitness)) {
-
-                writeln("\n(Termination criteria met) Score: ", statRecord.last.best.fitness,
-                        ", Individual: ", statRecord.last.best.individual );
-                break;
-            }
-        }
-
-        if (m_generateGraph) {
-            string description = "Fitness = "
-                ~ to!string(statRecord.historicalBest.fitness) ~
-                " / Over " ~ to!string(generations) ~ " generations";
-
-            generateGraph(statRecord.historicalBest.individual, "best.dot", description);
-        }
-        writeln("\n(Historical best) Score: ", statRecord.historicalBest.fitness,
-                ", Individual: ", statRecord.historicalBest.individual);
-
-        return statRecord.historicalBest.individual.clone();
     }
 
 protected:
@@ -164,6 +122,15 @@ protected:
         }
     }
 
+    void generateGraphCallback(uint generations) {
+        if (m_generateGraph) {
+            string description = "Fitness = "
+                ~ to!string(statRecord.historicalBest.fitness) ~
+                " / Over "  ~ to!string(generations) ~ " generations";
+
+            generateGraph(statRecord.historicalBest.individual, "best.dot", description);
+        }
+    }
 
 
 private:
@@ -181,7 +148,7 @@ private:
             output ~= graphSubTree(childNode, num);
         }
         return output;
-    }        
+    }
 }
 
 version(unittest) {
