@@ -138,8 +138,18 @@ protected:
 
     ///Preform mutation on members of the population
     void mutation() {
-        foreach(i; 0..to!uint(PopSize*mutationRate)) {
-            mutator(population[uniform(0, PopSize)], generator);
+        //If multiple mutations are used
+        static if (__traits(compiles, mutator.joined)) {
+            foreach(mutatorFun; mutator.joined) {
+                foreach(i; 0..to!uint(PopSize*m_mutationRate/mutator.joined.length)) {
+                    mutatorFun(population[uniform(0, PopSize)], generator);
+                }
+            }
+        }
+        else {
+            foreach(i; 0..to!uint(PopSize*m_mutationRate)) {
+                mutator(population[uniform(0, PopSize)], generator);
+            }
         }
     }
 
