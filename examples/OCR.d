@@ -34,7 +34,7 @@ double[][] loadPBM(string fileName, uint numCharacters){
     return data;
 }
 
-static this() {
+shared static this() {
     trainingData = loadPBM("examples/assets/mono.pbm", 26);
     testData = loadPBM("examples/assets/arial.pbm", 7);
 }

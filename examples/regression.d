@@ -9,7 +9,7 @@ import std.typecons, std.algorithm;
 double f(double x) {return x*x + 2*x+sin(x)*sin(x)-23;}
 
 immutable Tuple!(double, double)[] points;
-static this() {
+shared static this() {
     points = array(zip(iota(-10, 10, 0.5),
                        map!f(iota(-10, 10, 0.5)))).idup;
 }

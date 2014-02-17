@@ -6,7 +6,7 @@ import std.algorithm;
 
 immutable uint[char[2]] distances;
 
-static this() {
+shared static this() {
     //Distances between every city
     distances = [
         "ab": 20u,
