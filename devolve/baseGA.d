@@ -1,13 +1,28 @@
 module devolve.baseGA;
 
 import devolve.statistics;
-import std.functional, std.stdio;
+import std.functional, std.stdio, std.math;
 
 ///Base class to used for convenience 
 class BaseGA(T, uint PopSize, alias comp) {
 
-    ///All GAs must be able to preform an evolution
-    abstract T evolve(uint);
+    /**
+     * Evolution function works as follows.
+     *
+     * $(OL
+     *   $(LI The population is created using the supplied `generator`)
+     *   $(LI Crossing-over is preformed to created missing population)
+     *   $(LI The population is mutated with probability `mutation_rate`)
+     *   $(LI The parents of the next generation are selected)
+     *   $(LI Statistics are recorded for the best individual)
+     *   $(LI Terminate if criteria is met, otherwise go to 2.)) 
+     */
+    abstract const(T) evolve(uint generations);
+
+    abstract void generation();
+    abstract void crossingOver();
+    abstract void mutation();
+    abstract void selection();
 
     ///Basic property GAs should have
     @property {

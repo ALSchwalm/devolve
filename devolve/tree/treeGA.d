@@ -120,7 +120,7 @@ if (PopSize > 0 && depth > 0) {
 protected:
 
     ///Add initial population using generator
-    void generation() {
+    override void generation() {
         foreach(i; 0..PopSize) {
             population ~= generator(depth);
         }
@@ -128,7 +128,7 @@ protected:
 
     ///Preform add new members by crossing-over the population left
     ///after selection
-    void crossingOver() {
+    override void crossingOver() {
         auto selectedSize = population.length;
         while(population.length < PopSize) {
             population ~= crossover(population[uniform(0, selectedSize)],
@@ -137,7 +137,7 @@ protected:
     }
 
     ///Preform mutation on members of the population
-    void mutation() {
+    override void mutation() {
         //If multiple mutations are used
         static if (__traits(compiles, mutator.joined)) {
             foreach(mutatorFun; mutator.joined) {
@@ -154,7 +154,7 @@ protected:
     }
 
     ///Select the most fit members of the population
-    void selection() {
+    override void selection() {
         //if the user has defined their own selector
         static if (isCallable!selector) {
             population = selector(population); 

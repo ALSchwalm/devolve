@@ -151,7 +151,7 @@ class NetGA( uint PopSize,
 protected:
     
     ///Add initial population using generator
-    void generation() {
+    override void generation() {
         //Add initial population
         foreach(i; 0..PopSize) {
             population ~= generator();
@@ -160,7 +160,7 @@ protected:
 
     ///Preform add new members by crossing-over the population left
     ///after selection
-    void crossingOver() {
+    override void crossingOver() {
         while(population.length < PopSize) {
             population ~= crossover(population[uniform(0, population.length)],
                                     population[uniform(0, population.length)]);
@@ -168,7 +168,7 @@ protected:
     }
 
     ///Preform mutation on members of the population
-    void mutation() {
+    override void mutation() {
         //If multiple mutations are used
         static if (__traits(compiles, mutator.joined)) {
             foreach(mutatorFun; mutator.joined) {
@@ -185,7 +185,7 @@ protected:
     }
 
     ///Select the most fit members of the population
-    void selection() {
+    override void selection() {
         //if the user has defined their own selector, just call it
         static if (isCallable!selector) {
             population = selector(population); 
