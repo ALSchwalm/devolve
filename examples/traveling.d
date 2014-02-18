@@ -39,13 +39,13 @@ double fitness(in individual ind) {
 void main() {
 
     auto ga = new ListGA!(
-        
+
             //Population of 10 individuals
             individual, 10,
-            
+
             //Fitness: The above fitness function
             fitness,
-            
+
             //Generator: The initial population will be copies of 'cbad'
             generator.preset!('c', 'b', 'a', 'd'),
             

@@ -23,27 +23,27 @@ double fitness(in BitArray ind) {
 void main() {
 
     auto ga = new BStringGA!(
-        
+
             //One bit for each item
             weights.length,
 
             //Population of 10 individuals
             10,
-            
+
             //Fitness: The above fitness function
             fitness,
-            
+
             //Generator: The initial population will zero'd
             //   NOTE: equivalent to preset!([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
             generator.preset!([]),
-            
+
             //Selector: Select the top 2 individuals each generation
             selector.top!2,
 
             //Crossover: Just copy one of the parents
             crossover.singlePoint,
 
-            //Mutation: Swap the alleles (cities)
+            //Mutation: Randomly make a few new choices
             mutator.randomFlip);
 
     //Set a 10% mutation rate
@@ -51,7 +51,7 @@ void main() {
 
     //Score cannot be better than capacity
     ga.terminationValue = capacity;
-    
+
     //Print statistics every 5 generations
     ga.statFrequency = 5;
 

@@ -102,7 +102,7 @@ class BaseGA(T, uint PopSize, alias comp) {
 
 protected:
 
-    protected template isPrintable(T) {
+    template isPrintable(T) {
         static if (__traits(compiles, writeln(statRecord.historicalBest.individual))) {
             enum : bool {
                 isPrintable = true
