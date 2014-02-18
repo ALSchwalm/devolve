@@ -1,34 +1,7 @@
 module devolve.tree.generator;
+import devolve.utils;
 
-import std.traits;
-import std.typetuple;
-import std.random;
-import std.conv;
-import std.string;
-import std.functional;
-
-private auto unpackCall(A, B...) 
-    (in A func,
-     in BaseNode!(ReturnType!A)[ParameterTypeTuple!A.length] nodes,
-     in B args) {
-
-    static if (args.length == nodes.length) {
-        return func(args);
-    }
-    else {
-        return unpackCall!A(func, nodes, args, nodes[args.length].eval());
-    }
-}
-
-unittest {
-    auto del = function(int x, int y) {return x+y;};
-    auto term = function() {return 2;};
-    
-    auto n = new Node!(typeof(del))(del, "node");
-    auto child = new Node!(typeof(term))(term, "child");
-
-    assert(unpackCall!(typeof(del))(del, [child, child]) == 4);
-}
+import std.traits, std.random, std.conv, std.string, std.functional;
 
 /**
  * Genome used with the TreeGA. 'T' must be the type of the 
@@ -72,7 +45,7 @@ class BaseNode(T) {
     immutable string name;
 }
 
-private class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
+protected class Node(T, bool constant=false) : BaseNode!(ReturnType!T) {
     alias BaseNode!(ReturnType!T) BaseType;
     
     this(in T t, in string _name) {
