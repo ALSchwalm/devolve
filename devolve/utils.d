@@ -1,5 +1,5 @@
 module devolve.utils;
-import std.typetuple, std.traits;
+import std.typetuple, std.traits, std.stdio;
 import devolve.tree.generator;
 
 /**
@@ -14,6 +14,16 @@ import devolve.tree.generator;
  */
 template Join(Funcs...) {
     alias joined = Funcs;
+}
+
+
+protected template isPrintable(T) {
+    static if (__traits(compiles, &writeln!(const(T)))) {
+        immutable isPrintable = true;
+    }
+    else {
+        immutable isPrintable = false;
+    }
 }
 
 

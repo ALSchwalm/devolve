@@ -102,19 +102,6 @@ class BaseGA(T, uint PopSize, alias comp) {
 
 protected:
 
-    template isPrintable(T) {
-        static if (__traits(compiles, writeln(statRecord.historicalBest.individual))) {
-            enum : bool {
-                isPrintable = true
-            }
-        }
-        else {
-            enum : bool {
-                isPrintable = false
-            }
-        }
-    }
-
     void showStatistics(int generation) const {
         if (m_statFrequency && generation % m_statFrequency == 0) {
             writefln("(gen %3d) %s", generation, statRecord.last);
