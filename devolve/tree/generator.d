@@ -1,7 +1,8 @@
 module devolve.tree.generator;
 import devolve.utils;
 
-import std.traits, std.random, std.conv, std.string, std.functional;
+import std.traits, std.random, std.conv, std.string;
+import std.functional, std.typetuple;
 
 /**
  * Genome used with the TreeGA. 'T' must be the type of the 
