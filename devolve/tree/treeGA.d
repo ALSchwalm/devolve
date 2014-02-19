@@ -37,10 +37,7 @@ class TreeGA(T,
              alias comp = "a > b") : BaseGA!(BaseNode!T, PopSize, comp)
 if (PopSize > 0 && depth > 0) {
 
-    @disable this() {}
-
     ///Create a tree GA with the given generator.
-    ///NOTE: additional functions may still be registered with the generator after this point
     this(TreeGenerator!T gen) {
         if (find(terminationCallbacks, &generateGraphCallback) == [])
             terminationCallbacks ~= &generateGraphCallback;
@@ -124,7 +121,7 @@ protected:
 
 private:
     bool m_generateGraph = false;
-    TreeGenerator!T generator;
+    const TreeGenerator!T generator;
 
     string graphSubTree(const(BaseNode!T) node, ref uint num) const {
         string output = "";
