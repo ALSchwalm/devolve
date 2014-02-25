@@ -420,7 +420,8 @@ struct BitSet(size_t len, Block = size_t)
     /**
      * Set this $(D BitSet) to the contents of $(D ba).
      */
-    this(bool[] ba) 
+    this(bool[] ba) in { assert(ba.length <= len); }
+    body
     {
         foreach (i, b; ba)
         {
