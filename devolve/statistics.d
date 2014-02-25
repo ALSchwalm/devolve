@@ -26,7 +26,7 @@ class StatCollector(T, alias comp = "a > b") {
                           best.fitness, worst.fitness, meanFit, standardDeviation);
         }
     }
-
+    
     @property {
         ///Get the most recent generation statistics
         const(Statistics) last() const {
@@ -42,16 +42,6 @@ class StatCollector(T, alias comp = "a > b") {
         const(individualFit) historicalBest() const {
             return m_historicalBest;
         }
-    }
-
-    ///Get a list of all recorded statistics
-    const(Statistics[]) opSlice() const {
-        return stats;
-    }
-
-    ///Get a list of all recorded statistics in the range [x..y]
-    const(Statistics[]) opSlice(size_t x, size_t y) const {
-        return stats[x..y];
     }
 
     /**
@@ -112,6 +102,7 @@ class StatCollector(T, alias comp = "a > b") {
     }
 
 
+    ///Write data out as CSV file
     void writeCSV(string name = "data.csv") const {
         string contents = "Best, Worst, Mean, SD\n";
 
@@ -126,6 +117,9 @@ class StatCollector(T, alias comp = "a > b") {
         std.file.write(name, contents);
     }
 
+    //Assume all other calls are to the underlying statistics
+    alias stats this;
+    
 protected:
     Statistics[] stats;
 
