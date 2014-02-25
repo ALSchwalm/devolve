@@ -2,11 +2,10 @@ module devolve.bstring.bstringGA;
 import devolve.baseGA;
 import devolve.selector;
 import devolve.bstring.generator;
+import devolve.bstring.bitset;
 
 import std.stdio, std.random, std.algorithm;
-import std.traits, std.bitmanip, std.traits;
-import std.conv, std.math;
-
+import std.traits,  std.traits, std.conv, std.math;
 
 /**
  * Genetic algorithm for genomes taking the form of binary strings.
@@ -27,7 +26,7 @@ class BStringGA(uint length,
                 alias selector = topPar!2,
                 alias crossover = randomSwap,
                 alias mutator = randomFlip,
-                alias comp = "a > b") : BaseGA!(BitArray, PopSize, comp)
+                alias comp = "a > b") : BaseGA!(BitSet!length, PopSize, comp)
 {
 
     /**

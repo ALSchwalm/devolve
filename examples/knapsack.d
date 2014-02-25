@@ -1,12 +1,11 @@
 #!/usr/bin/env rdmd
 
 import devolve.bstring;
-import std.bitmanip;
 
 immutable weights = [1, 4, 5, 12, 8, 3, 9, 10, 2, 4];
 immutable capacity = 27;
 
-double fitness(in BitArray ind) {
+double fitness(in BitSet!(weights.length) ind) {
     auto total = 0;
     foreach(i, bit; ind ) {
         if (bit) {

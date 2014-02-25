@@ -1,5 +1,5 @@
 module devolve.bstring.generator;
-import std.bitmanip;
+import devolve.bstring.bitset;
 
 /**
  * Create the initial population using some preset value.
@@ -7,9 +7,7 @@ import std.bitmanip;
 template preset (alias val) {
     ///
     auto preset(uint size)() {
-        BitArray a;
-        a.init(val);
-        a.length = size;
+        BitSet!size a = val;
         return a;
     }
 }

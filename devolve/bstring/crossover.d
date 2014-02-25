@@ -1,7 +1,6 @@
 module devolve.bstring.crossover;
+import devolve.bstring.bitset;
 import std.random;
-import std.bitmanip;
-
 
 /**
  * Create a new individual by taking all of the elements
@@ -16,20 +15,12 @@ import std.bitmanip;
  *
  * child =  1001101010010
  */
-auto singlePoint(BitArray ind1,
-                 BitArray ind2)
-in {
-    assert(ind1.length == ind2.length);
-}
-out (child){
-    assert(child.length == ind1.length &&
-           child.length == ind2.length);
-}
-body{
-    auto point = uniform(0, ind1.length);
+auto singlePoint(size_t len)(BitSet!len ind1,
+                             BitSet!len ind2) {
 
-    BitArray child;
-    child.length = ind1.length;
+    auto point = uniform(0, len);
+
+    BitSet!len child;
 
     foreach(i, ref bit; child) {
         if (i > point) {
