@@ -1,5 +1,3 @@
-#!/usr/bin/env rdmd-dev-module
-
 /** Fixed-Sized Bit-Array.
     Copyright: Per Nordlöw 2014-.
     License: $(WEB boost.org/LICENSE_1_0.txt, Boost License 1.0).
@@ -12,7 +10,9 @@ import std.format;
 import std.range;
 import std.string;
 
-/* TODO: opSlice, opSliceAssign */
+/**
+ * Statically sized bitarray
+ */
 struct BitSet(size_t len, Block = size_t)
 {
     enum bitsPerBlocks = Block.sizeof * 8;

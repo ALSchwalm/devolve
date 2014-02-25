@@ -26,8 +26,8 @@ void main() {
             //One bit for each item
             weights.length,
 
-            //Population of 10 individuals
-            10,
+            //Population of 50 individuals
+            50,
 
             //Fitness: The above fitness function
             fitness,
@@ -36,8 +36,9 @@ void main() {
             //   NOTE: equivalent to preset!([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
             generator.preset!([]),
 
-            //Selector: Select the top 2 individuals each generation
-            selector.top!2,
+            //Selector: Run two tournaments with 20 individuals each, select the 
+            //most fit as the winner of the tournament with probability 0.8
+            selector.tournament!(2, 20, 0.8),
 
             //Crossover: Just copy one of the parents
             crossover.singlePoint,

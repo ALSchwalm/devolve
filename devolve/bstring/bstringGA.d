@@ -11,7 +11,7 @@ import std.traits,  std.traits, std.conv, std.math;
  * Genetic algorithm for genomes taking the form of binary strings.
  *
  * Params:
- *    length = Fixed size of the binary string. Used to determine the underlying numeric type
+ *    length = Fixed size of the binary string. 
  *    PopSize = The size of the population
  *    fitness = User defined fitness function. Must return double
  *    selector = Selection method used to pick parents of next generation. 
