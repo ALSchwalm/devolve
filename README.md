@@ -62,10 +62,12 @@ always welcome.
 License
 =======
 
-This software is released under the MIT license. See [LICENSE] for more details.
-The file [bitset.d] is written by Per Nordlöw and is licensed under the
-[Boost License].
+This software is released under the Boost license. See [LICENSE] for more details.
 
 [LICENSE]: https://raw.github.com/ALSchwalm/devolve/master/LICENSE
-[bitset.d]: https://raw.github.com/ALSchwalm/devolve/master/devolve/bstring/bitset.d
-[Boost License]: http://www.boost.org/LICENSE_1_0.txt
+
+Acknowledgments
+===============
+
+The BitSet used in BStringGA was written by Per Nordlöw and is used with only very
+minor modifications.
