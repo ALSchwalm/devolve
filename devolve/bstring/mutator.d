@@ -41,17 +41,17 @@ void randomSwap(size_t len)(ref BitSet!len ind) {
     ind[two] = temp;
 }
 
-version(unittest) {
-    unittest {
-        BitSet!10 set;
-        randomFlip(set);
 
-        import devolve.bstring;
-        auto ga = new BStringGA!(5, 50, fitness,
-                                 generator.random,
-                                 selector.topPar!2,
-                                 crossover.singlePoint,
-                                 randomSwap);
+unittest {
+    BitSet!10 set;
+    randomFlip(set);
 
-    }
+    import devolve.bstring;
+    auto ga = new BStringGA!(5, 50, fitness,
+                             generator.random,
+                             selector.topPar!2,
+                             crossover.singlePoint,
+                             randomSwap);
+
 }
+

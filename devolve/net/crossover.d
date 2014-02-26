@@ -20,12 +20,26 @@ Network randomCopy(in Network ind1,
     return newInd;
 }
 
+version(unittest) {
+    double fitness(in Network) { return 1.0;}
+
+    unittest {
+        import devolve.net;
+        auto ga = new NetGA!(100,
+                             fitness,
+                             generator.randomConnections!(11*14, 26, 1, 110, 10),
+                             selector.roulette!2,
+                             randomCopy);
+    }
+}
+
 /**
  * Create a new network by randomly copying the weights
  * of corresponding connections in ind2 to a clone of
- * ind1
+ * ind1, maintaining the original connection with proability
+ * 'probability'.
  */
-Network randomMerge(in Network ind1,
+Network randomMerge(float probability = 0.5)(in Network ind1,
                     in Network ind2) {
     
     Network newInd = ind1.clone();
@@ -44,4 +58,13 @@ Network randomMerge(in Network ind1,
     }
     
     return newInd;
+}
+
+unittest {
+    import devolve.net;
+    auto ga = new NetGA!(100,
+                         fitness,
+                         generator.randomConnections!(11*14, 26, 1, 110, 10),
+                         selector.roulette!2,
+                         randomMerge!0.8);
 }
