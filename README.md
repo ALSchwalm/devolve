@@ -62,7 +62,12 @@ always welcome.
 License
 =======
 
-This software is released under the MIT license. See [LICENSE] for
-more details.
+This software is released under the Boost license. See [LICENSE] for more details.
 
 [LICENSE]: https://raw.github.com/ALSchwalm/devolve/master/LICENSE
+
+Acknowledgments
+===============
+
+The BitSet used in BStringGA was written by Per Nordlöw and is used with only very
+minor modifications.
