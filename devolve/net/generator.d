@@ -20,7 +20,11 @@ alias OutputLayer = OutputNeuron[];
  * the net.
  */
 class Neuron {
+
+    ///Get the value of neuron.
     abstract double eval() const;
+
+    ///Create a copy of this node. The new node will be unconnected
     abstract Neuron clone() const;
 
     ///Convenience alias
@@ -35,6 +39,8 @@ class Neuron {
  * of the net.
  */
 class HiddenNeuron : Neuron {
+
+    ///Find the value of the neuron by calculating the weighted sum of the connections
     override double eval() const {
         double total = 0;
         foreach(connection; connections) {
@@ -43,7 +49,7 @@ class HiddenNeuron : Neuron {
         return total;
     }
 
-    ///Create a new deep copy of the neuron
+    ///Create a new copy of the neuron
     override HiddenNeuron clone() const {
         return new HiddenNeuron;
     }
@@ -53,17 +59,20 @@ class HiddenNeuron : Neuron {
  * Class for neurons which exist on the input side of the graph
  */
 class InputNeuron : Neuron {
-    
+
+    ///Returns the input neurons current value
     override double eval() const {
         return val;
     }
 
+    ///Create a copy of the input neuron with its current value
     override InputNeuron clone() const {
         auto input = new InputNeuron;
         input.val = val;
         return input;
     }
 
+    ///The current value of the input
     double val;
 }
 
@@ -71,6 +80,9 @@ class InputNeuron : Neuron {
  * Class for neurons  which return the values
  */
 class OutputNeuron : Neuron {
+
+    ///Evaluate the net by calculating the weighted sum of the connections.
+    ///Hyperbolic tangent is called on the sum to map it onto the range (-1, 1)
     override double eval() const {
         double total = 0;
         foreach(connection; connections) {
@@ -79,7 +91,7 @@ class OutputNeuron : Neuron {
         return tanh(total);
     }
 
-    ///Create a new deep copy of the neuron
+    ///Create a new copy of the neuron
     override OutputNeuron clone() const {
         return new OutputNeuron;
     }
