@@ -1,7 +1,9 @@
 module devolve.bstring.bstringGA;
 import devolve.baseGA;
 import devolve.selector;
+import devolve.bstring.crossover;
 import devolve.bstring.generator;
+import devolve.bstring.mutator;
 import devolve.bstring.bitset;
 
 import std.stdio, std.random, std.algorithm;
@@ -24,7 +26,7 @@ class BStringGA(uint length,
                 alias fitness,
                 alias generator,
                 alias selector = topPar!2,
-                alias crossover = randomSwap,
+                alias crossover = singlePoint,
                 alias mutator = randomFlip,
                 alias comp = "a > b") : BaseGA!(BitSet!length, PopSize, comp)
 {
