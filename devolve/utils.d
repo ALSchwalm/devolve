@@ -26,6 +26,14 @@ protected template isPrintable(T) {
     }
 }
 
+unittest {
+    import devolve;
+    assert(isPrintable!(BitSet!10));
+    assert(isPrintable!(Tree!int));
+    assert(isPrintable!int);
+    assert(!isPrintable!Network);
+}
+
 
 protected auto unpackCall(A, B...) 
     (in A func,
