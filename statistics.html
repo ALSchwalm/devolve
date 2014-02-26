@@ -77,6 +77,7 @@
         <li class="sidebar-list-entry tree-leaf"><a href="bstring.crossover.html" title="bstring.crossover"><i class="icon-th"></i>bstring.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="bstring.generator.html" title="bstring.generator"><i class="icon-th"></i>bstring.generator</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="bstring.mutator.html" title="bstring.mutator"><i class="icon-th"></i>bstring.mutator</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="bstring.bitset.html" title="bstring.bitset"><i class="icon-th"></i>bstring.bitset</a></li>
 
         <li class="sidebar-list-entry tree-leaf"><a href="net.netGA.html" title="net.netGA"><i class="icon-th"></i>net.netGA</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="net.crossover.html" title="net.crossover"><i class="icon-th"></i>net.crossover</a></li>
@@ -135,6 +136,7 @@
         <li class="sidebar-list-entry tree-leaf"><a href="bstring.crossover.html" title="bstring.crossover"><i class="icon-th"></i>bstring.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="bstring.generator.html" title="bstring.generator"><i class="icon-th"></i>bstring.generator</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="bstring.mutator.html" title="bstring.mutator"><i class="icon-th"></i>bstring.mutator</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="bstring.bitset.html" title="bstring.bitset"><i class="icon-th"></i>bstring.bitset</a></li>
 
         <li class="sidebar-list-entry tree-leaf"><a href="net.netGA.html" title="net.netGA"><i class="icon-th"></i>net.netGA</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="net.crossover.html" title="net.crossover"><i class="icon-th"></i>net.crossover</a></li>
@@ -193,20 +195,15 @@
 <div class="declaration-content"><dl><p>Get the best recorded individual</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>const const(Statistics[]) <span class="symbol-target" id="opSlice">&nbsp;</span><a class="symbol-link" href="#opSlice">opSlice</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Get a list of all recorded statistics</p>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>const const(Statistics[]) <span class="symbol-target" id="opSlice">&nbsp;</span><a class="symbol-link" href="#opSlice">opSlice</a>(size_t <i>x</i>, size_t <i>y</i>);
-</h3></div>
-<div class="declaration-content"><dl><p>Get a list of all recorded statistics in the range [<i>x</i>..<i>y</i>]</p>
-</dl>
-</div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="registerGeneration">&nbsp;</span><a class="symbol-link" href="#registerGeneration">registerGeneration</a>(popFitRange)(popFitRange <i>range</i>) if (isForwardRange!popFitRange &amp;&amp; is(typeof(<i>range</i>[0][0]) == double) &amp;&amp; is(typeof(<i>range</i>[0][1]) == T));
 </h3></div>
 <div class="declaration-content"><dl><p>Add the generation to the statistical history.
  'popFitRange' must be in sorted order.</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const void <span class="symbol-target" id="writeCSV">&nbsp;</span><a class="symbol-link" href="#writeCSV">writeCSV</a>(string <i>name</i> = "data.csv");
+</h3></div>
+<div class="declaration-content"><dl><p>Write data out as CSV file</p>
 </dl>
 </div>
 </div>

@@ -77,6 +77,7 @@
         <li class="sidebar-list-entry tree-leaf"><a href="bstring.crossover.html" title="bstring.crossover"><i class="icon-th"></i>bstring.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="bstring.generator.html" title="bstring.generator"><i class="icon-th"></i>bstring.generator</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="bstring.mutator.html" title="bstring.mutator"><i class="icon-th"></i>bstring.mutator</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="bstring.bitset.html" title="bstring.bitset"><i class="icon-th"></i>bstring.bitset</a></li>
 
         <li class="sidebar-list-entry tree-leaf"><a href="net.netGA.html" title="net.netGA"><i class="icon-th"></i>net.netGA</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="net.crossover.html" title="net.crossover"><i class="icon-th"></i>net.crossover</a></li>
@@ -135,6 +136,7 @@
         <li class="sidebar-list-entry tree-leaf"><a href="bstring.crossover.html" title="bstring.crossover"><i class="icon-th"></i>bstring.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="bstring.generator.html" title="bstring.generator"><i class="icon-th"></i>bstring.generator</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="bstring.mutator.html" title="bstring.mutator"><i class="icon-th"></i>bstring.mutator</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="bstring.bitset.html" title="bstring.bitset"><i class="icon-th"></i>bstring.bitset</a></li>
 
         <li class="sidebar-list-entry tree-leaf"><a href="net.netGA.html" title="net.netGA"><i class="icon-th"></i>net.netGA</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="net.crossover.html" title="net.crossover"><i class="icon-th"></i>net.crossover</a></li>
@@ -165,9 +167,37 @@
 </h3></div>
 <div class="declaration-content"><dl><p>Base class to used for convenience </p>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>T <span class="symbol-target" id="evolve">&nbsp;</span><a class="symbol-link" href="#evolve">evolve</a>(uint);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>const(T) <span class="symbol-target" id="evolve">&nbsp;</span><a class="symbol-link" href="#evolve">evolve</a>(uint <i>generations</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>All GAs must be able to preform an evolution</p>
+<div class="declaration-content"><dl><p>Evolution function works as follows.
+</p>
+<p><ol>  <li>The population is created using the supplied `generator`</li>
+   <li>Crossing-over is preformed to created missing population</li>
+   <li>The population is mutated with probability `mutation_rate`</li>
+   <li>The parents of the next generation are selected</li>
+   <li>Statistics are recorded for the best individual</li>
+   <li>Terminate if criteria is met, otherwise go to 2.</li></ol></p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="generation">&nbsp;</span><a class="symbol-link" href="#generation">generation</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Add initial population using generator</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="crossingOver">&nbsp;</span><a class="symbol-link" href="#crossingOver">crossingOver</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Add new members by crossing-over the population left
+after selection</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="mutation">&nbsp;</span><a class="symbol-link" href="#mutation">mutation</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Preform <span class="symbol-target" id="mutation">&nbsp;</span><a class="symbol-link" href="#mutation">mutation</a> on members of the population</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="selection">&nbsp;</span><a class="symbol-link" href="#selection">selection</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Select the most fit members of the population</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>float <span class="symbol-target" id="mutationRate">&nbsp;</span><a class="symbol-link" href="#mutationRate">mutationRate</a>(float <i>rate</i>);
@@ -209,6 +239,11 @@ Basic property GAs should have</p>
 <hr><div class="row-fluid declaration"><h3>T[] <span class="symbol-target" id="population">&nbsp;</span><a class="symbol-link" href="#population">population</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Stores the <span class="symbol-target" id="population">&nbsp;</span><a class="symbol-link" href="#population">population</a> being evolved</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="registerTerminationCallback">&nbsp;</span><a class="symbol-link" href="#registerTerminationCallback">registerTerminationCallback</a>(void delegate(uint) <i>callback</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Register a function to call when the evolution is ended.</p>
 </dl>
 </div>
 </div>
