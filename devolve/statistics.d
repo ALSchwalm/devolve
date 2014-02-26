@@ -16,11 +16,19 @@ class StatCollector(T, alias comp = "a > b") {
 
     ///Object holding statistics for a single generation
     struct Statistics {
+        ///Mean fitness
         double meanFit;
+
+        ///Standard deviation
         double standardDeviation;
+
+        ///Individual with best fitness and the fitness
         individualFit best;
+
+        ///Individual with worst fitness and the fitness
         individualFit worst;
 
+        ///Convert the statistics to a string
         string toString() const {
             return format("Best: %g\tWorst: %g\tMean: %g\tSD: %g",
                           best.fitness, worst.fitness, meanFit, standardDeviation);
