@@ -36,6 +36,10 @@ class BaseGA(T, uint PopSize, alias comp) {
                 showFinalStatistics("Termination criteria met");
                 break;
             }
+
+            foreach(callback; generationCallbacks) {
+                callback(generation, population);
+            }
         }
 
         showFinalStatistics("Historical Best");
@@ -100,6 +104,10 @@ class BaseGA(T, uint PopSize, alias comp) {
         terminationCallbacks ~= callback;
     }
 
+    void registerGenerationCallback(void delegate(uint, T[]) callback) {
+        generationCallbacks ~= callback;
+    }
+
 protected:
 
     void showStatistics(int generation) const {
@@ -127,4 +135,5 @@ protected:
     auto m_statRecord = new StatCollector!(T, comp);
 
     void delegate(uint)[] terminationCallbacks;
+    void delegate(uint, T[])[] generationCallbacks;
 }
