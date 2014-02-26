@@ -17,7 +17,7 @@ unittest: unittest.out
 	@./unittest.out ; test $$? -eq 0
 	@printf "\nAll tests pass\n"
 
-examples: DFLAGS += -release -O -inline -noboundscheck
+examples: DFLAGS += -O -inline -noboundscheck
 examples: devolve.a $(EXAMPLE_OUT)
 
 $(EXAMPLE_OUT): %.out: %.d devolve.a
