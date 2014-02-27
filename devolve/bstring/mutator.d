@@ -4,13 +4,14 @@ import std.random;
 
 /**
  * For each bit in the individual, flip the 
- * bit with 50% probability. Resulting individual
- * length is unaffected.
+ * bit with 'probability' probability. 
  */
-void randomFlip(size_t len)(ref BitSet!len ind) {
-    foreach(ref bit; ind) {
-        if (uniform(0, 2)) {
-            bit = !bit;
+template randomFlip(float probability = 0.5) {
+    void randomFlip(size_t len)(ref BitSet!len ind) {
+        foreach(ref bit; ind) {
+            if (uniform(0.0, 1.0) <= probability) {
+                bit = !bit;
+            }
         }
     }
 }
@@ -27,7 +28,7 @@ version(unittest) {
                                  generator.random,
                                  selector.topPar!2,
                                  crossover.singlePoint,
-                                 randomFlip);
+                                 randomFlip!0.8);
 
     }
 }
