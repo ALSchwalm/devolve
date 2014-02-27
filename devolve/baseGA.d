@@ -51,19 +51,6 @@ class BaseGA(T, uint PopSize, alias comp) {
         return statRecord.historicalBest.individual;
     }
 
-    ///Add initial population using generator
-    abstract void generation();
-
-    ///Add new members by crossing-over the population left
-    ///after selection
-    abstract void crossingOver();
-
-    ///Preform mutation on members of the population
-    abstract void mutation();
-
-    ///Select the most fit members of the population
-    abstract void selection();
-
     ///Basic property GAs should have
     @property {
         float mutationRate(float rate) {
@@ -118,6 +105,19 @@ class BaseGA(T, uint PopSize, alias comp) {
     }
 
 protected:
+
+    ///Add initial population using generator
+    abstract void generation();
+
+    ///Add new members by crossing-over the population left
+    ///after selection
+    abstract void crossingOver();
+
+    ///Preform mutation on members of the population
+    abstract void mutation();
+
+    ///Select the most fit members of the population
+    abstract void selection();
 
     void showStatistics(int generation) const {
         if (m_statFrequency && generation % m_statFrequency == 0) {
