@@ -74,6 +74,14 @@ class BaseGA(T, uint PopSize, alias comp) {
             return m_mutationRate;
         }
 
+        float crossoverRate(float rate) {
+            return m_crossoverRate = rate;
+        }
+
+        float crossoverRate() const {
+            return m_crossoverRate;
+        }
+
         uint statFrequency(uint freq) {
             return m_statFrequency = freq;
         }
@@ -104,6 +112,7 @@ class BaseGA(T, uint PopSize, alias comp) {
         terminationCallbacks ~= callback;
     }
 
+    ///Register a function to be called every generation
     void registerGenerationCallback(void delegate(uint, T[]) callback) {
         generationCallbacks ~= callback;
     }
@@ -131,6 +140,7 @@ protected:
     
     double m_termination = double.nan;
     float m_mutationRate = 0.01f;
+    float m_crossoverRate = 0.8;
     uint m_statFrequency = 0;
     auto m_statRecord = new StatCollector!(T, comp);
 

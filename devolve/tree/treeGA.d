@@ -82,13 +82,19 @@ protected:
     }
 
     ///Preform add new members by crossing-over the population left
-    ///after selection
+    ///after selection, keeping 'crossoverRate' precent in the population.
     override void crossingOver() {
-        auto selectedSize = population.length;
-        while(population.length < PopSize) {
-            population ~= crossover(population[uniform(0, selectedSize)],
-                                    population[uniform(0, selectedSize)]);
+        Tree!T[] nextPopulation;
+
+        nextPopulation.length = cast(ulong)(population.length*m_crossoverRate);
+        nextPopulation[] = population[0..nextPopulation.length];
+
+        while(nextPopulation.length < PopSize) {
+            nextPopulation ~= crossover(population[uniform(0, population.length)],
+                                        population[uniform(0, population.length)]);
         }
+
+        population = nextPopulation;
     }
 
     ///Preform mutation on members of the population

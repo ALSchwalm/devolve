@@ -64,16 +64,25 @@ protected:
     ///Preform add new members by crossing-over the population left
     ///after selection
     override void crossingOver() {
-        while(population.length < PopSize) {
+        BitSet!length[] nextPopulation;
+
+        nextPopulation.length = cast(ulong)(population.length*m_crossoverRate);
+        nextPopulation[] = population[0..nextPopulation.length];
+
+        while(nextPopulation.length < PopSize) {
             auto parent1 = population[uniform(0, population.length)];
             auto parent2 = population[uniform(0, population.length)];
+
             static if (isCallable!crossover) {
-                population ~= crossover(parent1, parent2);
+                nextPopulation ~= crossover(parent1, parent2);
+
             }
             else {
-                population ~= crossover!length(parent1, parent2);
+                nextPopulation ~= crossover!length(parent1, parent2);
             }
         }
+
+        population = nextPopulation;
     }
 
     ///Preform mutation on members of the population
