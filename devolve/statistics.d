@@ -1,7 +1,7 @@
 module devolve.statistics;
 
 import std.typecons, std.traits, std.math, std.string, std.functional;
-import std.algorithm, std.range, std.file;
+import std.algorithm, std.range, std.file, std.datetime;
 
 /**
  * Class to hold statistics about each generation during an evolution.
@@ -28,10 +28,14 @@ class StatCollector(T, alias comp = "a > b") {
         ///Individual with worst fitness and the fitness
         individualFit worst;
 
+        ///Time between generations added to the statCollection in microseconds
+        uint deltaTime;
+
         ///Convert the statistics to a string
         string toString() const {
-            return format("Best: %g\tWorst: %g\tMean: %g\tSD: %g",
-                          best.fitness, worst.fitness, meanFit, standardDeviation);
+            return format("Best: %g\tWorst: %g\tMean: %5.5f\tSD: %5.5f\tΔt(µs): %d",
+                          best.fitness, worst.fitness, meanFit,
+                          standardDeviation, deltaTime);
         }
     }
     
@@ -65,6 +69,16 @@ class StatCollector(T, alias comp = "a > b") {
         } body {
 
         Statistics stat;
+
+        if (previousTime == previousTime.init) {
+            stat.deltaTime = 0;
+        }
+        else {
+            auto deltaTime = Clock.currSystemTick() - previousTime;
+            stat.deltaTime = deltaTime.to!("usecs", uint);
+        }
+        previousTime = Clock.currSystemTick();
+
 
         if (isNaN(stat.best.fitness) || compFun(range[0][0], stat.best.fitness)) {
             stat.best.fitness = range[0][0];
@@ -112,14 +126,15 @@ class StatCollector(T, alias comp = "a > b") {
 
     ///Write data out as CSV file
     void writeCSV(string name = "data.csv") const {
-        string contents = "Best, Worst, Mean, SD\n";
+        string contents = "Best, Worst, Mean, SD, Delta Time\n";
 
         foreach(ref stat; stats) {
-            contents ~= format("%s, %s, %s, %s\n",
-                              stat.best.fitness,
-                              stat.worst.fitness,
-                              stat.meanFit,
-                              stat.standardDeviation);
+            contents ~= format("%g, %g, %g, %g, %d\n",
+                               stat.best.fitness,
+                               stat.worst.fitness,
+                               stat.meanFit,
+                               stat.standardDeviation,
+                               stat.deltaTime);
 
         }
         std.file.write(name, contents);
@@ -135,4 +150,5 @@ protected:
     bool function(double, double) compFun = &_compFun!(double, double);
 
     individualFit m_historicalBest;
+    TickDuration previousTime;
 }
