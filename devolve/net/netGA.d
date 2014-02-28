@@ -1,6 +1,6 @@
 module devolve.net.netGA;
 
-import devolve.net.generator;
+import devolve.net.network;
 import devolve.net.mutator;
 import devolve.net.crossover;
 import devolve.selector;

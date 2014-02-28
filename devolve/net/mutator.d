@@ -1,6 +1,6 @@
 module devolve.net.mutator;
 
-import devolve.net.generator;
+import devolve.net.network;
 import std.random;
 
 ///Select a random node in each inner layer and set its

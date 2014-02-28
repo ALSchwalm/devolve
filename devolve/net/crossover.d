@@ -1,5 +1,5 @@
 module devolve.net.crossover;
-import devolve.net.generator;
+import devolve.net.network;
 
 import std.random;
 

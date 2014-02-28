@@ -83,6 +83,9 @@ void main() {
     //Generate a graph of the neural net as output.dot
     ga.autoGenerateGraph=true;
 
+    //Higher crossover rate preforms better with this neural net
+    ga.crossoverRate = 1.0;
+
     //Grow for 1000 generations
     auto best = ga.evolve(1000).clone();
 
