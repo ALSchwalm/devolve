@@ -152,3 +152,24 @@ protected:
     individualFit m_historicalBest;
     TickDuration previousTime;
 }
+
+unittest {
+    import std.typecons;
+    alias fitWithInd = Tuple!(double, dchar);
+
+    auto population = ['a', 'b', 'c', 'd'];
+    auto fitness = [0.5, 0.7, 0.9, 1.0];
+    
+    fitWithInd[] stats = array(zip(fitness, population));
+
+    auto collector = new StatCollector!dchar;
+    
+    sort!"a[0] > b[0]"(stats);
+    collector.registerGeneration(stats);
+
+    assert(collector.last.best.fitness == 1.0);
+    assert(collector.last.worst.fitness == 0.5);
+
+    assert(collector.last.meanFit > 0.774 &&
+           collector.last.meanFit < 0.776);
+}
