@@ -159,11 +159,11 @@ unittest {
 
     auto population = ['a', 'b', 'c', 'd'];
     auto fitness = [0.5, 0.7, 0.9, 1.0];
-    
+
     fitWithInd[] stats = array(zip(fitness, population));
 
     auto collector = new StatCollector!dchar;
-    
+
     sort!"a[0] > b[0]"(stats);
     collector.registerGeneration(stats);
 
@@ -172,4 +172,7 @@ unittest {
 
     assert(collector.last.meanFit > 0.774 &&
            collector.last.meanFit < 0.776);
+
+    assert(collector.last.standardDeviation > 0.19202 && 
+           collector.last.standardDeviation < 0.19203);
 }
