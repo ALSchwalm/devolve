@@ -33,7 +33,10 @@ class NetGA( uint PopSize,
                                              crossover,
                                              mutator)
 {
-    ///Default constructor
+    /**
+     * Default constructor. No statistics will be printed, 
+     * and mutation will be set at 1%, crossover rate at 80%
+     */
     this(){
         if (find(terminationCallbacks, &generateGraphCallback) == [])
             terminationCallbacks ~= &generateGraphCallback;
@@ -43,13 +46,12 @@ class NetGA( uint PopSize,
      * Convienience constructor, equivilant to default constructing
      * and setting mutation rate and statistic frequency
      */
-    this(float mutRate, uint statFreq) {
-        this();
-
+    this(float mutRate, float crossoverRate, uint statFreq) {
         m_mutationRate = mutRate;
         m_statFrequency = statFreq;
+        m_crossoverRate = crossoverRate;
     }
-
+    
     ///Whether to generate a graph of the net after 'evolution' completes
     @property bool autoGenerateGraph(bool generate) {
         return m_generateGraph = generate;

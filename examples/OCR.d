@@ -53,7 +53,7 @@ double fitness(Network individual) {
 
 void main() {
 
-    auto ga = new NetGA!(//Population of 150 individuals
+    alias gaType = NetGA!(//Population of 150 individuals
                          150,
 
                          //The above fitness function
@@ -76,15 +76,14 @@ void main() {
 
                          //Randomly copy the weights and connections from each parent
                          //to create the child
-                         crossover.randomMerge)
-        //Set the mutation rate to 20% and output statistics every 10 generations
-        (0.2, 10);
+                         crossover.randomMerge);
+    
+    //Set the mutation rate to 20% and output statistics every 10 generations.
+    //Crossover rate to 98%.
+    auto ga = new gaType(0.2, 0.98, 10);
 
     //Generate a graph of the neural net as output.dot
     ga.autoGenerateGraph=true;
-
-    //Higher crossover rate preforms better with this neural net
-    ga.crossoverRate = 1.0;
 
     //Grow for 1000 generations
     auto best = ga.evolve(1000).clone();

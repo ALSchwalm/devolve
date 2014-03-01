@@ -35,10 +35,9 @@ class BStringGA(uint length,
                                                 crossover,
                                                 mutator)
 {
-
     /**
      * Default constructor. No statistics will be printed, 
-     * and mutation will be set at 1%
+     * and mutation will be set at 1%, crossover rate at 80%
      */
     this(){}
 
@@ -46,8 +45,9 @@ class BStringGA(uint length,
      * Convienience constructor, equivilant to default constructing
      * and setting mutation rate and statistic frequency
      */
-    this(float mutRate, uint statFreq) {
+    this(float mutRate, float crossoverRate, uint statFreq) {
         m_mutationRate = mutRate;
         m_statFrequency = statFreq;
+        m_crossoverRate = crossoverRate;
     }
 }
