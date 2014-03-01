@@ -1,5 +1,5 @@
 module devolve.list.listGA;
-import devolve.baseGA;
+import devolve.simpleGA;
 import devolve.list.crossover;
 import devolve.list.mutator;
 import devolve.selector;
@@ -42,7 +42,7 @@ class ListGA(T,
              alias selector = topPar!2,
              alias crossover = singlePoint,
              alias mutator = randomSwap,
-             alias comp = "a > b") : BaseGA!(T, PopSize, comp,
+             alias comp = "a > b") : SimpleGA!(T, PopSize, comp,
                                              fitness,
                                              generator,
                                              selector,

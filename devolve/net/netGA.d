@@ -4,7 +4,7 @@ import devolve.net.network;
 import devolve.net.mutator;
 import devolve.net.crossover;
 import devolve.selector;
-import devolve.baseGA;
+import devolve.simpleGA;
 
 import std.conv, std.file, std.algorithm;
 
@@ -25,7 +25,7 @@ class NetGA( uint PopSize,
              alias selector = topPar!2,
              alias crossover = randomCopy,
              alias mutator = randomWeight,
-             alias comp = "a > b") : BaseGA!(Network, PopSize, comp,
+             alias comp = "a > b") : SimpleGA!(Network, PopSize, comp,
                                              fitness,
                                              generator,
                                              selector,

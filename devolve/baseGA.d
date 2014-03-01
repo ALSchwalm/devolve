@@ -2,16 +2,10 @@ module devolve.baseGA;
 
 import devolve.statistics, devolve.utils;
 import std.functional, std.stdio, std.math;
-import std.traits, std.random, std.conv;
 
-///Base class to used for convenience 
+///Abstract class to be used as the base for GAs.
 class BaseGA(T, uint PopSize,
-             alias comp,
-             alias fitness = null,
-             alias generator = null,
-             alias selector = null,
-             alias crossover = null,
-             alias mutator = null) {
+             alias comp) {
 
     /**
      * Evolution function works as follows.
@@ -113,85 +107,11 @@ class BaseGA(T, uint PopSize,
 
 protected:
 
-    ///Add initial population using generator
-    static if (is(typeof(generator) == typeof(null))) {
-        abstract void generation();
-    }
-    else {
-        ///Add initial population using generator
-        void generation() {
-            //Add initial population
-            foreach(i; 0..PopSize) {
-                static if (isCallable!generator) {
-                    population ~= generator();
-                }
-                else {
-                    population ~= generator!T();
-                }
-            }
-        }
-    }
-
-    ///Preform add new members by crossing-over the population left
-    ///after selection, keeping 'crossoverRate' precent in the population.
-    static if (is(typeof(crossover) == typeof(null))) {
-        abstract void crossingOver();
-    }
-    else {
-        void crossingOver() {
-            T[] nextPopulation;
-
-            nextPopulation.length = cast(ulong)(population.length*m_crossoverRate);
-            nextPopulation[] = population[0..nextPopulation.length];
-
-            while(nextPopulation.length < PopSize) {
-                nextPopulation ~= crossover(population[uniform(0, population.length)],
-                                            population[uniform(0, population.length)]);
-            }
-
-            population = nextPopulation;
-        }
-    }
-
+    abstract void generation();
+    abstract void crossingOver();
+    abstract void mutation();
+    abstract void selection();
     
-    ///Preform mutation on members of the population
-    static if (is(typeof(mutator) == typeof(null))) {
-        abstract void mutation();
-    }
-    else {
-        void mutation() {
-            //If multiple mutations are used
-            static if (__traits(compiles, mutator.joined)) {
-                foreach(mutatorFun; mutator.joined) {
-                    foreach(i; 0..to!uint(PopSize*m_mutationRate/mutator.joined.length)) {
-                        mutatorFun(population[uniform(0, PopSize)]);
-                    }
-                }
-            }
-            else {
-                foreach(i; 0..to!uint(PopSize*m_mutationRate)) {
-                    mutator(population[uniform(0, PopSize)]);
-                }
-            }
-        }
-    }
-
-    ///Select the most fit members of the population
-    static if (is(typeof(selector) == typeof(null))) {
-        abstract void selection();
-    }
-    else {
-        void selection() {
-            //if the user has defined their own selector, just cal it
-            static if (isCallable!selector) {
-                population = selector(population); 
-            }
-            else {
-                population = selector!(fitness, comp)(population, m_statRecord);
-            }
-        }
-    }
-
     void showStatistics(int generation) const {
         if (m_statFrequency && generation % m_statFrequency == 0) {
             writefln("(gen %3d) %s", generation, statRecord.last);

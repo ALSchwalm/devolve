@@ -1,5 +1,5 @@
 module devolve.bstring.bstringGA;
-import devolve.baseGA;
+import devolve.simpleGA;
 import devolve.selector;
 import devolve.bstring.crossover;
 import devolve.bstring.generator;
@@ -25,7 +25,7 @@ class BStringGA(uint length,
                 alias selector = topPar!2,
                 alias crossover = singlePoint,
                 alias mutator = randomFlip,
-                alias comp = "a > b") : BaseGA!(BitSet!length, PopSize, comp,
+                alias comp = "a > b") : SimpleGA!(BitSet!length, PopSize, comp,
                                                 fitness,
                                                 generator,
                                                 selector,
