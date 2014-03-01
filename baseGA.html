@@ -83,6 +83,7 @@
         <li class="sidebar-list-entry tree-leaf"><a href="net.crossover.html" title="net.crossover"><i class="icon-th"></i>net.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="net.generator.html" title="net.generator"><i class="icon-th"></i>net.generator</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="net.mutator.html" title="net.mutator"><i class="icon-th"></i>net.mutator</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="net.network.html" title="net.network"><i class="icon-th"></i>net.network</a></li>
 	</ul>
 	
 	<div class="navbar navbar-fixed-top">
@@ -142,6 +143,7 @@
         <li class="sidebar-list-entry tree-leaf"><a href="net.crossover.html" title="net.crossover"><i class="icon-th"></i>net.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="net.generator.html" title="net.generator"><i class="icon-th"></i>net.generator</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="net.mutator.html" title="net.mutator"><i class="icon-th"></i>net.mutator</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="net.network.html" title="net.network"><i class="icon-th"></i>net.network</a></li>
 					</noscript>
 					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">devolve.baseGA</li>
 				</ul>
@@ -179,33 +181,22 @@
    <li>Terminate if criteria is met, otherwise go to 2.</li></ol></p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="generation">&nbsp;</span><a class="symbol-link" href="#generation">generation</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Add initial population using generator</p>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="crossingOver">&nbsp;</span><a class="symbol-link" href="#crossingOver">crossingOver</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Add new members by crossing-over the population left
-after selection</p>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="mutation">&nbsp;</span><a class="symbol-link" href="#mutation">mutation</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Preform <span class="symbol-target" id="mutation">&nbsp;</span><a class="symbol-link" href="#mutation">mutation</a> on members of the population</p>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="selection">&nbsp;</span><a class="symbol-link" href="#selection">selection</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Select the most fit members of the population</p>
-</dl>
-</div>
 <hr><div class="row-fluid declaration"><h3>float <span class="symbol-target" id="mutationRate">&nbsp;</span><a class="symbol-link" href="#mutationRate">mutationRate</a>(float <i>rate</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Basic property GAs should have</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const float <span class="symbol-target" id="mutationRate">&nbsp;</span><a class="symbol-link" href="#mutationRate">mutationRate</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Basic property GAs should have</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>float <span class="symbol-target" id="crossoverRate">&nbsp;</span><a class="symbol-link" href="#crossoverRate">crossoverRate</a>(float <i>rate</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Basic property GAs should have</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const float <span class="symbol-target" id="crossoverRate">&nbsp;</span><a class="symbol-link" href="#crossoverRate">crossoverRate</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Basic property GAs should have</p>
 </dl>
@@ -244,6 +235,32 @@ Basic property GAs should have</p>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="registerTerminationCallback">&nbsp;</span><a class="symbol-link" href="#registerTerminationCallback">registerTerminationCallback</a>(void delegate(uint) <i>callback</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Register a function to call when the evolution is ended.</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="registerGenerationCallback">&nbsp;</span><a class="symbol-link" href="#registerGenerationCallback">registerGenerationCallback</a>(void delegate(uint, T[]) <i>callback</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Register a function to be called every generation</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="generation">&nbsp;</span><a class="symbol-link" href="#generation">generation</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Add initial population using generator</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="crossingOver">&nbsp;</span><a class="symbol-link" href="#crossingOver">crossingOver</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Add new members by crossing-over the population left
+after selection</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="mutation">&nbsp;</span><a class="symbol-link" href="#mutation">mutation</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Preform <span class="symbol-target" id="mutation">&nbsp;</span><a class="symbol-link" href="#mutation">mutation</a> on members of the population</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="selection">&nbsp;</span><a class="symbol-link" href="#selection">selection</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Select the most fit members of the population</p>
 </dl>
 </div>
 </div>

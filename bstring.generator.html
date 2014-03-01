@@ -83,6 +83,7 @@
         <li class="sidebar-list-entry tree-leaf"><a href="net.crossover.html" title="net.crossover"><i class="icon-th"></i>net.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="net.generator.html" title="net.generator"><i class="icon-th"></i>net.generator</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="net.mutator.html" title="net.mutator"><i class="icon-th"></i>net.mutator</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="net.network.html" title="net.network"><i class="icon-th"></i>net.network</a></li>
 	</ul>
 	
 	<div class="navbar navbar-fixed-top">
@@ -142,6 +143,7 @@
         <li class="sidebar-list-entry tree-leaf"><a href="net.crossover.html" title="net.crossover"><i class="icon-th"></i>net.crossover</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="net.generator.html" title="net.generator"><i class="icon-th"></i>net.generator</a></li>
         <li class="sidebar-list-entry tree-leaf"><a href="net.mutator.html" title="net.mutator"><i class="icon-th"></i>net.mutator</a></li>
+        <li class="sidebar-list-entry tree-leaf"><a href="net.network.html" title="net.network"><i class="icon-th"></i>net.network</a></li>
 					</noscript>
 					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">devolve.bstring.generator</li>
 				</ul>
@@ -166,11 +168,19 @@
 <hr><div class="row-fluid declaration"><h3>template <span class="symbol-target" id="preset">&nbsp;</span><a class="symbol-link" href="#preset">preset</a>(alias val)</h3></div>
 <div class="declaration-content"><dl><p>Create the initial population using some <span class="symbol-target" id="preset">&nbsp;</span><a class="symbol-link" href="#preset">preset</a> value.</p>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>auto <span class="symbol-target" id="preset">&nbsp;</span><a class="symbol-link" href="#preset">preset</a>(uint size)();
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>auto <span class="symbol-target" id="preset">&nbsp;</span><a class="symbol-link" href="#preset">preset</a>(size_t size)();
 </h3></div>
 <div class="declaration-content"><br><br>
 </div>
 </div>
+</div>
+<hr><div class="row-fluid declaration"><h3>auto <span class="symbol-target" id="random">&nbsp;</span><a class="symbol-link" href="#random">random</a>(size_t size)();
+</h3></div>
+<div class="declaration-content"><dl><p>Generate a <span class="symbol-target" id="random">&nbsp;</span><a class="symbol-link" href="#random">random</a> set of bits.
+</p>
+<dt>NOTE:</dt><dd>
+The size paramter will be inferred by the GA</dd>
+</dl>
 </div>
 
 

@@ -24,4 +24,5 @@ MODULES =
         $(MODULE net.crossover)
         $(MODULE net.generator)
         $(MODULE net.mutator)
+        $(MODULE net.network)
         
