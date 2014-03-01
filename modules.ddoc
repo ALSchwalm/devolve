@@ -1,5 +1,6 @@
 MODULES = 
 	$(MODULE baseGA)
+        $(MODULE simpleGA)
         $(MODULE selector)
         $(MODULE statistics)
         $(MODULE utils)
