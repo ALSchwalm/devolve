@@ -33,8 +33,8 @@ void main() {
             fitness,
 
             //Generator: The initial population will zero'd
-            //   NOTE: equivalent to preset!([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-            generator.preset!([]),
+            //   NOTE: equivalent to preset!(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+            generator.preset!(),
 
             //Selector: Run two tournaments with 20 individuals each, select the 
             //most fit as the winner of the tournament with probability 0.8
