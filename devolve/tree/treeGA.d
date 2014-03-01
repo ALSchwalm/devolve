@@ -34,7 +34,13 @@ class TreeGA(T,
              alias selector = top!(2, fitness),
              alias crossover = singlePoint!T,
              alias mutator = randomBranch!T,
-             alias comp = "a > b") : BaseGA!(BaseNode!T, PopSize, comp)
+             alias comp = "a > b") : BaseGA!(BaseNode!T, PopSize, comp,
+                                             fitness,
+                                             null,
+                                             selector,
+                                             null,
+                                             null)
+                                     
 if (PopSize > 0 && depth > 0) {
 
     ///Create a tree GA with the given generator.
@@ -111,17 +117,6 @@ protected:
             foreach(i; 0..to!uint(PopSize*m_mutationRate)) {
                 mutator(population[uniform(0, PopSize)], generator);
             }
-        }
-    }
-
-    ///Select the most fit members of the population
-    override void selection() {
-        //if the user has defined their own selector
-        static if (isCallable!selector) {
-            population = selector(population); 
-        }
-        else {
-            population = selector!(fitness, comp)(population, m_statRecord);
         }
     }
 
