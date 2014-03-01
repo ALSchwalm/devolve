@@ -35,6 +35,7 @@ class TreeGA(T,
              alias crossover = singlePoint!T,
              alias mutator = randomBranch!T,
              alias comp = "a > b") : BaseGA!(BaseNode!T, PopSize, comp)
+                                     
 if (PopSize > 0 && depth > 0) {
 
     ///Create a tree GA with the given generator.
@@ -114,11 +115,10 @@ protected:
         }
     }
 
-    ///Select the most fit members of the population
     override void selection() {
-        //if the user has defined their own selector
+        //if the user has defined their own selector, just cal it
         static if (isCallable!selector) {
-            population = selector(population); 
+            population = selector(population);
         }
         else {
             population = selector!(fitness, comp)(population, m_statRecord);
@@ -153,17 +153,14 @@ private:
     }
 }
 
-version(unittest) {
-    double fitness(Tree!int ind) {return 0;}
     
-    unittest {
-        import devolve;
+unittest {
+    import devolve;
 
-        TreeGenerator!int gen;
-        gen.register!"-a"("negative");
+    TreeGenerator!int gen;
+    gen.register!"-a"("negative");
         
-        auto ga = new TreeGA!(int, 100, 4, fitness, top!10)(gen);
-        auto ga2 = new TreeGA!(int, 100, 4, fitness, top!10, singlePoint)(gen);
-        auto ga3 = new TreeGA!(int, 100, 4, fitness, top!10, singlePoint, randomBranch)(gen);
-    }
+    auto ga = new TreeGA!(int, 100, 4, testFitness, top!10)(gen);
+    auto ga2 = new TreeGA!(int, 100, 4, testFitness, top!10, singlePoint)(gen);
+    auto ga3 = new TreeGA!(int, 100, 4, testFitness, top!10, singlePoint, randomBranch)(gen);
 }

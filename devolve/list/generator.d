@@ -70,3 +70,8 @@ auto preset(Alleles...)() {
     
     return ind;
 }
+
+unittest {
+    int[5] val = [5, 3, 2, 4, 2];
+    assert(preset!(5, 3, 2, 4, 2) == val);
+}

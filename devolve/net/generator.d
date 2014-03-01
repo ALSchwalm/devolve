@@ -80,14 +80,11 @@ body {
     return n;
 }
 
-version(unittest) {
-    double fitness(in Network){return 1.0;}
-    unittest {
-        import devolve.net;
+unittest {
+    import devolve.net;
 
-        alias generator = randomConnections!(10, 10, 2, 10, 3);
-        auto ga = new NetGA!(10, fitness, generator);
-    }
+    alias generator = randomConnections!(10, 10, 2, 10, 3);
+    auto ga = new NetGA!(10, testFitness, generator);
 }
 
 /**
@@ -152,7 +149,7 @@ unittest {
     import devolve.net, std.algorithm;
 
     alias generator = denseNet!(10, 10, 2, 10);
-    auto ga = new NetGA!(10, fitness, generator);
+    auto ga = new NetGA!(10, testFitness, generator);
 
     Network n = generator();
 

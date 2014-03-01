@@ -4,10 +4,9 @@ import devolve.net.network;
 import devolve.net.mutator;
 import devolve.net.crossover;
 import devolve.selector;
-import devolve.baseGA;
+import devolve.simpleGA;
 
-import std.algorithm, std.random, std.stdio;
-import std.conv, std.traits, std.file, std.math;
+import std.conv, std.file, std.algorithm;
 
 /**
  * Genetic algorithm for genomes in the form of artificial neural nets
@@ -26,9 +25,17 @@ class NetGA( uint PopSize,
              alias selector = topPar!2,
              alias crossover = randomCopy,
              alias mutator = randomWeight,
-             alias comp = "a > b") : BaseGA!(Network, PopSize, comp)
+             alias comp = "a > b") : SimpleGA!(Network, PopSize, comp,
+                                             fitness,
+                                             generator,
+                                             selector,
+                                             crossover,
+                                             mutator)
 {
-    ///Default constructor
+    /**
+     * Default constructor. No statistics will be printed, 
+     * and mutation will be set at 1%, crossover rate at 80%
+     */
     this(){
         if (find(terminationCallbacks, &generateGraphCallback) == [])
             terminationCallbacks ~= &generateGraphCallback;
@@ -38,13 +45,12 @@ class NetGA( uint PopSize,
      * Convienience constructor, equivilant to default constructing
      * and setting mutation rate and statistic frequency
      */
-    this(float mutRate, uint statFreq) {
-        this();
-
+    this(float mutRate, float crossoverRate, uint statFreq) {
         m_mutationRate = mutRate;
         m_statFrequency = statFreq;
+        m_crossoverRate = crossoverRate;
     }
-
+    
     ///Whether to generate a graph of the net after 'evolution' completes
     @property bool autoGenerateGraph(bool generate) {
         return m_generateGraph = generate;
@@ -110,58 +116,6 @@ class NetGA( uint PopSize,
 
 protected:
 
-    ///Add initial population using generator
-    override void generation() {
-        //Add initial population
-        foreach(i; 0..PopSize) {
-            population ~= generator();
-        }
-    }
-
-    ///Preform add new members by crossing-over the population left
-    ///after selection, keeping 'crossoverRate' precent in the population.
-    override void crossingOver() {
-        Network[] nextPopulation;
-
-        nextPopulation.length = cast(ulong)(population.length*m_crossoverRate);
-        nextPopulation[] = population[0..nextPopulation.length];
-
-        while(nextPopulation.length < PopSize) {
-            nextPopulation ~= crossover(population[uniform(0, population.length)],
-                                        population[uniform(0, population.length)]);
-        }
-
-        population = nextPopulation;
-    }
-
-    ///Preform mutation on members of the population
-    override void mutation() {
-        //If multiple mutations are used
-        static if (__traits(compiles, mutator.joined)) {
-            foreach(mutatorFun; mutator.joined) {
-                foreach(i; 0..to!uint(PopSize*m_mutationRate/mutator.joined.length)) {
-                    mutatorFun(population[uniform(0, PopSize)]);
-                }
-            }
-        }
-        else {
-            foreach(i; 0..to!uint(PopSize*m_mutationRate)) {
-                mutator(population[uniform(0, PopSize)]);
-            }
-        }
-    }
-
-    ///Select the most fit members of the population
-    override void selection() {
-        //if the user has defined their own selector, just call it
-        static if (isCallable!selector) {
-            population = selector(population);
-        }
-        else {
-            population = selector!(fitness, comp)(population, m_statRecord);
-        }
-    }
-
     bool m_generateGraph = true;
 
     void generateGraphCallback(uint generations) {
@@ -173,4 +127,15 @@ protected:
             generateGraph(statRecord.historicalBest.individual, "best.dot", description);
         }
     }
+}
+
+unittest {
+    import devolve.net;
+
+    alias gaType = NetGA!(100,
+                          testFitness,
+                          generator.denseNet!(10, 10, 1, 10),
+                          selector.roulette!7,
+                          crossover.randomMerge);
+    auto ga = new gaType(0.01, 0.9, 5);
 }

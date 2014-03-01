@@ -20,17 +20,14 @@ Network randomCopy(in Network ind1,
     return newInd;
 }
 
-version(unittest) {
-    double fitness(in Network) { return 1.0;}
 
-    unittest {
-        import devolve.net;
-        auto ga = new NetGA!(100,
-                             fitness,
-                             generator.randomConnections!(11*14, 26, 1, 110, 10),
-                             selector.roulette!2,
-                             randomCopy);
-    }
+unittest {
+    import devolve.net;
+    auto ga = new NetGA!(100,
+                         testFitness,
+                         generator.randomConnections!(11*14, 26, 1, 110, 10),
+                         selector.roulette!2,
+                         randomCopy);
 }
 
 /**
@@ -63,7 +60,7 @@ Network randomMerge(float probability = 0.5)(in Network ind1,
 unittest {
     import devolve.net;
     auto ga = new NetGA!(100,
-                         fitness,
+                         testFitness,
                          generator.randomConnections!(11*14, 26, 1, 110, 10),
                          selector.roulette!2,
                          randomMerge!0.8);

@@ -1,13 +1,10 @@
 module devolve.bstring.bstringGA;
-import devolve.baseGA;
+import devolve.simpleGA;
 import devolve.selector;
 import devolve.bstring.crossover;
 import devolve.bstring.generator;
 import devolve.bstring.mutator;
 import devolve.bstring.bitset;
-
-import std.stdio, std.random, std.algorithm;
-import std.traits,  std.traits, std.conv, std.math;
 
 /**
  * Genetic algorithm for genomes taking the form of binary strings.
@@ -28,12 +25,16 @@ class BStringGA(uint length,
                 alias selector = topPar!2,
                 alias crossover = singlePoint,
                 alias mutator = randomFlip,
-                alias comp = "a > b") : BaseGA!(BitSet!length, PopSize, comp)
+                alias comp = "a > b") : SimpleGA!(BitSet!length, PopSize, comp,
+                                                fitness,
+                                                generator,
+                                                selector,
+                                                crossover,
+                                                mutator)
 {
-
     /**
      * Default constructor. No statistics will be printed, 
-     * and mutation will be set at 1%
+     * and mutation will be set at 1%, crossover rate at 80%
      */
     this(){}
 
@@ -41,76 +42,9 @@ class BStringGA(uint length,
      * Convienience constructor, equivilant to default constructing
      * and setting mutation rate and statistic frequency
      */
-    this(float mutRate, uint statFreq) {
+    this(float mutRate, float crossoverRate, uint statFreq) {
         m_mutationRate = mutRate;
         m_statFrequency = statFreq;
-    }
-
-
-protected:
-
-    ///Add initial population using generator
-    override void generation() {
-        foreach(i; 0..PopSize) {
-            static if (isCallable!generator) {
-                population ~= generator();
-            }
-            else {
-                population ~= generator!length();
-            }       
-        }
-    }
-
-    ///Preform add new members by crossing-over the population left
-    ///after selection
-    override void crossingOver() {
-        BitSet!length[] nextPopulation;
-
-        nextPopulation.length = cast(ulong)(population.length*m_crossoverRate);
-        nextPopulation[] = population[0..nextPopulation.length];
-
-        while(nextPopulation.length < PopSize) {
-            auto parent1 = population[uniform(0, population.length)];
-            auto parent2 = population[uniform(0, population.length)];
-
-            static if (isCallable!crossover) {
-                nextPopulation ~= crossover(parent1, parent2);
-
-            }
-            else {
-                nextPopulation ~= crossover!length(parent1, parent2);
-            }
-        }
-
-        population = nextPopulation;
-    }
-
-    ///Preform mutation on members of the population
-    override void mutation() {
-        //If multiple mutations are used
-        static if (__traits(compiles, mutator.joined)) {
-            foreach(mutatorFun; mutator.joined) {
-                foreach(i; 0..to!uint(PopSize*m_mutationRate/mutator.joined.length)) {
-                    mutatorFun(population[uniform(0, PopSize)]);
-                }
-            }
-        }
-        else {
-            foreach(i; 0..to!uint(PopSize*m_mutationRate)) {
-                mutator(population[uniform(0, PopSize)]);
-            }
-        }
-    }
-
-    ///Select the most fit members of the population
-    override void selection() {
-
-        //if the user has defined their own selector, just call it
-        static if (isCallable!selector) {
-            population = selector(population); 
-        }
-        else {
-            population = selector!(fitness, comp)(population, m_statRecord);
-        }
+        m_crossoverRate = crossoverRate;
     }
 }

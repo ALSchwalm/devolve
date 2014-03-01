@@ -58,3 +58,8 @@ unittest {
 
     assert(unpackCall!(typeof(del))(del, [child, child]) == 4);
 }
+
+version(unittest) {
+    protected double testFitness(T)(T){return 1.0;}
+}
+    
