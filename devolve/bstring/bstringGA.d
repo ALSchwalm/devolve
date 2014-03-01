@@ -30,7 +30,7 @@ class BStringGA(uint length,
                 alias mutator = randomFlip,
                 alias comp = "a > b") : BaseGA!(BitSet!length, PopSize, comp,
                                                 fitness,
-                                                null,
+                                                generator,
                                                 selector,
                                                 crossover,
                                                 mutator)
@@ -49,20 +49,5 @@ class BStringGA(uint length,
     this(float mutRate, uint statFreq) {
         m_mutationRate = mutRate;
         m_statFrequency = statFreq;
-    }
-
-
-protected:
-
-    ///Add initial population using generator
-    override void generation() {
-        foreach(i; 0..PopSize) {
-            static if (isCallable!generator) {
-                population ~= generator();
-            }
-            else {
-                population ~= generator!length();
-            }       
-        }
     }
 }

@@ -19,8 +19,8 @@ import std.random;
  */
 template preset (Alleles...) {
     ///
-    auto preset(size_t size)() {
-        BitSet!size a;
+    auto preset(BString)() {
+        BString a;
 
         foreach(i, allele; Alleles) {
             a[i] = cast(bool)(allele);
@@ -32,20 +32,20 @@ template preset (Alleles...) {
 unittest {
     BitSet!5 a;
     alias empty = preset!();
-    assert(empty!5 == a);
+    assert(empty!(typeof(a)) == a);
 
     a = BitSet!5([0, 0, 1, 1, 0]);
     alias two = preset!(0, 0, 1, 1, 0);
-    assert(a == two!5);
-    assert(a != empty!5);
+    assert(a == two!(typeof(a)));
+    assert(a != empty!(typeof(a)));
 }
 
 /**
  * Generate a random set of bits.
  * NOTE: The size paramter will be inferred by the GA
  */
-auto random(size_t size)() {
-    BitSet!size a;
+auto random(BString)() {
+    BString a;
 
     foreach(i, ref bit; a) {
         bit = cast(bool)(uniform(0, 2));
@@ -61,7 +61,7 @@ version(unittest) {
         import devolve.bstring;
         auto ga = new BStringGA!(5, 50, fitness, random);
 
-        BitSet!5 a = random!5;
-        assert(!__traits(compiles, a = random!6));
+        BitSet!5 a = random!(BitSet!5);
+        assert(!__traits(compiles, a = random!(BitSet!6)));
     }
 }
