@@ -29,7 +29,7 @@ class SimpleGA(T, uint PopSize,
         }
     }
 
-    ///Preform add new members by crossing-over the population left
+    ///Add new members by crossing-over the population left
     ///after selection, keeping 'crossoverRate' precent in the population.
     override void crossingOver() {
         T[] nextPopulation;

@@ -4,8 +4,7 @@ import devolve.statistics, devolve.utils;
 import std.functional, std.stdio, std.math;
 
 ///Abstract class to be used as the base for GAs.
-class BaseGA(T, uint PopSize,
-             alias comp) {
+class BaseGA(T, uint PopSize, alias comp) {
 
     /**
      * Evolution function works as follows.
@@ -107,17 +106,27 @@ class BaseGA(T, uint PopSize,
 
 protected:
 
+    ///Method invoked to create the initial population
     abstract void generation();
-    abstract void crossingOver();
-    abstract void mutation();
+
+    ///Method invoked to select the individuals to be parents to the next generation
     abstract void selection();
+
+    ///Method invoked to create the next generation of the population
+    abstract void crossingOver();
+
+    ///Method invoked to create variation in the population
+    abstract void mutation();
     
+    ///Prints the statistics of the last generation
     void showStatistics(int generation) const {
         if (m_statFrequency && generation % m_statFrequency == 0) {
             writefln("(gen %3d) %s", generation, statRecord.last);
         }
     }
 
+    ///Print the score of the historically best individual as well as the
+    ///individual if it is printable
     void showFinalStatistics(string cause) const {
         static if (isPrintable!T) {
             writeln("\n(", cause, ") Score: ", statRecord.historicalBest.fitness,
