@@ -1,0 +1,10 @@
+{
+    "name": "devolve",
+    "description": "A genetic programming library",
+    "license": "Boost",
+    "authors": [ "Adam Schwalm" ],
+    "sourcePaths": [
+        "devolve"
+    ],
+    "importPaths": ["."]
+}

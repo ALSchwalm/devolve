@@ -6,11 +6,11 @@ LIB_SRC = $(wildcard devolve/**/*.d) $(wildcard devolve/*.d)
 
 DFLAGS = -w -wi
 
-all: DFLAGS += -release -O -inline -noboundscheck
-all: devolve.a
+all: DFLAGS += -release -O -inline -noboundscheck -lib
+all: libdevolve.a
 
-debug: DFLAGS += -debug -g
-debug: devolve.a
+debug: DFLAGS += -debug -g -lib
+debug: libdevolve.a
 
 unittest: DFLAGS += -unittest
 unittest: unittest.out
@@ -18,16 +18,16 @@ unittest: unittest.out
 	@printf "\nAll tests pass\n"
 
 examples: DFLAGS += -O -inline -noboundscheck
-examples: devolve.a $(EXAMPLE_OUT)
+examples: libdevolve.a $(EXAMPLE_OUT)
 
-$(EXAMPLE_OUT): %.out: %.d devolve.a
-	dmd -op $(DFLAGS) $< devolve.a -of$@ 
+$(EXAMPLE_OUT): %.out: %.d libdevolve.a
+	dmd -op $(DFLAGS) $< libdevolve.a -of$@
 
-devolve.a: $(LIB_SRC)
-	dmd $(DFLAGS) -lib $(LIB_SRC) -ofdevolve.a 
+libdevolve.a: $(LIB_SRC)
+	dmd $(DFLAGS) -lib $(LIB_SRC) -oflibdevolve.a
 
 unittest.out: $(LIB_SRC)
 	dmd $(DFLAGS) $(LIB_SRC) -ofunittest.out
 
 clean: 
-	rm -f devolve.a $(EXAMPLE_OUT) $(EXAMPLE_SRC:.d=.o) unittest.o unittest.out
+	rm -f libdevolve.a $(EXAMPLE_OUT) $(EXAMPLE_SRC:.d=.o) unittest.o unittest.out
