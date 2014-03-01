@@ -4,9 +4,6 @@ import devolve.list.crossover;
 import devolve.list.mutator;
 import devolve.selector;
 
-import std.stdio, std.random, std.algorithm;
-import std.conv, std.traits, std.typetuple, std.math;
-
 /**
  * Genetic algorithm for genomes in the form of a list. This includes
  * dynamic and statically sized arrays.
@@ -70,6 +67,7 @@ class ListGA(T,
 }
 
 version(unittest) {
+    import std.algorithm;
     double fitness(int[4] ind) {return reduce!"a+b"(ind);}
     
     unittest {

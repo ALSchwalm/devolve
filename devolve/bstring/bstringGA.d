@@ -6,9 +6,6 @@ import devolve.bstring.generator;
 import devolve.bstring.mutator;
 import devolve.bstring.bitset;
 
-import std.stdio, std.random, std.algorithm;
-import std.traits,  std.traits, std.conv, std.math;
-
 /**
  * Genetic algorithm for genomes taking the form of binary strings.
  *

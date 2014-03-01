@@ -6,8 +6,7 @@ import devolve.net.crossover;
 import devolve.selector;
 import devolve.baseGA;
 
-import std.algorithm, std.random, std.stdio;
-import std.conv, std.traits, std.file, std.math;
+import std.conv, std.file, std.algorithm;
 
 /**
  * Genetic algorithm for genomes in the form of artificial neural nets
