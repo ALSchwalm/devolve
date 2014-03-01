@@ -34,23 +34,19 @@ auto singlePoint(size_t len)(in BitSet!len parent1,
 }
 
 
-version(unittest) {
-    double fitness(in BitSet!5) {return 1.0;}
+unittest {
+    BitSet!10 a;
+    BitSet!10 b;
+    auto c = singlePoint(a, b);
 
-    unittest {
-        BitSet!10 a;
-        BitSet!10 b;
-        auto c = singlePoint(a, b);
+    BitSet!11 d;
+    assert(!__traits(compiles, singlePoint(a, d)));
 
-        BitSet!11 d;
-        assert(!__traits(compiles, singlePoint(a, d)));
-
-        import devolve.bstring;
-        auto ga = new BStringGA!(5, 50, fitness,
-                                 generator.random,
-                                 selector.topPar!2,
-                                 singlePoint);
-    }
+    import devolve.bstring;
+    auto ga = new BStringGA!(5, 50, testFitness,
+                             generator.random,
+                             selector.topPar!2,
+                             singlePoint);
 }
 
 /**
@@ -95,7 +91,7 @@ unittest {
     assert(!__traits(compiles, twoPoint(a, d)));
 
     import devolve.bstring;
-    auto ga = new BStringGA!(5, 50, fitness,
+    auto ga = new BStringGA!(5, 50, testFitness,
                              generator.random,
                              selector.topPar!2,
                              twoPoint);

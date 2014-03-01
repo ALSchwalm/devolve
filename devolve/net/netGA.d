@@ -128,3 +128,14 @@ protected:
         }
     }
 }
+
+unittest {
+    import devolve.net;
+
+    alias gaType = NetGA!(100,
+                          testFitness,
+                          generator.denseNet!(10, 10, 1, 10),
+                          selector.roulette!7,
+                          crossover.randomMerge);
+    auto ga = new gaType(0.01, 0.9, 5);
+}

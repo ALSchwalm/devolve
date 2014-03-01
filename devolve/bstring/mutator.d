@@ -16,21 +16,17 @@ template randomFlip(float probability = 0.5) {
     }
 }
 
-version(unittest) {
-    double fitness(in BitSet!5) {return 1.0;}
+unittest {
+    BitSet!10 set;
+    randomFlip(set);
 
-    unittest {
-        BitSet!10 set;
-        randomFlip(set);
+    import devolve.bstring;
+    auto ga = new BStringGA!(5, 50, testFitness,
+                             generator.random,
+                             selector.topPar!2,
+                             crossover.singlePoint,
+                             randomFlip!0.8);
 
-        import devolve.bstring;
-        auto ga = new BStringGA!(5, 50, fitness,
-                                 generator.random,
-                                 selector.topPar!2,
-                                 crossover.singlePoint,
-                                 randomFlip!0.8);
-
-    }
 }
 
 void randomSwap(size_t len)(ref BitSet!len ind) {
@@ -48,7 +44,7 @@ unittest {
     randomFlip(set);
 
     import devolve.bstring;
-    auto ga = new BStringGA!(5, 50, fitness,
+    auto ga = new BStringGA!(5, 50, testFitness,
                              generator.random,
                              selector.topPar!2,
                              crossover.singlePoint,

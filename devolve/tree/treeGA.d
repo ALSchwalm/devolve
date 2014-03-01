@@ -148,17 +148,14 @@ private:
     }
 }
 
-version(unittest) {
-    double fitness(Tree!int ind) {return 0;}
     
-    unittest {
-        import devolve;
+unittest {
+    import devolve;
 
-        TreeGenerator!int gen;
-        gen.register!"-a"("negative");
+    TreeGenerator!int gen;
+    gen.register!"-a"("negative");
         
-        auto ga = new TreeGA!(int, 100, 4, fitness, top!10)(gen);
-        auto ga2 = new TreeGA!(int, 100, 4, fitness, top!10, singlePoint)(gen);
-        auto ga3 = new TreeGA!(int, 100, 4, fitness, top!10, singlePoint, randomBranch)(gen);
-    }
+    auto ga = new TreeGA!(int, 100, 4, testFitness, top!10)(gen);
+    auto ga2 = new TreeGA!(int, 100, 4, testFitness, top!10, singlePoint)(gen);
+    auto ga3 = new TreeGA!(int, 100, 4, testFitness, top!10, singlePoint, randomBranch)(gen);
 }

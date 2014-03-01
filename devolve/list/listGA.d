@@ -66,18 +66,13 @@ class ListGA(T,
     }
 }
 
-version(unittest) {
-    import std.algorithm;
-    double fitness(int[4] ind) {return reduce!"a+b"(ind);}
+unittest {
+    import devolve.list;
+    auto ga = new ListGA!(int[4], 10, testFitness, generator.preset!(1, 2, 3, 4));
     
-    unittest {
-        import devolve.list;
-        auto ga = new ListGA!(int[4], 10, fitness, generator.preset!(1, 2, 3, 4));
-        
-        auto ga2 = new ListGA!(int[4], 10, fitness,
-                               generator.preset!(1, 2, 3, 4),
-                               selector.roulette!2,
-                               crossover.randomCopy,
-                               Join!(mutator.randomSwap, mutator.randomRange!(0, 10)));
-    }
+    auto ga2 = new ListGA!(int[4], 10, testFitness,
+                           generator.preset!(1, 2, 3, 4),
+                           selector.roulette!2,
+                           crossover.randomCopy,
+                           Join!(mutator.randomSwap, mutator.randomRange!(0, 10)));
 }

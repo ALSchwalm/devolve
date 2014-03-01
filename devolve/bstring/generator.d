@@ -54,14 +54,11 @@ auto random(BString)() {
     return a;
 }
 
-version(unittest) {
-    double fitness(in BitSet!5 a) {return 1.0;}
+unittest {
+    import devolve.bstring;
+    auto ga = new BStringGA!(5, 50, testFitness, random);
 
-    unittest {
-        import devolve.bstring;
-        auto ga = new BStringGA!(5, 50, fitness, random);
-
-        BitSet!5 a = random!(BitSet!5);
-        assert(!__traits(compiles, a = random!(BitSet!6)));
-    }
+    BitSet!5 a = random!(BitSet!5);
+    assert(!__traits(compiles, a = random!(BitSet!6)));
 }
+
