@@ -58,52 +58,59 @@ class BaseGA(T, uint PopSize, alias comp) {
         return statRecord.historicalBest.individual;
     }
 
-    ///Basic property GAs should have
-    @property {
-        float mutationRate(float rate) {
-            return m_mutationRate = rate;
-        }
+    ///Set the mutation rate of the algorithm
+    @property float mutationRate(float rate) {
+        return m_mutationRate = rate;
+    }
 
-        float mutationRate() const {
-            return m_mutationRate;
-        }
+    ///Ditto
+    @property float mutationRate() const {
+        return m_mutationRate;
+    }
 
-        float crossoverRate(float rate) {
-            return m_crossoverRate = rate;
-        }
+    ///Set the crossover rate
+    @property float crossoverRate(float rate) {
+        return m_crossoverRate = rate;
+    }
 
-        float crossoverRate() const {
-            return m_crossoverRate;
-        }
+    ///Ditto
+    @property float crossoverRate() const {
+        return m_crossoverRate;
+    }
 
-        uint statFrequency(uint freq) {
-            return m_statFrequency = freq;
-        }
+    ///Set the number of generations between printing statistics
+    @property uint statFrequency(uint freq) {
+        return m_statFrequency = freq;
+    }
 
-        uint statFrequency() const {
-            return m_statFrequency;
-        }
+    ///Ditto
+    @property uint statFrequency() const {
+        return m_statFrequency;
+    }
 
-        uint randomSeed(uint seed) {
-            return m_seed = seed;
-        }
+    ///Set the random seed to be used by the algorithm
+    @property uint randomSeed(uint seed) {
+        return m_seed = seed;
+    }
 
-        uint randomSeed() const {
-            return m_seed;
-        }
+    ///Ditto
+    @property uint randomSeed() const {
+        return m_seed;
+    }
 
-        double terminationValue(double termination) {
-            return m_termination = termination;
-        }
+    ///Set the value at which the evolution will terminate
+    @property double terminationValue(double termination) {
+        return m_termination = termination;
+    }
 
-        double terminationValue() const {
-            return m_termination;
-        }
+    ///Ditto
+    @property double terminationValue() const {
+        return m_termination;
+    }
 
-        ///Get a handle to the recorded statistics for this genome
-        const(StatCollector!(T, comp)) statRecord() const {
-            return m_statRecord;
-        }
+    ///Get a handle to the recorded statistics for this genome
+    @property const(StatCollector!(T, comp)) statRecord() const {
+        return m_statRecord;
     }
 
     ///Stores the population being evolved
