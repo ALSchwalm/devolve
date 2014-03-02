@@ -101,9 +101,12 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
         alias binaryFun!(comp) compFun;
         
         Tuple!(double, individual) winners[numberOfTournaments];
+        auto gen = rndGen; //Keep the rndGen for custom seeds
+                           //TODO: determine if this is safe
 
         foreach(i; parallel(iota(numberOfTournaments))) {
-        
+            rndGen = gen;
+
             individual tournamentPool[tournamentSize];
             foreach(j; 0..tournamentSize) {
                 static if (hasMember!(individual, "clone")) {

@@ -2,9 +2,14 @@ module devolve.baseGA;
 
 import devolve.statistics, devolve.utils;
 import std.functional, std.stdio, std.math;
+import std.random;
 
 ///Abstract class to be used as the base for GAs.
 class BaseGA(T, uint PopSize, alias comp) {
+
+    protected this() {
+        m_seed = unpredictableSeed;
+    }
 
     /**
      * Evolution function works as follows.
@@ -18,6 +23,8 @@ class BaseGA(T, uint PopSize, alias comp) {
      *   $(LI Terminate if criteria is met, otherwise go to 2.)) 
      */
     const(T) evolve(uint generations){
+
+        rndGen.seed(m_seed);
 
         generation();
 
@@ -75,6 +82,14 @@ class BaseGA(T, uint PopSize, alias comp) {
 
         uint statFrequency() const {
             return m_statFrequency;
+        }
+
+        uint randomSeed(uint seed) {
+            return m_seed = seed;
+        }
+
+        uint randomSeed() const {
+            return m_seed;
         }
 
         double terminationValue(double termination) {
@@ -145,6 +160,7 @@ protected:
     float m_crossoverRate = 0.8;
     uint m_statFrequency = 0;
     auto m_statRecord = new StatCollector!(T, comp);
+    uint m_seed;
 
     void delegate(uint)[] terminationCallbacks;
     void delegate(uint, T[])[] generationCallbacks;
