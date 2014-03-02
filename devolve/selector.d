@@ -14,7 +14,7 @@ template topPar(uint num) if (num > 0) {
     ///
     individual[] topPar(alias fitness, alias comp = "a > b", individual, statRecord)
         (individual[] population, statRecord record) {
-        
+
         alias binaryFun!(comp) compFun;
 
         auto fitnessVals = taskPool.amap!fitness(population);

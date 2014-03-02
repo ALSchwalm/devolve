@@ -31,7 +31,7 @@ class TreeGA(T,
              uint PopSize,
              uint depth,
              alias fitness,
-             alias selector = top!(2, fitness),
+             alias selector = top!(to!uint(popSize*0.1), fitness),
              alias crossover = singlePoint!T,
              alias mutator = randomBranch!T,
              alias comp = "a > b") : BaseGA!(BaseNode!T, PopSize, comp)
@@ -91,8 +91,8 @@ protected:
         nextPopulation[] = population[0..nextPopulation.length];
 
         while(nextPopulation.length < PopSize) {
-            nextPopulation ~= crossover(population[uniform(0, population.length)],
-                                        population[uniform(0, population.length)]);
+            nextPopulation ~= crossover(population[uniform(0, $)],
+                                        population[uniform(0, $)]);
         }
 
         population = nextPopulation;

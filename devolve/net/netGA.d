@@ -22,7 +22,7 @@ import std.conv, std.file, std.algorithm;
 class NetGA( uint PopSize,
              alias fitness,
              alias generator,
-             alias selector = topPar!2,
+             alias selector = topPar!(to!uint(PopSize*0.1)),
              alias crossover = randomCopy,
              alias mutator = randomWeight,
              alias comp = "a > b") : SimpleGA!(Network, PopSize, comp,

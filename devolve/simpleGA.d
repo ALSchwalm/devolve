@@ -38,8 +38,8 @@ class SimpleGA(T, uint PopSize,
         nextPopulation[] = population[0..nextPopulation.length];
 
         while(nextPopulation.length < PopSize) {
-            nextPopulation ~= crossover(population[uniform(0, population.length)],
-                                        population[uniform(0, population.length)]);
+            nextPopulation ~= crossover(population[uniform(0, $)],
+                                        population[uniform(0, $)]);
         }
 
         population = nextPopulation;

@@ -61,7 +61,7 @@ void main() {
 
                          /*
                           *Generator: create random networks with the following properties
-                          *  inputLayerSize:     number of nodes (in this case pixels) inputed
+                          *  inputLayerSize:     number of inputs (in this case pixels) inputed
                           *  outputLayerSize:    number of outputs (in this case a value for each letter
                           *                      of the alphabet.
                           *  hiddenLayers:       number of 'hidden' inner layers

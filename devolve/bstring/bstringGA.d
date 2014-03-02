@@ -6,6 +6,8 @@ import devolve.bstring.generator;
 import devolve.bstring.mutator;
 import devolve.bstring.bitset;
 
+import std.conv;
+
 /**
  * Genetic algorithm for genomes taking the form of binary strings.
  *
@@ -22,7 +24,7 @@ class BStringGA(uint length,
                 uint PopSize,
                 alias fitness,
                 alias generator,
-                alias selector = topPar!2,
+                alias selector = topPar!(to!uint(PopSize*0.1)),
                 alias crossover = singlePoint,
                 alias mutator = randomFlip,
                 alias comp = "a > b") : SimpleGA!(BitSet!length, PopSize, comp,
