@@ -110,10 +110,10 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
             individual tournamentPool[tournamentSize];
             foreach(j; 0..tournamentSize) {
                 static if (hasMember!(individual, "clone")) {
-                    tournamentPool[j] = population[uniform(0, population.length)].clone();
+                    tournamentPool[j] = population[uniform(0, $)].clone();
                 }
                 else {
-                    tournamentPool[j] = population[uniform(0, population.length)];
+                    tournamentPool[j] = population[uniform(0, $)];
                 }
             }
 
@@ -184,7 +184,7 @@ template roulette(uint num) if (num > 0) {
 
         record.registerGeneration(popWithFitness);
 
-        immutable auto total = reduce!"a+b"(fitnessVals);
+        immutable auto total = taskPool.reduce!"a+b"(fitnessVals);
 
         foreach(i; 0..num) {
             auto choice = uniform(0.0f, 1.0f);
