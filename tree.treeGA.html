@@ -172,7 +172,7 @@
 <div class="declaration-content"><dl><p>Convenience alias</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="TreeGA">&nbsp;</span><a class="symbol-link" href="#TreeGA">TreeGA</a>(T, uint PopSize, uint depth, alias fitness, alias selector = top!(2, fitness), alias crossover = singlePoint!T, alias mutator = randomBranch!T, alias comp = "a &gt; b") if (PopSize &gt; 0 &amp;&amp; depth &gt; 0): BaseGA!(BaseNode!T, PopSize, comp);
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="TreeGA">&nbsp;</span><a class="symbol-link" href="#TreeGA">TreeGA</a>(T, uint PopSize, uint depth, alias fitness, alias selector = top!(to!uint(popSize * 0.1), fitness), alias crossover = singlePoint!T, alias mutator = randomBranch!T, alias comp = "a &gt; b") if (PopSize &gt; 0 &amp;&amp; depth &gt; 0): BaseGA!(BaseNode!T, PopSize, comp);
 </h3></div>
 <div class="declaration-content"><dl><p>Genetic algorithm for genomes in the form of a tree. Particularly well suited
  for growing algorithms.
