@@ -61,5 +61,6 @@ unittest {
 
 version(unittest) {
     protected double testFitness(T)(T){return 1.0;}
+    protected uint testSeed = 1337;
 }
     

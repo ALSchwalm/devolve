@@ -8,7 +8,5 @@ public import devolve.bstring;
 public import devolve.net;
 
 version(unittest) {
-    void main() {
-
-    }
+    void main() {}
 }

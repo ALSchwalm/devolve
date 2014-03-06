@@ -67,8 +67,12 @@ class ListGA(T,
 }
 
 unittest {
-    import devolve.list;
+    import devolve.list, std.stdio;
     auto ga = new ListGA!(int[4], 10, testFitness, generator.preset!(1, 2, 3, 4));
+    ga.randomSeed = testSeed;
+    ga.showFinalStats = false;
+
+    assert(ga.evolve(10) == [1, 2, 3, 4]);
     
     auto ga2 = new ListGA!(int[4], 10, testFitness,
                            generator.preset!(1, 2, 3, 4),

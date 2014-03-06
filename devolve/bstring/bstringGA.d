@@ -50,3 +50,15 @@ class BStringGA(uint length,
         m_crossoverRate = crossoverRate;
     }
 }
+
+unittest {
+    import devolve.bstring;
+
+    alias gaType = BStringGA!(10,
+                              1000,
+                              testFitness,
+                              generator.random);
+
+    auto ga = new gaType(0.01, 0.8, 10);
+    auto ga2 = new gaType;
+}

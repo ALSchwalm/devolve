@@ -151,15 +151,17 @@ template tournament(uint numberOfTournaments, uint tournamentSize, double probab
 }
 
 unittest {
-    import devolve.statistics;
-    
+    import devolve.statistics, devolve.utils, std.random;
+    rndGen.seed(testSeed);
+
     double[][] pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
     auto stat = new StatCollector!(typeof(pop[0]));
-    
+
     alias bestTwo = tournament!(2, 3, 0.7);
     auto best = bestTwo!"a[0]"(pop, stat);
 
     assert(best.length == 2);
+    assert(best == [[8, 2, 2], [8, 2, 2]]);
 }
 
 
@@ -218,13 +220,15 @@ template roulette(uint num) if (num > 0) {
 }
 
 unittest {
-    import devolve.statistics;
-    
+    import devolve.statistics, devolve.utils;
+    rndGen.seed(testSeed);
+
     double[][] pop = [[1, 2, 4], [8, 2, 2], [4, 1, 1], [2, 3, 3]];
     auto stat = new StatCollector!(typeof(pop[0]));
-    
+
     alias bestTwo = roulette!2;
     auto best = bestTwo!"a[0]"(pop, stat);
 
     assert(best.length == 2);
+    assert(best == [[8, 2, 2], [4, 1, 1]]);
 }

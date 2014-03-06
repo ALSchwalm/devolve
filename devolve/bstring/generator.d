@@ -55,10 +55,13 @@ auto random(BString)() {
 }
 
 unittest {
-    import devolve.bstring;
+    import devolve.bstring, std.random;
     auto ga = new BStringGA!(5, 50, testFitness, random);
 
     BitSet!5 a = random!(BitSet!5);
     assert(!__traits(compiles, a = random!(BitSet!6)));
+
+    rndGen.seed(testSeed);
+    assert(random!(BitSet!5) == BitSet!5(cast(bool[])[1, 1, 0, 0, 1]));
 }
 
