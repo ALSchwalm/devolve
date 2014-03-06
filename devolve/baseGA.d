@@ -26,7 +26,20 @@ class BaseGA(T, uint PopSize, alias comp) {
 
         rndGen.seed(m_seed);
 
+        scope(exit) {
+            foreach(callback; terminationCallbacks) {
+                callback(generations);
+            }
+        }
+
+        scope(failure) {
+            showFinalStatistics("An error ended the evolution early");
+        }
+
         generation();
+
+        //Message to be displayed at the end of the evolution
+        string terminationReason = "Historical Best";
 
         //Perform evolution
         foreach(generation; 0..generations) {
@@ -40,7 +53,7 @@ class BaseGA(T, uint PopSize, alias comp) {
             if (!isNaN(m_termination) &&
                 !compFun(m_termination, statRecord.last.best.fitness)) {
 
-                showFinalStatistics("Termination criteria met");
+                terminationReason = "Termination criteria met";
                 break;
             }
 
@@ -49,11 +62,7 @@ class BaseGA(T, uint PopSize, alias comp) {
             }
         }
 
-        showFinalStatistics("Historical Best");
-
-        foreach(callback; terminationCallbacks) {
-            callback(generations);
-        }
+        showFinalStatistics(terminationReason);
 
         return statRecord.historicalBest.individual;
     }
