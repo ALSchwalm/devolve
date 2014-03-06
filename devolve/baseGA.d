@@ -33,7 +33,8 @@ class BaseGA(T, uint PopSize, alias comp) {
         }
 
         scope(failure) {
-            showFinalStatistics("An error ended the evolution early");
+            if (m_showFinalStats)
+                showFinalStatistics("An error ended the evolution early");
         }
 
         generation();
@@ -50,19 +51,20 @@ class BaseGA(T, uint PopSize, alias comp) {
 
             showStatistics(generation);
 
+            foreach(callback; generationCallbacks) {
+                callback(generation, population);
+            }
+
             if (!isNaN(m_termination) &&
                 !compFun(m_termination, statRecord.last.best.fitness)) {
 
                 terminationReason = "Termination criteria met";
                 break;
             }
-
-            foreach(callback; generationCallbacks) {
-                callback(generation, population);
-            }
         }
 
-        showFinalStatistics(terminationReason);
+        if (m_showFinalStats)
+            showFinalStatistics(terminationReason);
 
         return statRecord.historicalBest.individual;
     }
@@ -95,6 +97,16 @@ class BaseGA(T, uint PopSize, alias comp) {
     ///Ditto
     @property uint statFrequency() const {
         return m_statFrequency;
+    }
+
+    ///Whether to print historical statistics when evolution terminates
+    @property bool showFinalStats(bool showFinal) {
+        return m_showFinalStats = showFinal;
+    }
+
+    ///Ditto
+    @property bool showFinalStats() const {
+        return m_showFinalStats;
     }
 
     ///Set the random seed to be used by the algorithm
@@ -175,6 +187,7 @@ protected:
     float m_mutationRate = 0.01f;
     float m_crossoverRate = 0.8;
     uint m_statFrequency = 0;
+    bool m_showFinalStats = true;
     auto m_statRecord = new StatCollector!(T, comp);
     uint m_seed;
 
