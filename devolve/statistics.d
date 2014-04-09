@@ -38,7 +38,7 @@ class StatCollector(T, alias comp = "a > b") {
                           standardDeviation, deltaTime);
         }
     }
-    
+
     @property {
         ///Get the most recent generation statistics
         const(Statistics) last() const {
@@ -61,7 +61,7 @@ class StatCollector(T, alias comp = "a > b") {
      * 'popFitRange' must be in sorted order.
      */
     void registerGeneration(popFitRange)(popFitRange range)
-        if (isForwardRange!popFitRange && 
+        if (isForwardRange!popFitRange &&
             is(typeof(range[0][0]) == double) &&
             is(typeof(range[0][1]) == T))
         in {
@@ -110,15 +110,20 @@ class StatCollector(T, alias comp = "a > b") {
 
         double total = 0;
         foreach (ref pair; range) {
-            total += pair[0];
+            total += pair[0]/range.length;
         }
-        stat.meanFit = total / range.length;
+        stat.meanFit = total;
 
-        total = 0;
-        foreach (ref pair; range) {
-            total += (pair[0] - stat.meanFit)^^2;
+        if (!isFinite(stat.meanFit)) {
+            stat.standardDeviation = double.nan; //can't compute SD from infinite mean
         }
-        stat.standardDeviation = sqrt(total / range.length);
+        else {
+            total = 0;
+            foreach (ref pair; range) {
+                total += (pair[0] - stat.meanFit)^^2;
+            }
+            stat.standardDeviation = sqrt(total / range.length);
+        }
 
         stats ~= stat;
     }
@@ -142,7 +147,7 @@ class StatCollector(T, alias comp = "a > b") {
 
     //Assume all other calls are to the underlying statistics
     alias stats this;
-    
+
 protected:
     Statistics[] stats;
 
@@ -173,6 +178,6 @@ unittest {
     assert(collector.last.meanFit > 0.774 &&
            collector.last.meanFit < 0.776);
 
-    assert(collector.last.standardDeviation > 0.19202 && 
+    assert(collector.last.standardDeviation > 0.19202 &&
            collector.last.standardDeviation < 0.19203);
 }
